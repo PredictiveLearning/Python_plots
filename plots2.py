@@ -13,6 +13,7 @@ reload(LGalaxies_Henriques2015a_struct)
 
 from procedures import read_snap
 from LGalaxies_Henriques2015a_struct import LGalaxiesStruct
+from LGalaxies_Henriques2015a_struct import PropertiesToRead
 
 
 Datadir = '/net/bootes/export/data1/data/'
@@ -22,17 +23,8 @@ file_prefix= 'SA_z0.00'
 firstfile = 40
 lastfile = 40
 
-properties_used = {}
-for el in LGalaxiesStruct.names:
-	properties_used[el] = False
-
-filter = properties_used
-filter['Mvir'] = False
-filter['Mag'] = False
-filter['MagDust'] = True
-
-(nTrees,nHalos,nTreeHalos,gal) = read_snap(folder,file_prefix,firstfile,lastfile,filter,LGalaxiesStruct)
-print gal['MagDust'][:,5]
+(nTrees,nHalos,nTreeHalos,gal) = read_snap(folder,file_prefix,firstfile,lastfile,PropertiesToRead,LGalaxiesStruct)
+print np.log10(gal['StellarMass'][1:5]*1.e10)
 #help(gal)
 
 # <codecell>

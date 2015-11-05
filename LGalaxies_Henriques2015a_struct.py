@@ -74,6 +74,78 @@ LGalaxiesStruct = np.dtype([
 ('sfh_MetalsICM',np.float32,20)
 ])
 
+PropertiesToRead = {}
+for ii in LGalaxiesStruct.names:
+	PropertiesToRead[ii] = False
+           
+PropertiesToRead['Type'] = True
+#PropertiesToRead['HaloIndex'] = True
+PropertiesToRead['SnapNum'] = True
+#PropertiesToRead['LookBackTimeToSnap'] = True
+#PropertiesToRead['CentralMvir'] = True
+#PropertiesToRead['CentralRvir'] = True
+PropertiesToRead['DistanceToCentralGal'] = True
+PropertiesToRead['Pos'] = True
+PropertiesToRead['Vel'] = True
+#PropertiesToRead['Len'] = True
+PropertiesToRead['Mvir'] = True
+PropertiesToRead['Rvir'] = True
+#PropertiesToRead['Vvir'] = True
+#PropertiesToRead['Vmax'] = True
+#PropertiesToRead['GasSpin'] = True
+#PropertiesToRead['StellarSpin'] = True
+#PropertiesToRead['InfallVmax'] = True
+#PropertiesToRead['InfallVmaxPeak'] = True
+#PropertiesToRead['InfallSnap'] = True
+#PropertiesToRead['InfallHotGas'] = True
+#PropertiesToRead['HotRadius'] = True
+#PropertiesToRead['OriMergTime'] = True
+#PropertiesToRead['MergTime'] = True
+PropertiesToRead['ColdGas'] = True
+PropertiesToRead['StellarMass'] = True
+PropertiesToRead['BulgeMass'] = True
+PropertiesToRead['DiskMass'] = True
+PropertiesToRead['HotGas'] = True
+#PropertiesToRead['EjectedMass'] = True
+PropertiesToRead['BlackHoleMass'] = True
+#PropertiesToRead['ICM'] = True
+PropertiesToRead['MetalsColdGas'] = True
+PropertiesToRead['MetalsStellarMass'] = True
+#PropertiesToRead['MetalsBulgeMass'] = True
+#PropertiesToRead['MetalsDiskMass'] = True
+#PropertiesToRead['MetalsHotGas'] = True
+#PropertiesToRead['MetalsEjectedMass'] = True
+#PropertiesToRead['MetalsICM'] = True
+#PropertiesToRead['PrimordialAccretionRate'] = True
+#PropertiesToRead['CoolingRadius'] = True
+#PropertiesToRead['CoolingRate'] = True
+#PropertiesToRead['CoolingRate_beforeAGN'] = True
+#PropertiesToRead['QuasarAccretionRate'] = True
+#PropertiesToRead['RadioAccretionRate'] = True
+PropertiesToRead['Sfr'] = True
+#PropertiesToRead['SfrBulge'] = True
+#PropertiesToRead['XrayLum'] = True
+PropertiesToRead['BulgeSize'] = True
+PropertiesToRead['StellarDiskRadius'] = True
+#PropertiesToRead['GasDiskRadius'] = True
+#PropertiesToRead['CosInclination'] = True
+#PropertiesToRead['DisruptOn'] = True
+#PropertiesToRead['MergeOn'] = True
+PropertiesToRead['MagDust'] = True
+#PropertiesToRead['Mag'] = True
+#PropertiesToRead['MagBulge'] = True
+PropertiesToRead['MassWeightAge'] = True
+PropertiesToRead['rBandWeightAge'] = True
+#PropertiesToRead['sfh_ibin'] = True
+#PropertiesToRead['sfh_numbins'] = True
+#PropertiesToRead['sfh_DiskMass'] = True
+#PropertiesToRead['sfh_BulgeMass'] = True
+#PropertiesToRead['sfh_ICM'] = True
+#PropertiesToRead['sfh_MetalsDiskMass'] = True
+#PropertiesToRead['sfh_MetalsBulgeMass'] = True
+#PropertiesToRead['sfh_MetalsICM'] = True
+        
+
 # <codecell>
 
 
