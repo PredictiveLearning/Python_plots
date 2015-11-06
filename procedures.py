@@ -27,7 +27,8 @@ def read_snap(folder,file_prefix,firstfile,lastfile,props,template):
         nTrees += this_nTrees
         this_nHalos = np.fromfile(f,np.int32,1)
         nHalos += this_nHalos
-        print "File ", ifile," nGals = ",this_nHalos
+        #print (“File ", ifile," nGals = ",this_nHalos)
+        print (1)
         addednTreeHalos = np.fromfile(f,np.int32,this_nTrees)
         nTreeHalos = np.append(nTreeHalos,addednTreeHalos)
         this_addedGalaxy = np.fromfile(f,template,this_nHalos) # all properties
