@@ -53,7 +53,7 @@ plt.rcParams.update({'font.size': 18, 'xtick.labelsize': 18, 'ytick.labelsize': 
                      'ytick.minor.size': 3, 'ytick.minor.width': 1.})
 
 
-# In[149]:
+# In[153]:
 
 xmin=7.0
 xmax=12.5
@@ -102,10 +102,12 @@ for ii in range(0,4):
         
     file = Datadir + '/ObsConstraints/StellarMassFunction_z'+char_redshift+'.00.txt'
     obs = Table.read(file, format='ascii')
-    subplot.errorbar(obs['col1'], np.log10(obs['col3']),yerr=obs['col4'], 
+    obs_xbin=obs['col1']+(obs['col2']-obs['col1'])/2.
+    asy_yerror = [np.log10(obs['col3']/(obs['col3']-obs['col4'])), 
+                  np.log10((obs['col3']+obs['col4'])/obs['col3'])]
+    subplot.errorbar(obs_xbin, np.log10(obs['col3']),yerr=asy_yerror,
              fmt='o', markersize=5, ecolor='blue', color='blue')
     #sub = plt.subplot(111)
-
     #MODEL
     if ii == 0 :
         sel=G_MR['SnapNum']==SnapshotList[ii]
