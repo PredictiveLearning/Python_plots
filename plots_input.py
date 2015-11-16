@@ -3,6 +3,10 @@
 
 # In[ ]:
 
+stellar_mass_function=0
+bluck_red_fractions=0
+test_plots=1
+
 RedshiftsToRead = [True,True,True,True,True,False]
 
 PLANCK=1
