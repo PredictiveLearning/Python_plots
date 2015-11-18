@@ -3,11 +3,15 @@
 
 # In[ ]:
 
-stellar_mass_function=0
-bluck_red_fractions=0
-test_plots=1
+opt_gr_mass=1
+opt_stellar_mass_function=0
+opt_bluck_red_fractions=0
+opt_test_plots=0
 
 RedshiftsToRead = [True,True,True,True,True,False]
+
+#CatalogType='snap'
+CatalogType='tree'
 
 PLANCK=1
 if PLANCK: 
@@ -24,8 +28,9 @@ Datadir = '/net/bootes/export/data1/data/'
 #DirName_MR = '/net/bootes/scratch2/SAM/test1/MR/'
 #DirName_MRII = '/net/bootes/scratch2/SAM/test1/MRII/'
 
-DirName_MR = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/MR/'
-DirName_MRII = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/MRII/'
+#DirName_MR = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/MR/'
+#DirName_MRII = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/MRII/'
 
+DirName_MR = '/net/bootes/scratch2/SAM/Henriques2015a/GalTree/MR/'
 
 

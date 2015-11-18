@@ -92,6 +92,70 @@ def read_snap(folder,FirstFile,LastFile,
     
     return (gals, SnapshotList)
 
+
+
+
+def read_tree(folder,FirstFile,LastFile,
+              props,template,RedshiftsToRead,RedshiftList):    
+    """ Reads L-Galaxy output files.
+    Returns: (nTrees,nHalos,nTreeHalos,gals)
+    Inputs: (folder,file_prefix,FirstFile,LastFile,props,template)
+    props - list of properties to return
+    template - structure dtype definition from database """   
+    nGals = 0    
+    
+    filter_list = []
+    for prop in props:
+        if props[prop]:
+            filter_list.append((prop,template[prop]))
+    filter_dtype = np.dtype(filter_list)  
+            
+    SnapshotList=np.array([],dtype=np.int32)
+    
+    #read only headers to figure out total nGals
+    print ("\n\nReading Headers\n")
+    for ifile in range(FirstFile,LastFile+1):       
+        filename = folder+'/'+'SA_galtree_'+"%d"%(ifile)               
+        f = open(filename,"rb")
+        one = np.fromfile(f,np.int32,1)
+        nbytes = np.fromfile(f,np.int32,1)
+        this_nGals = np.fromfile(f,np.int32,1)
+        nGals += this_nGals               
+    gals = np.zeros(nGals,dtype=filter_dtype)
+    
+    print("TotNgals=",nGals)
+    print ("\n")
+    
+    offset=0
+    for ifile in range(FirstFile,LastFile+1):         
+        filename = folder+'/'+'SA_galtree_'+"%d"%(ifile)             
+        f = open(filename,"rb")
+        one = np.fromfile(f,np.int32,1)
+        nbytes = np.fromfile(f,np.int32,1)  
+        nskip=nbytes/4-3
+        this_nGals = np.fromfile(f,np.int32,1)      
+        nGals += this_nGals       
+        print ("File ", ifile," nGals = ",this_nGals)      
+        ib=np.fromfile(f,np.float32,int(nskip))          
+       
+        full_this_gals = np.fromfile(f,template,this_nGals) # all properties      
+        this_gals = np.zeros(this_nGals,dtype=filter_dtype) # selected props
+               
+       
+        for prop in template.names:
+            if props[prop]:
+                this_gals[prop] = full_this_gals[prop]
+                              
+        gals[offset:offset+this_nGals] = this_gals[:]    
+        offset+=this_nGals
+        f.close()           
+    #endfor
+   
+    return (gals)
+
+
+
+
 # <codecell>
 
 
