@@ -3,7 +3,7 @@
 
 # In[ ]:
 
-opt_gr_mass=1
+opt_anime_mass_gr=1
 opt_stellar_mass_function=0
 opt_bluck_red_fractions=0
 opt_test_plots=0

@@ -3,9 +3,16 @@
 
 # <codecell>
 
- 
+"""
+read_snap
+read_tree
+redshift_to_time
+"""
+    
+    
           
-""" self.capacity *= 4
+""" 
+self.capacity *= 4
 newdata = np.zeros((self.capacity,))
 newdata[:self.size] = self.data
 self.data = newdata
@@ -153,6 +160,27 @@ def read_tree(folder,FirstFile,LastFile,
    
     return (gals)
 
+def redshift_to_time (z):
+    Tyr = 977.8    ;# coefficent for converting 1/H into Gyr                               
+    WM = 0.315
+    WV = 0.685
+    H0=67.3
+    h = H0/100.
+    WR = 4.165E-5/(h*h)   ;# includes 3 massless neutrino species, T0 = 2.72528            
+    WK = 1-WM-WR-WV
+    az = 1.0/(1+1.0*z)
+    age = 0.
+    n=1000        ; # number of points in integrals                                        
+    a=0
+    for i in range(0, n-1):
+        a = az*(i+0.5)/n
+        adot = np.sqrt(WK+(WM/a)+(WR/(a*a))+(WV*a*a))
+        age = age + 1./adot
+    
+    zage = az*age/n
+    age_Gyr = (Tyr/H0)*zage
+    
+    return (age_Gyr)
 
 
 
