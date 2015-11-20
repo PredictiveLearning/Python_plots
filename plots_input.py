@@ -3,10 +3,13 @@
 
 # In[ ]:
 
-opt_anime_mass_gr=1
+
 opt_stellar_mass_function=0
 opt_bluck_red_fractions=0
+opt_positions=1
 opt_test_plots=0
+
+opt_anime_mass_gr=0
 
 RedshiftsToRead = [True,True,True,True,True,False]
 
@@ -31,7 +34,7 @@ Datadir = '/net/bootes/export/data1/data/'
 #DirName_MR = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/MR/'
 #DirName_MRII = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/MRII/'
 
-DirName_MR = '/net/bootes/scratch2/SAM/Henriques2015a/GalTree/MR/'
-#DirName_MR = '/Users/BrunoHenriques/Desktop/Work/SAM/Henriques2015a/GalTree/MR/'
+#DirName_MR = '/net/bootes/scratch2/SAM/Henriques2015a/GalTree/MR/'
+DirName_MR = '/Users/BrunoHenriques/Desktop/Work/SAM/Henriques2015a/GalTree/MR/'
 
 
