@@ -31,7 +31,7 @@ Datadir = '/net/bootes/export/data1/data/'
 #DirName_MR = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/MR/'
 #DirName_MRII = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/MRII/'
 
-#DirName_MR = '/net/bootes/scratch2/SAM/Henriques2015a/GalTree/MR/'
-DirName_MR = '/Users/BrunoHenriques/Desktop/Work/SAM/Henriques2015a/GalTree/MR/'
+DirName_MR = '/net/bootes/scratch2/SAM/Henriques2015a/GalTree/MR/'
+#DirName_MR = '/Users/BrunoHenriques/Desktop/Work/SAM/Henriques2015a/GalTree/MR/'
 
 

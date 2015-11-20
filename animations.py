@@ -4,16 +4,22 @@ anime_mass_gr()
 '''
 AnimDir='./animations/'
 
-from procedures import *
-
 import numpy as np
 from pylab import *
 
 import matplotlib.pyplot as plt
-
+from importlib import reload
 from scipy.ndimage import zoom 
 from matplotlib import animation
 from matplotlib.colors import LinearSegmentedColormap
+
+import procedures
+reload (procedures)
+from procedures import *
+import plots_input
+reload (plots_input)
+from plots_input import *
+
 
 def basic_animation():
     
