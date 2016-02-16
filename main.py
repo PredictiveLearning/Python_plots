@@ -99,11 +99,109 @@ with PdfPages('./fig/plots.pdf') as pdf:
     import plots
     reload (plots)
 
+    print('Doing SatFraction')
+    
+    ThisRedshiftList=[0.0,1.0,2.0,3.0]  
+    
+    xlim=[8.5,11.5]
+    ylim=[0., 1.] 
+           
+    plot_color=['red','purple']        
+    plt.rcParams.update({'xtick.major.width': 1.0, 'ytick.major.width': 1.0, 
+                             'xtick.minor.width': 1.0, 'ytick.minor.width': 1.0})
+    
+    fig = plt.figure(figsize=(15,4))
+    grid = gridspec.GridSpec(1, 5)
+    grid.update(wspace=0.0, hspace=0.0)
+    
+    for ii in range (0,len(ThisRedshiftList)):
+           
+        char_redshift="%0.2f" % ThisRedshiftList[ii]
+            
+        subplot=plt.subplot(grid[ii])
+        subplot.set_ylim(ylim), subplot.set_xlim(xlim)
+        
+        xlab='$\mathrm{log_{10}}(M_*[h^{-2}M_{\odot}])$'      
+        if ii==0:
+            ylab='Satellite Fraction'
+        else:
+            ylab=''      
+        subplot.set_xlabel(xlab, fontsize=16), subplot.set_ylabel(ylab, fontsize=16)
+        
+        majorFormatter = FormatStrFormatter('%d')
+        subplot.xaxis.set_major_locator(MultipleLocator(1))    
+        subplot.xaxis.set_minor_locator(MultipleLocator(0.25))      
+        subplot.yaxis.set_minor_locator(MultipleLocator(0.1))
+        
+        if ii>0:
+            plt.tick_params(axis='y', which='both', left='on', labelleft='off')
+        
+        bin=0.25        
+        Mass_arr=np.arange(xlim[0],xlim[1],bin)
+        SatFraction=np.zeros(len(Mass_arr),dtype=np.float32)
+        HaloSatFraction=np.zeros(len(Mass_arr),dtype=np.float32)
+        
+        (sel)=select_current_redshift(G_MR, ThisRedshiftList, ii)        
+        G0_MR=G_MR[sel]   
+        StellarMass=stellar_mass_with_err(G0_MR, Hubble_h, ThisRedshiftList[ii])
+        Type=G0_MR['Type']
+        
+        for ll in range(0,len(Mass_arr)):
+            sel_sat=G0_MR[(Type>0) & (StellarMass>Mass_arr[ll]-bin/2.) & (StellarMass<Mass_arr[ll]+bin/2.)]
+            sel_halosat=G0_MR[(Type==1) & (StellarMass>Mass_arr[ll]-bin/2.) & (StellarMass<Mass_arr[ll]+bin/2.)]
+            sel_all=G0_MR[(StellarMass>Mass_arr[ll]-bin/2.) & (StellarMass<Mass_arr[ll]+bin/2.)]
+                
+            if len(sel_all)>0.:
+                SatFraction[ll]=float(len(sel_sat))/float(len(sel_all))
+                HaloSatFraction[ll]=float(len(sel_halosat))/float(len(sel_all))
+            else:               
+                SatFraction[ll]=0.
+                HaloSatFraction[ll]=0.
+                      
+        subplot.plot(Mass_arr, SatFraction, color='red', linestyle='-', linewidth=2) 
+        subplot.plot(Mass_arr, HaloSatFraction, color='green', linestyle='-', linewidth=2) 
+       
+        #labels
+        plot_label (subplot, 'label', xlim, ylim, x_percentage=0.05, y_percentage=0.55, 
+                    color='black', xlog=0, ylog=0, label='z='+char_redshift[:-1], 
+                    fontsize=14, fontweight='normal') 
+    
+        if(ii==0):
+            plot_label (subplot, 'label', xlim, ylim, 
+                    x_percentage=0.15, y_percentage=0.90, color='black', xlog=0, ylog=0, 
+                    label='galaxies', fontsize=13, fontweight='normal') 
+            plot_label (subplot, 'line', xlim, ylim,
+                    x_percentage=0.04, y_percentage=0.92, color='red', x2_percentage=0.13, 
+                    xlog=0, ylog=0, linestyle='-', linewidth=2)
+            plot_label (subplot, 'label', xlim, ylim, 
+                    x_percentage=0.15, y_percentage=0.8, color='black', xlog=0, ylog=0, 
+                    label='haloes', fontsize=13, fontweight='normal') 
+            plot_label (subplot, 'line', xlim, ylim,
+                    x_percentage=0.04, y_percentage=0.82, color='green', x2_percentage=0.13, 
+                    xlog=0, ylog=0, linestyle='-', linewidth=2)
+            
+    plt.tight_layout()
+    plt.savefig('./fig/plots_sat_fraction.pdf')
+    pdf.savefig()
+    plt.close()
+    
+    if opt_stellar_mass_vs_halo_mass==1:
+        print('Doing SMHM')
+        from plots import stellar_mass_vs_halo_mass
+        ThisRedshiftList=[0.0]        
+        stellar_mass_vs_halo_mass(G_MR, ThisRedshiftList, pdf)
+            
     if opt_stellar_mass_function==1:
         print('Doing SMF')
         from plots import stellar_mass_function
         ThisRedshiftList=[0.0,1.0,2.0,3.0]        
         stellar_mass_function(G_MR, Volume_MR, ThisRedshiftList, pdf)
+    
+    if opt_redfraction_color_cut==1:
+        print('Doing redfraction_color_cut')
+        from plots import redfraction_color_cut
+        ThisRedshiftList=[0.0,0.4,1.0,2.0,3.0]        
+        redfraction_color_cut(G_MR, ThisRedshiftList, pdf)
     
     if opt_metals_vs_stellarmass==1:
         print('Doing metals_vs_stellarmass')
@@ -152,13 +250,7 @@ with PdfPages('./fig/plots.pdf') as pdf:
         from plots import UVJ_colour
         ThisRedshiftList=[0.4,1.0,2.0,3.0]        
         UVJ_colour(G_MR, ThisRedshiftList, pdf)
-        
-    if opt_redfraction_color_cut==1:
-        print('Doing redfraction_color_cut')
-        from plots import redfraction_color_cut
-        ThisRedshiftList=[0.0,0.4,1.0,2.0,3.0]        
-        redfraction_color_cut(G_MR, ThisRedshiftList, pdf)
-                
+                        
     if opt_gas_metallicity_gradients==1:
         print('Doing gas_metallicity_gradients')
         from plots import gas_metallicity_gradients
