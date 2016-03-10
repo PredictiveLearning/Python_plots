@@ -7,7 +7,7 @@
 
 # <p>Use functions read_snap or read_tree to read catalogs. These are both defined in procedures.py. In case of read_snap, SnapshotList will be returned containing the list of snapshots read (usefull to later select galaxies in a given redshift).<p>
 
-# In[1]:
+# In[51]:
 
 import numpy as np
 get_ipython().magic('matplotlib inline')
@@ -36,30 +36,52 @@ import plots_input
 reload (plots_input)
 from plots_input import *
 
-FirstFile = 5
-LastFile =  5
+FirstFile = 40
+LastFile =  40
 
 Volume_MR = (BoxSize_MR**3.0) * (LastFile - FirstFile + 1) / MaxTreeFiles 
 Volume_MRII = (BoxSize_MRII**3.0) * (LastFile - FirstFile + 1) / MaxTreeFiles 
 
-if CatalogType=='snap':
-    from LGalaxies_Henriques2015a_struct import LGalaxiesStruct
-    from LGalaxies_Henriques2015a_struct import PropertiesToRead
+print('Reading started')
+
+if CatalogType=='snap':       
+    #from LGalaxies_Henriques2015a_struct import LGalaxiesStruct
+    #from LGalaxies_Henriques2015a_struct import PropertiesToRead           
     #from LGalaxies_Henriques2015a_Rings_struct import LGalaxiesStruct
     #from LGalaxies_Henriques2015a_Rings_struct import PropertiesToRead
-    (G_MR, SnapshotList) = read_snap(DirName_MR,FirstFile,LastFile,
+    from LGalaxies_Henriques2015a_Elements_Rings_struct import LGalaxiesStruct
+    from LGalaxies_Henriques2015a_Elements_Rings_struct import PropertiesToRead
+    #from LGalaxies_Henriques2015a_Caterpillar_struct import LGalaxiesStruct
+    #from LGalaxies_Henriques2015a_Caterpillar_struct import PropertiesToRead
+    print('\n\nDoing MR')
+    (G_MR, SnapshotList_MR) = read_snap(DirName_MR,FirstFile,LastFile,
                      PropertiesToRead,LGalaxiesStruct,RedshiftsToRead,FullRedshiftList)
-    
+    if(MRII==1):
+        print('\n\nDoing MRII')
+        (G_MRII, SnapshotList_MRII) = read_snap(DirName_MRII,FirstFile,LastFile,
+                         PropertiesToRead,LGalaxiesStruct,RedshiftsToRead,FullRedshiftList)
 if CatalogType=='tree':    
-    from LGalaxies_tree_Henriques2015a_struct import LGalaxiesStruct
-    from LGalaxies_tree_Henriques2015a_struct import PropertiesToRead_tree    
+    #from LGalaxies_tree_Henriques2015a_struct import LGalaxiesStruct
+    #from LGalaxies_tree_Henriques2015a_struct import PropertiesToRead_tree    
+    from LGalaxies_tree_Henriques2015a_Caterpillar_struct import LGalaxiesStruct
+    from LGalaxies_tree_Henriques2015a_Caterpillar_struct import PropertiesToRead_tree   
+    
     (G_MR) = read_tree(DirName_MR,FirstFile,LastFile,
+                     PropertiesToRead_tree,LGalaxiesStruct)
+    SnapshotList = np.zeros(len(FullRedshiftList),dtype=np.int32)
+    
+    if(MRII==1):
+        (G_MRII) = read_tree(DirName_MRII,FirstFile,LastFile,
                      PropertiesToRead_tree,LGalaxiesStruct)    
-     
-    SnapshotList = np.zeros(len(RedshiftList),dtype=np.int32)
-    for ii in range(0,len(RedshiftList)):                  
-        G0=G_MR[ np.rint(G_MR['Redshift']*100.) == RedshiftList[ii]*100. ]             
+        SnapshotList_MRII = np.zeros(len(FullRedshiftList),dtype=np.int32)
+        
+    for ii in range(0,len(FullRedshiftList)):                  
+        G0=G_MR[ np.rint(G_MR['Redshift']*100.) == FullRedshiftList[ii]*100. ]             
         SnapshotList[ii]=G0['SnapNum'][0]
+        
+        if(MRII==1):
+            G0=G_MRII[ np.rint(G_MRII['Redshift']*100.) == FullRedshiftList[ii]*100. ]             
+            SnapshotList_MRII[ii]=G0['SnapNum'][0]
 #endif      
 
 print('reading done\n')
@@ -80,13 +102,15 @@ plt.rcParams.update({'font.size': 18, 'xtick.labelsize': 18, 'ytick.labelsize': 
 
 # ## Plots
 
-# In[2]:
+# In[ ]:
 
 import plots
 reload (plots)
 
 
-# In[3]:
+# # Plots for snapshot output
+
+# In[52]:
 
 
 with PdfPages('./fig/plots.pdf') as pdf:  
@@ -98,93 +122,35 @@ with PdfPages('./fig/plots.pdf') as pdf:
     from plots_input import *
     import plots
     reload (plots)
-
-    print('Doing SatFraction')
     
-    ThisRedshiftList=[0.0,1.0,2.0,3.0]  
-    
-    xlim=[8.5,11.5]
-    ylim=[0., 1.] 
-           
-    plot_color=['red','purple']        
-    plt.rcParams.update({'xtick.major.width': 1.0, 'ytick.major.width': 1.0, 
-                             'xtick.minor.width': 1.0, 'ytick.minor.width': 1.0})
-    
-    fig = plt.figure(figsize=(15,4))
-    grid = gridspec.GridSpec(1, 5)
-    grid.update(wspace=0.0, hspace=0.0)
-    
-    for ii in range (0,len(ThisRedshiftList)):
-           
-        char_redshift="%0.2f" % ThisRedshiftList[ii]
-            
-        subplot=plt.subplot(grid[ii])
-        subplot.set_ylim(ylim), subplot.set_xlim(xlim)
-        
-        xlab='$\mathrm{log_{10}}(M_*[h^{-2}M_{\odot}])$'      
-        if ii==0:
-            ylab='Satellite Fraction'
-        else:
-            ylab=''      
-        subplot.set_xlabel(xlab, fontsize=16), subplot.set_ylabel(ylab, fontsize=16)
-        
-        majorFormatter = FormatStrFormatter('%d')
-        subplot.xaxis.set_major_locator(MultipleLocator(1))    
-        subplot.xaxis.set_minor_locator(MultipleLocator(0.25))      
-        subplot.yaxis.set_minor_locator(MultipleLocator(0.1))
-        
-        if ii>0:
-            plt.tick_params(axis='y', which='both', left='on', labelleft='off')
-        
-        bin=0.25        
-        Mass_arr=np.arange(xlim[0],xlim[1],bin)
-        SatFraction=np.zeros(len(Mass_arr),dtype=np.float32)
-        HaloSatFraction=np.zeros(len(Mass_arr),dtype=np.float32)
-        
-        (sel)=select_current_redshift(G_MR, ThisRedshiftList, ii)        
-        G0_MR=G_MR[sel]   
-        StellarMass=stellar_mass_with_err(G0_MR, Hubble_h, ThisRedshiftList[ii])
-        Type=G0_MR['Type']
-        
-        for ll in range(0,len(Mass_arr)):
-            sel_sat=G0_MR[(Type>0) & (StellarMass>Mass_arr[ll]-bin/2.) & (StellarMass<Mass_arr[ll]+bin/2.)]
-            sel_halosat=G0_MR[(Type==1) & (StellarMass>Mass_arr[ll]-bin/2.) & (StellarMass<Mass_arr[ll]+bin/2.)]
-            sel_all=G0_MR[(StellarMass>Mass_arr[ll]-bin/2.) & (StellarMass<Mass_arr[ll]+bin/2.)]
-                
-            if len(sel_all)>0.:
-                SatFraction[ll]=float(len(sel_sat))/float(len(sel_all))
-                HaloSatFraction[ll]=float(len(sel_halosat))/float(len(sel_all))
-            else:               
-                SatFraction[ll]=0.
-                HaloSatFraction[ll]=0.
-                      
-        subplot.plot(Mass_arr, SatFraction, color='red', linestyle='-', linewidth=2) 
-        subplot.plot(Mass_arr, HaloSatFraction, color='green', linestyle='-', linewidth=2) 
+    #G0_MR=G_MR[(G_MR['SnapNum']==319) & (G_MR['StellarMass']>0.) & (G_MR['Type']==0)]               
+    #G0_MR=G_MR[(G_MR['SnapNum']==319) & (G_MR['StellarMass']>0.) & (G_MR['Mvir']>0.) & (G_MR['Type']==1)]
+    #G0_MR=G_MR[(G_MR['StellarMass']>0.) & (G_MR['Mvir']>0.) & (G_MR['Type']==1)]   
+    #print(len(G0_MR),len(G_MR))
        
-        #labels
-        plot_label (subplot, 'label', xlim, ylim, x_percentage=0.05, y_percentage=0.55, 
-                    color='black', xlog=0, ylog=0, label='z='+char_redshift[:-1], 
-                    fontsize=14, fontweight='normal') 
-    
-        if(ii==0):
-            plot_label (subplot, 'label', xlim, ylim, 
-                    x_percentage=0.15, y_percentage=0.90, color='black', xlog=0, ylog=0, 
-                    label='galaxies', fontsize=13, fontweight='normal') 
-            plot_label (subplot, 'line', xlim, ylim,
-                    x_percentage=0.04, y_percentage=0.92, color='red', x2_percentage=0.13, 
-                    xlog=0, ylog=0, linestyle='-', linewidth=2)
-            plot_label (subplot, 'label', xlim, ylim, 
-                    x_percentage=0.15, y_percentage=0.8, color='black', xlog=0, ylog=0, 
-                    label='haloes', fontsize=13, fontweight='normal') 
-            plot_label (subplot, 'line', xlim, ylim,
-                    x_percentage=0.04, y_percentage=0.82, color='green', x2_percentage=0.13, 
-                    xlog=0, ylog=0, linestyle='-', linewidth=2)
+   
+    opt_test_plot=0  
+        
+    if opt_test_plot==1:
+        fig = plt.figure(figsize=(10,10))
+        subplot=plt.subplot()
+        subplot.set_xlim([6.0,12.]), subplot.set_ylim([0.0, 16.]) 
+        subplot.set_xlabel('x', fontsize=16), subplot.set_ylabel('y', fontsize=16)
+               
+        G0_MR=G_MR[(G_MR['SnapNum']==255) & (G_MR['StellarMass']>0.) & (G_MR['Type']==0)]               
+        StellarMass=np.log10(G0_MR['StellarMass']*1.e10*Hubble_h)
+        HaloMass=np.log10(G0_MR['Mvir']*1.e10*Hubble_h)   
+        BHMass=np.log10(G0_MR['BlackHoleMass']*1.e10*Hubble_h)
+        subplot.scatter(StellarMass,HaloMass,s=5, color='black')
+        subplot.scatter(StellarMass,BHMass,s=5, color='blue')
+              
             
-    plt.tight_layout()
-    plt.savefig('./fig/plots_sat_fraction.pdf')
-    pdf.savefig()
-    plt.close()
-    
+    if opt_test_resolution_rings==1:
+        print('Doing test resolution rings')
+        from plots import test_resolution_rings
+        ThisRedshiftList=[0.0]        
+        test_resolution_rings(G_MR, Volume_MR, G_MRII, Volume_MRII, ThisRedshiftList, pdf)
+           
     if opt_stellar_mass_vs_halo_mass==1:
         print('Doing SMHM')
         from plots import stellar_mass_vs_halo_mass
@@ -269,10 +235,61 @@ with PdfPages('./fig/plots.pdf') as pdf:
         ThisRedshiftList=[0.0]
         bluck_red_fractions(G_MR, ThisRedshiftList, pdf)             
         
-    if opt_test_plots==1:
+    if opt_sat_fraction==1:
+        print('Doing Sat Fraction')
+        from plots import sat_fraction
+        ThisRedshiftList=[0.0,0.4,1.0,2.0,3.0]        
+        sat_fraction(G_MR, ThisRedshiftList, pdf)
+                
+    if opt_HotGas_fraction==1:
+        print('Doing HotGas_fraction')
+        from plots import HotGas_fraction
+        ThisRedshiftList=[0.0]        
+        HotGas_fraction(G_MR, ThisRedshiftList, pdf) 
+        
+    if opt_BHmass_in_radio==1:
+        print('Doing BHmass_in_radio')
+        from plots import BHmass_in_radio
+        ThisRedshiftList=[0.0]        
+        BHmass_in_radio(G_MR, ThisRedshiftList, pdf)    
+        
+    if opt_misc_plots==1:
         print('Doing test_plots')
         from plots import test_plots     
         test_plots(G_MR, SnapshotList, pdf)
+             
+    print('')
+    print('All plots done')
+        
+#end with PdfPages('./fig/plots.pdf') as pdf: 
+
+
+# # Plots for tree output
+
+# In[ ]:
+
+with PdfPages('./fig/plots.pdf') as pdf:  
+    import procedures
+    reload (procedures)
+    from procedures import *
+    import plots_input
+    reload (plots_input)
+    from plots_input import *
+    import plots
+    reload (plots)
+        
+    if CatalogType=='tree':    
+        if opt_simple_tree_map==1:
+            print('Doing simple tree map')
+            from plots import simple_tree_map                   
+            simple_tree_map(G_MR, pdf)          
+    
+    if CatalogType=='tree':    
+        if opt_full_tree_map==1:
+            print('Doing ful tree map')
+            from plots import full_tree_map                   
+            full_tree_map(G_MR, pdf, object_type='haloes')       
+    
     
     print('')
     print('All plots done')
@@ -282,7 +299,7 @@ with PdfPages('./fig/plots.pdf') as pdf:
 
 # ## Animations
 
-# In[5]:
+# In[ ]:
 
 import animations
 reload (animations)

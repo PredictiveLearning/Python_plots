@@ -12,43 +12,59 @@ PLANCK=1
 CATERPILLAR_PLANCK=0
 WMAP1=0
 
+#RUN OPTIONS
+MRII=1
+opt_plot_MCMC_sample=0
+opt_detailed_enrichment=0
+
 #PLOT OPTIONS
-opt_stellar_mass_vs_halo_mass=1
-opt_stellar_mass_function=0
+opt_stellar_mass_vs_halo_mass=0
+opt_stellar_mass_function=1
 opt_metals_vs_stellarmass=0
 opt_BHBM=0
-opt_SFRF=0
+opt_SFRF=1
 opt_gas_fraction=0
-opt_HI_MF=0
+opt_HI_MF=1
 opt_sfr_vs_stellar_mass=0
 opt_ur_vs_r=0
 opt_UVJ_colour=0
 opt_redfraction_color_cut=0
     
-opt_bluck_red_fractions=0
-
 opt_gas_metallicity_gradients=0
 opt_SFR_gradients=0
 
-opt_test_plots=0
+opt_bluck_red_fractions=0
+opt_sat_fraction=0
+opt_HotGas_fraction=0
+opt_BHmass_in_radio=0
+
+opt_misc_plots=0
+opt_test_resolution_rings=1
+    
+#when tree on
+opt_simple_tree_map=0
+opt_full_tree_map=0
 
 #ANIMATIONS
 opt_anime_mass_gr=0
 
-#RUN OPTIONS
-opt_plot_MCMC_sample=0
-opt_detailed_enrichment=0
+
 
 
 Datadir = '/net/bootes/export/data1/data/'
 MCMCdir = '/net/bootes//export/data1/Workspace/LGal_Development_Branch/MCMC/'
 MCMCSampledir = '/net/bootes//export/data1/Workspace/LGal_Development_Branch/output/'
-#DirName_MR = '/net/bootes/scratch2/SAM/test1/MR/'
-#DirName_MRII = '/net/bootes/scratch2/SAM/test1/MRII/'
 
-DirName_MR = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/MR/'
-DirName_MRII = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/MRII/'
+DirName_MR = '/net/bootes/export/data1/SAM/test2/MR/'
+DirName_MRII = '/net/bootes/export/data1/SAM/test2/MRII/'
 
+#DirName_MR = '/net/bootes/scratch2/SAM/test2/MR/'
+#DirName_MRII = '/net/bootes/scratch2/SAM/test2/MRII/'
+
+#DirName_MR = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/MR/'
+#DirName_MRII = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/MRII/'
+
+#DirName_MR = '/net/bootes/export/data1/Workspace/LGal_Development_Branch/output/'
 #DirName_MR = '/net/bootes/scratch2/SAM/Henriques2015a/GalTree/MR/'
 #DirName_MR = '/Users/BrunoHenriques/Desktop/Work/SAM/Henriques2015a/GalTree/MR/'
 
@@ -106,8 +122,9 @@ if PLANCK:
     
 if CATERPILLAR_PLANCK:
     FullRedshiftList=[0.00,0.10,0.40,1.00,2.01,2.98,3.96]
-    FullSnapshotList=[255,231,181,125,81,60,47]
+    FullSnapshotList=[319,295,245,189,145,124,111]
     BoxSize_MR    = 100.
+    BoxSize_MRII    = 100.
     Hubble_h      = 0.673
     Omega_M       = 0.315
     Omega_Lambda  = 0.683

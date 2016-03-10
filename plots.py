@@ -16,8 +16,14 @@ gas_metallicity_gradients
 SFR_gradients
 
 bluck_red_fractions
+sat_fraction
+BHmass_in_radio
 
-test_plots()
+misc_plots()
+test_resolution_rings
+
+
+simple_tree_map
 '''
 
 import numpy as np
@@ -45,8 +51,8 @@ from plots_input import *
 
 def stellar_mass_vs_halo_mass(G_MR, ThisRedshiftList, pdf):
 
-    ylim=[4.0,12.5]
-    xlim=[7.5, 15.]
+    ylim=[2.0,12.5]
+    xlim=[2.5, 15.]
   
     plt.rcParams.update({'xtick.major.width': 1.0, 'ytick.major.width': 1.0, 
                          'xtick.minor.width': 1.0, 'ytick.minor.width': 1.0})    
@@ -64,13 +70,18 @@ def stellar_mass_vs_halo_mass(G_MR, ThisRedshiftList, pdf):
         (sel)=select_current_redshift(G_MR, ThisRedshiftList, ii)
         
         G0_MR=G_MR[sel] 
-        G0_MR=np.random.choice(G0_MR, size=1000.)
+        G0_MR=np.random.choice(G0_MR, size=10000.)
         G0_MR=G0_MR[G0_MR['StellarMass']>0.]
-        StellarMass=stellar_mass_with_err(G0_MR, Hubble_h, ThisRedshiftList[ii])
-        HaloMass=np.log10(G0_MR['Mvir']*1.e10*Hubble_h)      
-        subplot.scatter(HaloMass,StellarMass,s=5, color='black')
+        StellarMass=stellar_mass_with_err(G0_MR, Hubble_h, ThisRedshiftList[ii])          
+        HaloMass=np.log10(G0_MR['Mvir']*1.e10*Hubble_h) 
+        sel=G0_MR['Type']==2
+        subplot.scatter(HaloMass[sel],StellarMass[sel],s=5, color='red')        
+        sel=G0_MR['Type']==1
+        subplot.scatter(HaloMass[sel],StellarMass[sel],s=5, color='green')
+        sel=G0_MR['Type']==0
+        subplot.scatter(HaloMass[sel],StellarMass[sel],s=5, color='blue')
+        
     #endfor
-    
     
     plt.tight_layout()
     plt.savefig('./fig/plots_smhm.pdf')
@@ -1550,14 +1561,249 @@ def bluck_red_fractions(G_MR, ThisRedshiftList, pdf):
     pdf.savefig()
     plt.close()
              
-#endif bluck_red_fractions
+#end bluck_red_fractions
+
+
+def sat_fraction(G_MR, ThisRedshiftList, pdf):
+    
+    xlim=[8.5,11.5]
+    ylim=[0., 1.] 
+           
+    plot_color=['red','purple']        
+    plt.rcParams.update({'xtick.major.width': 1.0, 'ytick.major.width': 1.0, 
+                             'xtick.minor.width': 1.0, 'ytick.minor.width': 1.0})
+    
+    fig = plt.figure(figsize=(15,4))
+    grid = gridspec.GridSpec(1, 5)
+    grid.update(wspace=0.0, hspace=0.0)
+    
+    for ii in range (0,len(ThisRedshiftList)):
+           
+        char_redshift="%0.2f" % ThisRedshiftList[ii]
+            
+        subplot=plt.subplot(grid[ii])
+        subplot.set_ylim(ylim), subplot.set_xlim(xlim)
+        
+        xlab='$\mathrm{log_{10}}(M_*[h^{-2}M_{\odot}])$'      
+        if ii==0:
+            ylab='Satellite Fraction'
+        else:
+            ylab=''      
+        subplot.set_xlabel(xlab, fontsize=16), subplot.set_ylabel(ylab, fontsize=16)
+        
+        majorFormatter = FormatStrFormatter('%d')
+        subplot.xaxis.set_major_locator(MultipleLocator(1))    
+        subplot.xaxis.set_minor_locator(MultipleLocator(0.25))      
+        subplot.yaxis.set_minor_locator(MultipleLocator(0.1))
+        
+        if ii>0:
+            plt.tick_params(axis='y', which='both', left='on', labelleft='off')
+        
+        bin=0.25        
+        Mass_arr=np.arange(xlim[0],xlim[1],bin)
+        SatFraction=np.zeros(len(Mass_arr),dtype=np.float32)
+        HaloSatFraction=np.zeros(len(Mass_arr),dtype=np.float32)
+        
+        (sel)=select_current_redshift(G_MR, ThisRedshiftList, ii)        
+        G0_MR=G_MR[sel]   
+        StellarMass=stellar_mass_with_err(G0_MR, Hubble_h, ThisRedshiftList[ii])
+        Type=G0_MR['Type']
+        
+        for ll in range(0,len(Mass_arr)):
+            sel_sat=G0_MR[(Type>0) & (StellarMass>Mass_arr[ll]-bin/2.) & (StellarMass<Mass_arr[ll]+bin/2.)]
+            sel_halosat=G0_MR[(Type==1) & (StellarMass>Mass_arr[ll]-bin/2.) & (StellarMass<Mass_arr[ll]+bin/2.)]
+            sel_all=G0_MR[(StellarMass>Mass_arr[ll]-bin/2.) & (StellarMass<Mass_arr[ll]+bin/2.)]
+                
+            if len(sel_all)>0.:
+                SatFraction[ll]=float(len(sel_sat))/float(len(sel_all))
+                HaloSatFraction[ll]=float(len(sel_halosat))/float(len(sel_all))
+            else:               
+                SatFraction[ll]=0.
+                HaloSatFraction[ll]=0.
+                      
+        subplot.plot(Mass_arr, SatFraction, color='red', linestyle='-', linewidth=2) 
+        subplot.plot(Mass_arr, HaloSatFraction, color='green', linestyle='-', linewidth=2) 
+       
+        #labels
+        plot_label (subplot, 'label', xlim, ylim, x_percentage=0.05, y_percentage=0.55, 
+                    color='black', xlog=0, ylog=0, label='z='+char_redshift[:-1], 
+                    fontsize=14, fontweight='normal') 
+    
+        if(ii==0):
+            plot_label (subplot, 'label', xlim, ylim, 
+                    x_percentage=0.15, y_percentage=0.90, color='black', xlog=0, ylog=0, 
+                    label='galaxies', fontsize=13, fontweight='normal') 
+            plot_label (subplot, 'line', xlim, ylim,
+                    x_percentage=0.04, y_percentage=0.92, color='red', x2_percentage=0.13, 
+                    xlog=0, ylog=0, linestyle='-', linewidth=2)
+            plot_label (subplot, 'label', xlim, ylim, 
+                    x_percentage=0.15, y_percentage=0.8, color='black', xlog=0, ylog=0, 
+                    label='haloes', fontsize=13, fontweight='normal') 
+            plot_label (subplot, 'line', xlim, ylim,
+                    x_percentage=0.04, y_percentage=0.82, color='green', x2_percentage=0.13, 
+                    xlog=0, ylog=0, linestyle='-', linewidth=2)
+            
+    plt.tight_layout()
+    plt.savefig('./fig/plots_sat_fraction.pdf')
+    pdf.savefig()
+    plt.close()
+    
+
+#end sat_fraction
 
 
 
 
+def BHmass_in_radio(G_MR, ThisRedshiftList, pdf):
+    
+    xlim=[8.0,12.]
+    ylim=[-5.0,0.0]
+    bin=0.25
+    
+    plot_color=['red','purple']        
+    plt.rcParams.update({'xtick.major.width': 1.0, 'ytick.major.width': 1.0, 
+                             'xtick.minor.width': 1.0, 'ytick.minor.width': 1.0})
+    fig = plt.figure(figsize=(5,4))
+    subplot=plt.subplot()
+    subplot.set_ylim(ylim), subplot.set_xlim(xlim)    
+            
+    #format axis
+    majorFormatter = FormatStrFormatter('%d')
+    subplot.xaxis.set_major_locator(MultipleLocator(1))    
+    subplot.xaxis.set_minor_locator(MultipleLocator(0.25))
+           
+    xlab='$\mathrm{log_{10}}(M_*[h^{-2}M_{\odot}])$'   
+    ylab='$\mathrm{log_{10}}(\mathrm{M_{BHHot}/M_{BH})}$'     
+    subplot.set_xlabel(xlab, fontsize=16), subplot.set_ylabel(ylab, fontsize=16)   
+            
+    
+    
+    for ii in range (0,len(ThisRedshiftList)):
+           
+        char_redshift="%0.2f" % ThisRedshiftList[ii]
+              
+        
+        bin=0.25        
+        Mass_arr=np.arange(xlim[0],xlim[1],bin)
+        #MassInRadio=np.zeros(len(Mass_arr),dtype=np.float32)
+              
+        (sel)=select_current_redshift(G_MR, ThisRedshiftList, ii)        
+        G0_MR=G_MR[sel]   
+        G0_MR=G0_MR[G0_MR['StellarMass']>0.]
+        StellarMass=stellar_mass_with_err(G0_MR, Hubble_h, ThisRedshiftList[ii])
+        FractioninRadio=G0_MR['MassRadio']/G0_MR['StellarMass']
+               
+        (x_binned, median, pc16, pc84)=median_and_percentiles (bin, xlim[0], xlim[1], StellarMass, FractioninRadio)    
+        subplot.plot(x_binned, np.log10(median),color='red', linewidth=2)
+        print(x_binned, median)        
+                      
+        #subplot.plot(Mass_arr, SatFraction, color='red', linestyle='-', linewidth=2) 
+        
+        #labels
+        plot_label (subplot, 'label', xlim, ylim, x_percentage=0.05, y_percentage=0.55, 
+                    color='black', xlog=0, ylog=0, label='z='+char_redshift[:-1], 
+                    fontsize=14, fontweight='normal') 
+    
+        #if(ii==0):
+        #    plot_label (subplot, 'label', xlim, ylim, 
+        #            x_percentage=0.15, y_percentage=0.90, color='black', xlog=0, ylog=0, 
+        #            label='galaxies', fontsize=13, fontweight='normal') 
+        #    plot_label (subplot, 'line', xlim, ylim,
+        #            x_percentage=0.04, y_percentage=0.92, color='red', x2_percentage=0.13, 
+        #            xlog=0, ylog=0, linestyle='-', linewidth=2)
+          
+            
+    plt.tight_layout()
+    plt.savefig('./fig/plots_BH_radio.pdf')
+    pdf.savefig()
+    plt.close()
+
+#end BHmass_in_radio
 
 
-def test_plots(G_MR, FullSnapshotList, pdf):
+
+def HotGas_fraction(G_MR, ThisRedshiftList, pdf):
+    
+    xlim=[10.0,15.]
+    ylim=[0.0,0.2]    
+    bin=[0.25,0.01]
+    Nbins=[int((xlim[1]-xlim[0])/bin[0]),int((ylim[1]-ylim[0])/bin[1])]
+    plot_color=['red','purple']  
+    
+    plt.rcParams.update({'xtick.major.width': 1.0, 'ytick.major.width': 1.0, 
+                             'xtick.minor.width': 1.0, 'ytick.minor.width': 1.0})
+    fig = plt.figure(figsize=(5,4))
+    subplot=plt.subplot()
+    subplot.set_ylim(ylim), subplot.set_xlim(xlim)    
+            
+    #format axis
+    majorFormatter = FormatStrFormatter('%d')
+    subplot.xaxis.set_major_locator(MultipleLocator(1))    
+    subplot.xaxis.set_minor_locator(MultipleLocator(0.25))
+           
+    xlab='$\mathrm{log_{10}}(M_vir[h^{-1}M_{\odot}])$'   
+    ylab='$\mathrm{log_{10}}(\mathrm{M_{Hot}/M_{vir})}$'     
+    subplot.set_xlabel(xlab, fontsize=16), subplot.set_ylabel(ylab, fontsize=16)   
+            
+    
+    
+    for ii in range (0,len(ThisRedshiftList)):
+           
+        char_redshift="%0.2f" % ThisRedshiftList[ii]
+           
+        (sel)=select_current_redshift(G_MR, ThisRedshiftList, ii)        
+        G0_MR=G_MR[sel] 
+        
+        Ngals=len(G0_MR)
+        NN=10000.       
+        sel= np.random.uniform(0.0,1.0,Ngals) < NN/Ngals 
+        G00_MR=G0_MR[sel]
+        plt.scatter(np.log10(G00_MR['Mvir']*1.e10), G00_MR['HotGas']/G00_MR['Mvir'], s=5, color='black')   
+    
+        G0_MR=G0_MR[(G0_MR['Mvir']>0.) & (G0_MR['Type']==0)]
+        #G0_MR=G0_MR[(G0_MR['Mvir']>0.)]       
+        Mvir=np.log10(G0_MR['Mvir']*1.e10)
+        HotFraction=G0_MR['HotGas']/G0_MR['Mvir']
+                  
+        Ngals=len(G0_MR)    
+        H, xedges, yedges = np.histogram2d(Mvir, HotFraction, bins=Nbins)            
+        extent = [xedges[0], xedges[-1],yedges[0], yedges[-1]]       
+        plt.subplots_adjust(bottom=0.15, left=0.15)        
+        mylevels = np.linspace(1., Nbins[0], Nbins[0])*Ngals/(Nbins[0]**2/3.)        
+        H = zoom(H, 20)        
+        cont=plt.contourf(H.transpose()[::], origin='lower', cmap='Greys_r', levels=mylevels, extent=extent)        
+        plt.colorbar(format='%d')    
+        
+            
+        (x_binned, median, pc16, pc84)=median_and_percentiles (bin[0], xlim[0], xlim[1], Mvir, HotFraction)    
+        subplot.plot(x_binned, median,color='red', linewidth=2)
+        print(x_binned, median)        
+                      
+        #subplot.plot(Mass_arr, SatFraction, color='red', linestyle='-', linewidth=2) 
+        
+        #labels
+        plot_label (subplot, 'label', xlim, ylim, x_percentage=0.05, y_percentage=0.55, 
+                    color='black', xlog=0, ylog=0, label='z='+char_redshift[:-1], 
+                    fontsize=14, fontweight='normal') 
+    
+        #if(ii==0):
+        #    plot_label (subplot, 'label', xlim, ylim, 
+        #            x_percentage=0.15, y_percentage=0.90, color='black', xlog=0, ylog=0, 
+        #            label='galaxies', fontsize=13, fontweight='normal') 
+        #    plot_label (subplot, 'line', xlim, ylim,
+        #            x_percentage=0.04, y_percentage=0.92, color='red', x2_percentage=0.13, 
+        #            xlog=0, ylog=0, linestyle='-', linewidth=2)
+          
+            
+    plt.tight_layout()
+    plt.savefig('./fig/plots_HotGas_fraction.pdf')
+    pdf.savefig()
+    plt.close()
+
+#end HotGas_fraction
+
+
+def misc_plots(G_MR, FullSnapshotList, pdf):
        
     fig = plt.figure(figsize=(10,10))
         
@@ -1647,4 +1893,350 @@ def test_plots(G_MR, FullSnapshotList, pdf):
     #pdf.savefig()
     #plt.close()
  
-#end test_plots
+#end misc_plots
+     
+    
+    
+def test_resolution_rings(G_MR, Volume_MR, G_MRII, Volume_MRII, ThisRedshiftList, pdf):
+   
+   
+    plt.rcParams.update({'xtick.major.width': 1.0, 'ytick.major.width': 1.0, 
+                             'xtick.minor.width': 1.0, 'ytick.minor.width': 1.0})
+    fig = plt.figure(figsize=(7,5))
+    grid = gridspec.GridSpec(2, 2)
+    grid.update(wspace=0.0, hspace=0.0)
+       
+        
+    #Cold Gas    
+    xlim=[7.0,11.5]
+    ylim=[-6.0,0.0]
+    bin=0.25
+    subplot=plt.subplot(grid[0])
+    subplot.set_ylim(ylim), subplot.set_xlim(xlim)
+    
+    #format axis
+    majorFormatter = FormatStrFormatter('%d')
+    subplot.xaxis.set_major_locator(MultipleLocator(1))    
+    subplot.xaxis.set_minor_locator(MultipleLocator(0.25))
+    plt.tick_params(axis='x', which='both', top='on', labeltop='on', bottom='off', labelbottom='off')
+       
+    #MR  
+    (sel)=select_current_redshift(G_MR, ThisRedshiftList, 0)         
+    G0_MR=G_MR[sel]   
+    G0_MR=G0_MR[(G0_MR['ColdGas']>0.) & (G0_MR['Type']==0)]
+    mass=(np.log10(G0_MR['ColdGas']*1.e10*Hubble_h))
+
+    bin_arr=np.arange(xlim[0],xlim[1]+bin,bin)
+    hist=np.histogram(mass, bins=bin_arr, range=(xlim[0],xlim[1]))   
+    subplot.plot(hist[1][0:len(hist[1][:])-1]+bin/2.,np.log10(hist[0][:]/(Volume_MR*bin)),
+                 color='red', linewidth=2, linestyle='--')
+
+    #MRII
+    (sel)=select_current_redshift(G_MRII, ThisRedshiftList, 0)         
+    G0_MRII=G_MRII[sel]   
+    G0_MRII=G0_MRII[(G0_MRII['ColdGas']>0.) & (G0_MRII['Type']==0)]
+    mass=(np.log10(G0_MRII['ColdGas']*1.e10*Hubble_h))
+
+    bin_arr=np.arange(xlim[0],xlim[1]+bin,bin)
+    hist=np.histogram(mass, bins=bin_arr, range=(xlim[0],xlim[1]))   
+    subplot.plot(hist[1][0:len(hist[1][:])-1]+bin/2.,np.log10(hist[0][:]/(Volume_MRII*bin)),
+                 color='red', linewidth=2)
+        
+    plot_label (subplot, 'label', xlim, ylim, 
+                x_percentage=0.15, y_percentage=0.20, color='black', xlog=0, ylog=0, 
+                label='ColdGas', fontsize=15, fontweight='normal')  
+    
+    plot_label (subplot, 'label', xlim, ylim, 
+                x_percentage=0.15, y_percentage=0.5, color='black', xlog=0, ylog=0, 
+                label='MR', fontsize=13, fontweight='normal') 
+    plot_label (subplot, 'line', xlim, ylim,
+                x_percentage=0.04, y_percentage=0.53, color='red', x2_percentage=0.13, 
+                xlog=0, ylog=0, linestyle='--', linewidth=2)
+    plot_label (subplot, 'label', xlim, ylim, 
+                x_percentage=0.15, y_percentage=0.4, color='black', xlog=0, ylog=0, 
+                label='MRII', fontsize=13, fontweight='normal') 
+    plot_label (subplot, 'line', xlim, ylim,
+                x_percentage=0.04, y_percentage=0.43, color='red', x2_percentage=0.13, 
+                xlog=0, ylog=0, linestyle='-', linewidth=2)
+        
+    #SFR  
+    xlim=[-3.5,2.]
+    ylim=[-6.0,0.0]
+    bin=0.25
+    subplot=plt.subplot(grid[1])
+    subplot.set_ylim(ylim), subplot.set_xlim(xlim)
+    
+    #format axis
+    majorFormatter = FormatStrFormatter('%d')
+    subplot.xaxis.set_major_locator(MultipleLocator(1))    
+    subplot.xaxis.set_minor_locator(MultipleLocator(0.25))      
+    plt.tick_params(axis='x', which='both', top='on', labeltop='on', bottom='off', labelbottom='off')   
+    plt.tick_params(axis='y', which='both', left='on', labelleft='off')
+    
+    #MR
+    (sel)=select_current_redshift(G_MR, ThisRedshiftList, 0)         
+    G0_MR=G_MR[sel]   
+    G0_MR=G0_MR[G0_MR['Sfr']>0.]
+    mass=(np.log10(G0_MR['Sfr']*Hubble_h))
+
+    bin_arr=np.arange(xlim[0],xlim[1]+bin,bin)
+    hist=np.histogram(mass, bins=bin_arr, range=(xlim[0],xlim[1]))   
+    subplot.plot(hist[1][0:len(hist[1][:])-1]+bin/2.,np.log10(hist[0][:]/(Volume_MR*bin)),
+                 color='red', linewidth=2, linestyle='--')
+
+    #MRII
+    (sel)=select_current_redshift(G_MRII, ThisRedshiftList, 0)         
+    G0_MRII=G_MRII[sel]   
+    G0_MRII=G0_MRII[G0_MRII['Sfr']>0.]
+    mass=(np.log10(G0_MRII['Sfr']*Hubble_h))
+
+    bin_arr=np.arange(xlim[0],xlim[1]+bin,bin)
+    hist=np.histogram(mass, bins=bin_arr, range=(xlim[0],xlim[1]))   
+    subplot.plot(hist[1][0:len(hist[1][:])-1]+bin/2.,np.log10(hist[0][:]/(Volume_MRII*bin)),
+                 color='red', linewidth=2)
+    
+    plot_label (subplot, 'label', xlim, ylim, 
+                x_percentage=0.15, y_percentage=0.20, color='black', xlog=0, ylog=0, 
+                label='SFR', fontsize=15, fontweight='normal') 
+    
+    
+    #Stellar Mass   
+    xlim=[7.0,12.5]
+    ylim=[-6.0,0.0]
+    bin=0.25
+    subplot=plt.subplot(grid[2])
+    subplot.set_ylim(ylim), subplot.set_xlim(xlim)
+    
+    #format axis
+    majorFormatter = FormatStrFormatter('%d')
+    subplot.xaxis.set_major_locator(MultipleLocator(1))    
+    subplot.xaxis.set_minor_locator(MultipleLocator(0.25))
+    plt.tick_params(axis='x', which='both', top='off', labeltop='off')  
+    
+    #MR
+    (sel)=select_current_redshift(G_MR, ThisRedshiftList, 0)         
+    G0_MR=G_MR[sel]   
+    G0_MR=G0_MR[G0_MR['StellarMass']>0.]
+    mass=(np.log10(G0_MR['StellarMass']*1.e10*Hubble_h))
+
+    bin_arr=np.arange(xlim[0],xlim[1]+bin,bin)
+    hist=np.histogram(mass, bins=bin_arr, range=(xlim[0],xlim[1]))   
+    subplot.plot(hist[1][0:len(hist[1][:])-1]+bin/2.,np.log10(hist[0][:]/(Volume_MR*bin)),
+                 color='red', linewidth=2, linestyle='--')
+
+    #MRII
+    (sel)=select_current_redshift(G_MRII, ThisRedshiftList, 0)         
+    G0_MRII=G_MRII[sel]   
+    G0_MRII=G0_MRII[G0_MRII['StellarMass']>0.]
+    mass=(np.log10(G0_MRII['StellarMass']*1.e10*Hubble_h))
+
+    bin_arr=np.arange(xlim[0],xlim[1]+bin,bin)
+    hist=np.histogram(mass, bins=bin_arr, range=(xlim[0],xlim[1]))   
+    subplot.plot(hist[1][0:len(hist[1][:])-1]+bin/2.,np.log10(hist[0][:]/(Volume_MRII*bin)),
+                 color='red', linewidth=2)
+    
+    plot_label (subplot, 'label', xlim, ylim, 
+                x_percentage=0.15, y_percentage=0.20, color='black', xlog=0, ylog=0, 
+                label='StellarMass', fontsize=15, fontweight='normal') 
+           
+    #BH Mass    
+    xlim=[3.5,10.]
+    ylim=[-6.0,0.0]
+    bin=0.25
+    subplot=plt.subplot(grid[3])
+    subplot.set_ylim(ylim), subplot.set_xlim(xlim)
+    
+    #format axis
+    majorFormatter = FormatStrFormatter('%d')
+    subplot.xaxis.set_major_locator(MultipleLocator(1))    
+    subplot.xaxis.set_minor_locator(MultipleLocator(0.25))
+    plt.tick_params(axis='x', which='both', top='off', labeltop='off') 
+    plt.tick_params(axis='y', which='both', left='on', labelleft='off')
+          
+    #MR  
+    (sel)=select_current_redshift(G_MR, ThisRedshiftList, 0)         
+    G0_MR=G_MR[sel]   
+    G0_MR=G0_MR[(G0_MR['BlackHoleMass']>0.) & (G0_MR['Type']==0)]
+    mass=(np.log10(G0_MR['BlackHoleMass']*1.e10*Hubble_h))
+
+    bin_arr=np.arange(xlim[0],xlim[1]+bin,bin)
+    hist=np.histogram(mass, bins=bin_arr, range=(xlim[0],xlim[1]))   
+    subplot.plot(hist[1][0:len(hist[1][:])-1]+bin/2.,np.log10(hist[0][:]/(Volume_MR*bin)),
+                 color='red', linewidth=2, linestyle='--')
+
+    #MRII
+    (sel)=select_current_redshift(G_MRII, ThisRedshiftList, 0)         
+    G0_MRII=G_MRII[sel]   
+    G0_MRII=G0_MRII[(G0_MRII['BlackHoleMass']>0.) & (G0_MRII['Type']==0)]
+    mass=(np.log10(G0_MRII['BlackHoleMass']*1.e10*Hubble_h))
+
+    bin_arr=np.arange(xlim[0],xlim[1]+bin,bin)
+    hist=np.histogram(mass, bins=bin_arr, range=(xlim[0],xlim[1]))   
+    subplot.plot(hist[1][0:len(hist[1][:])-1]+bin/2.,np.log10(hist[0][:]/(Volume_MRII*bin)),
+                 color='red', linewidth=2)
+        
+    plot_label (subplot, 'label', xlim, ylim, 
+                x_percentage=0.15, y_percentage=0.20, color='black', xlog=0, ylog=0, 
+                label='BlackHoleMass', fontsize=15, fontweight='normal') 
+    
+    
+    
+    plt.tight_layout()
+    plt.savefig('./fig/plots_test_resolution_rings.pdf')
+    pdf.savefig()
+    plt.close()
+    
+#end test_resolution_rings
+    
+    
+def simple_tree_map(G_MR, pdf):
+    
+    fig = plt.figure(figsize=(15,15))
+    subplot=plt.subplot()
+    subplot.set_xlim([0.0,300.]), subplot.set_ylim([-5.0, 150.]) 
+    subplot.set_xlabel('x', fontsize=16), subplot.set_ylabel('y', fontsize=16)
+               
+    G0_MR=G_MR[(G_MR['SnapNum']==255) & (G_MR['StellarMass']>1.0) & (G_MR['Type']==0)]      
+    G0_MR=G_MR[(G_MR['GalID']>=G0_MR['GalID']) & (G_MR['GalID']<=G0_MR['LastProgGal'])]    
+      
+    print('Ngals in tree=',len(G0_MR))
+        
+    for jj in range (150,255):
+        G_aux=G0_MR[G0_MR['SnapNum']==jj]
+        G_desc=G0_MR[G0_MR['SnapNum']==jj+1]
+     
+        for ii in range (0,len(G_aux)):           
+            if(G_aux['Type'][ii]==0):
+                plot_color='blue'
+            else:
+                if(G_aux['Type'][ii]==1):
+                    plot_color='green'
+                else:
+                    plot_color='red'
+            mass=G_aux['StellarMass'][ii]*100.
+            if(mass==0.):
+                mass=1.                
+            subplot.scatter(2+ii*10.0,255-jj,s=mass, color=plot_color)
+            for kk in range (0,len(G_desc)):
+                if(G_desc['GalID'][kk]==G_aux['DescendantGal'][ii]):
+                    subplot.plot([2+ii*10.0,2+kk*10.0],[255-jj,255-jj-1],color='black')
+            
+#simple_tree_map
+
+
+  
+def full_tree_map(G_MR, pdf, object_type):       
+    
+    print('Doing tree for',object_type)
+    
+    #G0_MR=G_MR[(G_MR['SnapNum']==255) & (G_MR['StellarMass']>1.0) & (G_MR['Type']==0)]
+    #G0_MR=G_MR[(G_MR['SnapNum']==255) & (G_MR['StellarMass']>.35) & (G_MR['Type']==0)]
+    #G0_MR=G_MR[(G_MR['SnapNum']==255) & (G_MR['StellarMass']<0.03) & (G_MR['StellarMass']>0.01) & (G_MR['Type']==0)] 
+    #print(len(G0_MR))
+    G0_MR=G_MR[(G_MR['GalID']==4000000000000)]
+    G0_MR=G_MR[(G_MR['GalID']>=G0_MR['GalID']) & (G_MR['GalID']<=G0_MR['LastProgGal'])]    
+        
+    print('Ngals in tree=',len(G0_MR['GalID']))
+    
+    done=np.zeros(len(G0_MR),dtype=np.float32)
+    pos=np.zeros(len(G0_MR),dtype=np.float32)
+    plot_snap=np.zeros(len(G0_MR),dtype=np.float32)
+    marker_size=np.zeros(len(G0_MR),dtype=np.float32)
+    plot_type=np.zeros(len(G0_MR),dtype=np.float32)
+    
+    gal=G0_MR[G0_MR['SnapNum']==255]
+    prog=gal['FirstProgGal']
+ 
+    print('ID of final gal=',gal['GalID'])
+    ii=0
+  
+    #for ll in range (0,100):
+    while(prog>0):     
+        sel=G0_MR['GalID']==prog
+        G_sel=G0_MR[sel]
+        #if gal not done and there is a progenitor, plot galaxy and move to progenitor
+        if((done[sel]==0) & (G_sel['FirstProgGal']>0)):           
+            plot_type[sel]=G_sel['Type']            
+            pos[sel]=ii
+            plot_snap[sel]=255-G_sel['SnapNum'] 
+            if(object_type=='galaxies'):
+                marker_size[sel]=G_sel['StellarMass']      
+            else:
+                marker_size[sel]=G_sel['Mvir']      
+            done[sel]=1
+            prog=G_sel['FirstProgGal']
+        else:
+            #if galaxy not done but there is no progenitor, plot galaxy and move
+            #either to the next prog (if it exists) or descendant (if nextprog=-1)
+            if(done[sel]==0):
+                plot_type[sel]=G_sel['Type']                
+                pos[sel]=ii
+                plot_snap[sel]=255-G_sel['SnapNum'] 
+                if(object_type=='galaxies'):
+                    marker_size[sel]=G_sel['StellarMass']      
+                else:
+                    marker_size[sel]=G_sel['Mvir']                  
+                done[sel]=1
+                
+                if(G_sel['NextProgGal']>0):
+                    prog=G_sel['NextProgGal']                     
+                    ii+=1                     
+                else:
+                    prog=G_sel['DescendantGal']
+            #if galaxy done move either to the next prog (if it exists) 
+            #or descendant (if nextprog=-1)
+            else:                                       
+                if(G_sel['NextProgGal']>0):
+                    prog=G_sel['NextProgGal']                   
+                    ii+=1                    
+                else:
+                    prog=G_sel['DescendantGal']
+        
+    fig = plt.figure(figsize=(15,15))
+    subplot=plt.subplot()
+    subplot.set_xlim([-20.0,20.+np.amax(pos)*5.+50.]), subplot.set_ylim([-5.0, 255.]) 
+    #subplot.set_xlim([-20.0,3700.]), subplot.set_ylim([40.0, 80.]) 
+    subplot.set_xlabel('', fontsize=16), subplot.set_ylabel('Snap', fontsize=16)         
+    subplot.xaxis.set_ticklabels([])
+    
+    if(object_type=='galaxies'):
+        marker_scale=100.     
+    else:
+        marker_scale=5.   
+                
+    sel=((plot_type==0) & (marker_size>0.))    
+    subplot.scatter(20+pos[sel]*5.0,plot_snap[sel],s=marker_size[sel]*marker_scale, color='blue')
+    sel=((plot_type==1) & (marker_size>0.))   
+    subplot.scatter(20+pos[sel]*5.0,plot_snap[sel],s=marker_size[sel]*marker_scale, color='green')
+    sel=((plot_type==2) & (marker_size>0.))   
+    subplot.scatter(20+pos[sel]*5.0,plot_snap[sel],s=marker_size[sel]*marker_scale, color='red')    
+    sel=(marker_size==0.)  
+    subplot.scatter(20+pos[sel]*5.0,plot_snap[sel],s=marker_size[sel]+marker_scale/100., color='black')
+    
+    print('done tree walk')    
+                
+    for jjj in range (0,len(G0_MR)):
+        prog=G0_MR['FirstProgGal'][jjj] 
+        sel=G0_MR['GalID']==prog
+        G_sel=G0_MR[sel]
+        if(prog>0):          
+            subplot.plot([20+pos[jjj]*5.0,20+pos[sel]*5.0],
+                         [255-G0_MR['SnapNum'][jjj],255-G_sel['SnapNum']],color='black')
+            prog=G_sel['NextProgGal']
+            sel=G0_MR['GalID']==prog
+            G_sel=G0_MR[sel]
+            while(prog>0):
+                subplot.plot([20+pos[jjj]*5.0,20+pos[sel]*5.0],
+                             [255-G0_MR['SnapNum'][jjj],255-G_sel['SnapNum']],color='black')
+                prog=G_sel['NextProgGal']
+                sel=G0_MR['GalID']==prog
+                G_sel=G0_MR[sel]
+               
+    print('done second tree walk')      
+             
+    plt.tight_layout()
+    plt.savefig('./fig/plots_full_tree_map.pdf')
+    pdf.savefig()
+    plt.close()
+
+#full_tree_map   

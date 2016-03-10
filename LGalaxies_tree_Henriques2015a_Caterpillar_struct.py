@@ -67,34 +67,45 @@ LGalaxiesStruct = np.dtype([
 ('CosInclination',np.float32,1),
 ('DisruptOn',np.int32,1),
 ('MergeOn',np.int32,1),
-('MagDust',np.float32,20),
-('Mag',np.float32,20),
-('MagBulge',np.float32,20),
-('MagICL',np.float32,20),
+('MagDust',np.float32,40),
+('Mag',np.float32,40),
+('MagBulge',np.float32,40),
 ('MassWeightAge',np.float32,1),
 ('rBandWeightAge',np.float32,1),
 ('sfh_ibin',np.int32,1),
 ('sfh_numbins',np.int32,1),
-('sfh_DiskMass',np.float32,20),
-('sfh_BulgeMass',np.float32,20),
-('sfh_ICM',np.float32,20),
-('sfh_MetalsDiskMass',np.float32,20),
-('sfh_MetalsBulgeMass',np.float32,20),
-('sfh_MetalsICM',np.float32,20)
+('sfh_DiskMass',np.float32,24),
+('sfh_BulgeMass',np.float32,24),
+('sfh_ICM',np.float32,24),
+('sfh_MetalsDiskMass',np.float32,24),
+('sfh_MetalsBulgeMass',np.float32,24),
+('sfh_MetalsICM',np.float32,24)
 ])
 
 PropertiesToRead_tree = {}
 for ii in LGalaxiesStruct.names:
 	PropertiesToRead_tree[ii] = False
           
-PropertiesToRead_tree['GalID'] = True
+        
+PropertiesToRead_tree['GalID'] = True 
+PropertiesToRead_tree['HaloID'] = True
+PropertiesToRead_tree['FirstProgGal'] = True
+PropertiesToRead_tree['NextProgGal'] = True
+PropertiesToRead_tree['LastProgGal'] = True
 PropertiesToRead_tree['FOFCentralGal'] = True
+#PropertiesToRead_tree['FileTreeNr'] = True
+PropertiesToRead_tree['DescendantGal'] = True
+PropertiesToRead_tree['MainLeafId'] = True
+#PropertiesToRead_tree['TreeRootId'] = True
+#PropertiesToRead_tree['SubID'] = True
+#PropertiesToRead_tree['MMSubID'] = True
+                      
 PropertiesToRead_tree['Redshift'] = True
 PropertiesToRead_tree['Type'] = True
 #PropertiesToRead_tree['HaloID'] = True
 PropertiesToRead_tree['SnapNum'] = True
 #PropertiesToRead_tree['LookBackTimeToSnap'] = True
-#PropertiesToRead_tree['CentralMvir'] = True
+PropertiesToRead_tree['CentralMvir'] = True
 #PropertiesToRead_tree['CentralRvir'] = True
 PropertiesToRead_tree['DistanceToCentralGal'] = True
 PropertiesToRead_tree['Pos'] = True

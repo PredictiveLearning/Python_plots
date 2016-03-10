@@ -50,7 +50,6 @@ LGalaxiesStruct = np.dtype([
 ('CoolingRate_beforeAGN',np.float32,1),
 ('QuasarAccretionRate',np.float32,1),
 ('RadioAccretionRate',np.float32,1),
-#('MassRadio',np.float32,1),
 ('Sfr',np.float32,1),
 ('SfrBulge',np.float32,1),
 ('XrayLum',np.float32,1),
@@ -67,12 +66,12 @@ LGalaxiesStruct = np.dtype([
 ('rBandWeightAge',np.float32,1),
 ('sfh_ibin',np.int32,1),
 ('sfh_numbins',np.int32,1),
-('sfh_DiskMass',np.float32,20),
-('sfh_BulgeMass',np.float32,20),
-('sfh_ICM',np.float32,20),
-('sfh_MetalsDiskMass',np.float32,20),
-('sfh_MetalsBulgeMass',np.float32,20),
-('sfh_MetalsICM',np.float32,20)
+('sfh_DiskMass',np.float32,24),
+('sfh_BulgeMass',np.float32,24),
+('sfh_ICM',np.float32,24),
+('sfh_MetalsDiskMass',np.float32,24),
+('sfh_MetalsBulgeMass',np.float32,24),
+('sfh_MetalsICM',np.float32,24)
 ])
 
 PropertiesToRead = {}
@@ -123,7 +122,6 @@ PropertiesToRead['MetalsStellarMass'] = True
 #PropertiesToRead['CoolingRate_beforeAGN'] = True
 #PropertiesToRead['QuasarAccretionRate'] = True
 #PropertiesToRead['RadioAccretionRate'] = True
-#PropertiesToRead['MassRadio'] = True
 PropertiesToRead['Sfr'] = True
 #PropertiesToRead['SfrBulge'] = True
 #PropertiesToRead['XrayLum'] = True
