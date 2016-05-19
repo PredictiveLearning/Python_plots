@@ -7,7 +7,7 @@
 
 # <p>Use functions read_snap or read_tree to read catalogs. These are both defined in procedures.py. In case of read_snap, SnapshotList will be returned containing the list of snapshots read (usefull to later select galaxies in a given redshift).<p>
 
-# In[51]:
+# In[11]:
 
 import numpy as np
 get_ipython().magic('matplotlib inline')
@@ -36,8 +36,8 @@ import plots_input
 reload (plots_input)
 from plots_input import *
 
-FirstFile = 40
-LastFile =  40
+FirstFile = 5
+LastFile =  5
 
 Volume_MR = (BoxSize_MR**3.0) * (LastFile - FirstFile + 1) / MaxTreeFiles 
 Volume_MRII = (BoxSize_MRII**3.0) * (LastFile - FirstFile + 1) / MaxTreeFiles 
@@ -46,9 +46,15 @@ print('Reading started')
 
 if CatalogType=='snap':       
     #from LGalaxies_Henriques2015a_struct import LGalaxiesStruct
-    #from LGalaxies_Henriques2015a_struct import PropertiesToRead           
+    #from LGalaxies_Henriques2015a_struct import PropertiesToRead
+    #from LGalaxies_Henriques2015a_metals_struct import LGalaxiesStruct
+    #from LGalaxies_Henriques2015a_metals_struct import PropertiesToRead
+    #from LGalaxies_Henriques2015a_Elements_struct import LGalaxiesStruct
+    #from LGalaxies_Henriques2015a_Elements_struct import PropertiesToRead   
+    #from LGalaxies_fu13_Rings_struct import LGalaxiesStruct
+    #from LGalaxies_fu13_Rings_struct import PropertiesToRead
     #from LGalaxies_Henriques2015a_Rings_struct import LGalaxiesStruct
-    #from LGalaxies_Henriques2015a_Rings_struct import PropertiesToRead
+    #from LGalaxies_Henriques2015a_Rings_struct import PropertiesToRead   
     from LGalaxies_Henriques2015a_Elements_Rings_struct import LGalaxiesStruct
     from LGalaxies_Henriques2015a_Elements_Rings_struct import PropertiesToRead
     #from LGalaxies_Henriques2015a_Caterpillar_struct import LGalaxiesStruct
@@ -61,10 +67,14 @@ if CatalogType=='snap':
         (G_MRII, SnapshotList_MRII) = read_snap(DirName_MRII,FirstFile,LastFile,
                          PropertiesToRead,LGalaxiesStruct,RedshiftsToRead,FullRedshiftList)
 if CatalogType=='tree':    
-    #from LGalaxies_tree_Henriques2015a_struct import LGalaxiesStruct
-    #from LGalaxies_tree_Henriques2015a_struct import PropertiesToRead_tree    
-    from LGalaxies_tree_Henriques2015a_Caterpillar_struct import LGalaxiesStruct
-    from LGalaxies_tree_Henriques2015a_Caterpillar_struct import PropertiesToRead_tree   
+    from LGalaxies_tree_Henriques2015a_struct import LGalaxiesStruct
+    from LGalaxies_tree_Henriques2015a_struct import PropertiesToRead_tree    
+    #from LGalaxies_tree_Henriques2015a_Rings_struct import LGalaxiesStruct
+    #from LGalaxies_tree_Henriques2015a_Rings_struct import PropertiesToRead_tree
+    #from LGalaxies_tree_Henriques2015a_Elements_Rings_struct import LGalaxiesStruct
+    #from LGalaxies_tree_Henriques2015a_Elements_Rings_struct import PropertiesToRead_tree
+    #from LGalaxies_tree_Henriques2015a_Caterpillar_struct import LGalaxiesStruct
+    #from LGalaxies_tree_Henriques2015a_Caterpillar_struct import PropertiesToRead_tree   
     
     (G_MR) = read_tree(DirName_MR,FirstFile,LastFile,
                      PropertiesToRead_tree,LGalaxiesStruct)
@@ -93,11 +103,21 @@ print('reading done\n')
 #help(G_MR)
 
 
+#DEFINE SOME VARIABLE
+if(opt_rings==1):
+    RNUM=12
+    RingRadius=np.zeros(RNUM,dtype=np.float32)
+    for ii in range(0,RNUM):
+        RingRadius[ii]= 0.44*pow(1.5,ii+1)/Hubble_h;       
+        #print(RingRadius[ii])
+
 plt.rcParams.update({'font.size': 18, 'xtick.labelsize': 18, 'ytick.labelsize': 18, 'axes.linewidth': 2, 
                      'xtick.major.size': 6, 'xtick.major.width': 1.5, 
                      'ytick.major.size': 6, 'ytick.major.width': 1.5, 
                      'xtick.minor.size': 3, 'xtick.minor.width': 1.,                   
                      'ytick.minor.size': 3, 'ytick.minor.width': 1.})
+
+
 
 
 # ## Plots
@@ -107,10 +127,19 @@ plt.rcParams.update({'font.size': 18, 'xtick.labelsize': 18, 'ytick.labelsize': 
 import plots
 reload (plots)
 
+if(opt_rings==1):
+    import plots_rings
+    reload (plots_rings)   
+
+
+# In[14]:
+
+
+
 
 # # Plots for snapshot output
 
-# In[52]:
+# In[18]:
 
 
 with PdfPages('./fig/plots.pdf') as pdf:  
@@ -120,15 +149,21 @@ with PdfPages('./fig/plots.pdf') as pdf:
     import plots_input
     reload (plots_input)
     from plots_input import *
+    
     import plots
     reload (plots)
+    if(opt_rings==1):
+        import plots_rings
+        reload (plots_rings) 
     
     #G0_MR=G_MR[(G_MR['SnapNum']==319) & (G_MR['StellarMass']>0.) & (G_MR['Type']==0)]               
     #G0_MR=G_MR[(G_MR['SnapNum']==319) & (G_MR['StellarMass']>0.) & (G_MR['Mvir']>0.) & (G_MR['Type']==1)]
     #G0_MR=G_MR[(G_MR['StellarMass']>0.) & (G_MR['Mvir']>0.) & (G_MR['Type']==1)]   
     #print(len(G0_MR),len(G_MR))
        
-   
+    if(MRII==0):
+        G_MRII=G_MR  
+        
     opt_test_plot=0  
         
     if opt_test_plot==1:
@@ -143,13 +178,12 @@ with PdfPages('./fig/plots.pdf') as pdf:
         BHMass=np.log10(G0_MR['BlackHoleMass']*1.e10*Hubble_h)
         subplot.scatter(StellarMass,HaloMass,s=5, color='black')
         subplot.scatter(StellarMass,BHMass,s=5, color='blue')
-              
-            
-    if opt_test_resolution_rings==1:
-        print('Doing test resolution rings')
-        from plots import test_resolution_rings
+                          
+    if opt_test_resolution==1:
+        print('Doing test resolution')
+        from plots import test_resolution
         ThisRedshiftList=[0.0]        
-        test_resolution_rings(G_MR, Volume_MR, G_MRII, Volume_MRII, ThisRedshiftList, pdf)
+        test_resolution(G_MR, Volume_MR, G_MRII, Volume_MRII, ThisRedshiftList, pdf)
            
     if opt_stellar_mass_vs_halo_mass==1:
         print('Doing SMHM')
@@ -160,8 +194,8 @@ with PdfPages('./fig/plots.pdf') as pdf:
     if opt_stellar_mass_function==1:
         print('Doing SMF')
         from plots import stellar_mass_function
-        ThisRedshiftList=[0.0,1.0,2.0,3.0]        
-        stellar_mass_function(G_MR, Volume_MR, ThisRedshiftList, pdf)
+        ThisRedshiftList=[0.0,1.0,2.0,3.0]                 
+        stellar_mass_function(G_MR, Volume_MR, G_MRII, Volume_MRII, ThisRedshiftList, pdf)
     
     if opt_redfraction_color_cut==1:
         print('Doing redfraction_color_cut')
@@ -172,8 +206,14 @@ with PdfPages('./fig/plots.pdf') as pdf:
     if opt_metals_vs_stellarmass==1:
         print('Doing metals_vs_stellarmass')
         from plots import metals_vs_stellarmass
-        ThisRedshiftList=[0.1,3.]
+        ThisRedshiftList=[0.0,3.]
         metals_vs_stellarmass(G_MR, ThisRedshiftList, pdf)
+        
+    if opt_gasmetals_vs_stellarmass==1:
+        print('Doing gasmetals_vs_stellarmass')
+        from plots import gasmetals_vs_stellarmass
+        ThisRedshiftList=[0.0,3.]
+        gasmetals_vs_stellarmass(G_MR, ThisRedshiftList, pdf)    
         
     if opt_BHBM==1:
         print('Doing BHBM')
@@ -185,7 +225,7 @@ with PdfPages('./fig/plots.pdf') as pdf:
         print('Doing SFRF')
         from plots import SFRF
         ThisRedshiftList=[0.0]        
-        SFRF(G_MR, Volume_MR, ThisRedshiftList, pdf)
+        SFRF(G_MR, Volume_MR, G_MRII, Volume_MRII, ThisRedshiftList, pdf)
         
     if opt_gas_fraction==1:
         print('Doing gas_fraction')
@@ -193,11 +233,17 @@ with PdfPages('./fig/plots.pdf') as pdf:
         ThisRedshiftList=[0.0]        
         gas_fraction(G_MR, ThisRedshiftList, pdf)
         
+    if opt_HI_fraction==1:
+        print('Doing HI_fraction')
+        from plots import HI_fraction
+        ThisRedshiftList=[0.0]        
+        HI_fraction(G_MR, ThisRedshiftList, pdf)
+        
     if opt_HI_MF==1:
         print('Doing HI_MF')
         from plots import HI_MF
         ThisRedshiftList=[0.0]        
-        HI_MF(G_MR, Volume_MR, ThisRedshiftList, pdf)
+        HI_MF(G_MR, Volume_MR, G_MRII, Volume_MRII, ThisRedshiftList, pdf)
         
     if opt_sfr_vs_stellar_mass==1:
         print('Doing sfr_vs_stellar_mass')
@@ -216,19 +262,22 @@ with PdfPages('./fig/plots.pdf') as pdf:
         from plots import UVJ_colour
         ThisRedshiftList=[0.4,1.0,2.0,3.0]        
         UVJ_colour(G_MR, ThisRedshiftList, pdf)
-                        
-    if opt_gas_metallicity_gradients==1:
-        print('Doing gas_metallicity_gradients')
-        from plots import gas_metallicity_gradients
-        ThisRedshiftList=[0.1]
-        gas_metallicity_gradients(G_MR, ThisRedshiftList, pdf) 
         
-    if opt_SFR_gradients==1:
-        print('Doing SFR_gradients')
-        from plots import SFR_gradients
-        ThisRedshiftList=[0.1]
-        SFR_gradients(G_MR, ThisRedshiftList, pdf) 
-    
+    if opt_morphology_vs_stellarmass==1:
+        print('Doing morphology_vs_stellarmass')
+        from plots import morphology_vs_stellarmass
+        ThisRedshiftList=[0.0]        
+        morphology_vs_stellarmass(G_MR, G_MRII, ThisRedshiftList, pdf)       
+            
+    if opt_sizes_vs_stellarmass==1:
+        print('Doing sizes_vs_stellarmass')
+        from plots import sizes_vs_stellarmass
+        ThisRedshiftList=[0.0]        
+        sizes_vs_stellarmass(G_MR, ThisRedshiftList, pdf)        
+            
+            
+            
+            
     if opt_bluck_red_fractions==1:
         print('Doing bluck_red_fractions')
         from plots import bluck_red_fractions
@@ -257,16 +306,70 @@ with PdfPages('./fig/plots.pdf') as pdf:
         print('Doing test_plots')
         from plots import test_plots     
         test_plots(G_MR, SnapshotList, pdf)
-             
+           
+    #PLOTS FOR H2_AND_RINGS
+    if(opt_rings==1): 
+        print('')
+        print('')
+        print('Doing plots for H2_and_Rings')
+        print('')
+        if opt_gasfractions_vs_stellarmass==1:
+            print('Doing gasfractions_vs_stellarmass')
+            from plots_rings import gasfractions_vs_stellarmass
+            ThisRedshiftList=[0.0]        
+            gasfractions_vs_stellarmass(G_MR, ThisRedshiftList, pdf)
+            
+        if opt_H2fraction_vs_stellarmass==1:
+            print('Doing H2fraction_vs_stellarmass')
+            from plots_rings import H2fraction_vs_stellarmass
+            ThisRedshiftList=[0.0]        
+            H2fraction_vs_stellarmass(G_MR, ThisRedshiftList, pdf)
+            
+        if opt_milkyway_sfr_and_gas_profiles==1:
+            print('Doing milkyway_sfr_and_gas_profiles')
+            from plots_rings import milkyway_sfr_and_gas_profiles
+            ThisRedshiftList=[0.0]        
+            milkyway_sfr_and_gas_profiles(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf)
+            
+        if opt_evo_milkyway_gas_profile==1:
+            print('Doing evo_milkyway_gas_profile')
+            from plots_rings import evo_milkyway_gas_profile
+            ThisRedshiftList=[0.0]        
+            evo_milkyway_gas_profile(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf)    
+        
+        if opt_test_H2_prescriptions==1:
+            print('Doing test_H2_prescriptions')
+            from plots_rings import test_H2_prescriptions
+            ThisRedshiftList=[0.0]        
+            test_H2_prescriptions(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf)
+        
+        if opt_gas_metallicity_gradients==1:
+            print('Doing gas_metallicity_gradients')
+            from plots_rings import gas_metallicity_gradients
+            ThisRedshiftList=[0.1]
+            gas_metallicity_gradients(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf) 
+        
+        if opt_SFR_gradients==1:
+            print('Doing SFR_gradients')
+            from plots_rings import SFR_gradients
+            ThisRedshiftList=[0.1]
+            SFR_gradients(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf) 
+            
+        if opt_test_rings==1:
+            print('Doing test_rings')
+            from plots_rings import test_rings
+            ThisRedshiftList=[0.0]
+            test_rings(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf) 
+            
     print('')
     print('All plots done')
-        
+           
 #end with PdfPages('./fig/plots.pdf') as pdf: 
 
 
 # # Plots for tree output
 
-# In[ ]:
+# In[11]:
 
 with PdfPages('./fig/plots.pdf') as pdf:  
     import procedures

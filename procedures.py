@@ -10,6 +10,9 @@ redshift_to_time
 select_current_redshift
 def stellar_mass_with_err
 grayify_cmap
+plot_label_three_models
+plot_label
+plot_joint_MR_MRII
 """
     
     
@@ -121,7 +124,7 @@ def read_tree(folder,FirstFile,LastFile,
             filter_list.append((prop,template[prop]))
     filter_dtype = np.dtype(filter_list)  
             
-    SnapshotList=np.array([],dtype=np.int32)
+    #SnapshotList=np.array([],dtype=np.int32)
     
     #read only headers to figure out total nGals
     print ("\n\nReading Headers\n")
@@ -187,18 +190,18 @@ def redshift_to_time (z):
     return (age_Gyr)
 #end redshift_to_time
 
-def select_current_redshift(G_MR, ThisRedshiftList, ii):
+def select_current_redshift(G_MR, ThisRedshiftList, ii, SnapshotList):
     
     found_redshift=0
                            
     for jj in range(0, len(FullRedshiftList)):           
         if(ThisRedshiftList[ii]<1.):
-            if round(FullRedshiftList[jj],1)==round(ThisRedshiftList[ii],1): 
-                sel= (G_MR['SnapNum']==FullSnapshotList[jj])
+            if round(FullRedshiftList[jj],1)==round(ThisRedshiftList[ii],1):                
+                sel= (G_MR['SnapNum']==SnapshotList[jj])
                 found_redshift=1                  
         else:    
-            if round(FullRedshiftList[jj],0)==round(ThisRedshiftList[ii],0): 
-                sel= (G_MR['SnapNum']==FullSnapshotList[jj])
+            if round(FullRedshiftList[jj],0)==round(ThisRedshiftList[ii],0):               
+                sel= (G_MR['SnapNum']==SnapshotList[jj])
                 found_redshift=1 
                     
     if found_redshift==0:
@@ -211,7 +214,9 @@ def select_current_redshift(G_MR, ThisRedshiftList, ii):
 
 def stellar_mass_with_err(G0_MR, Hubble_h, redshift):
     
+    np.random.seed(seed=10)
     mass= np.log10(G0_MR['StellarMass']*1.e10*Hubble_h) + np.random.randn(len(G0_MR['StellarMass']))*0.08*(1+redshift)
+    #mass= np.log10(G0_MR['StellarMass']*1.e10*Hubble_h) #+ np.random.randn(len(G0_MR['StellarMass']))*0.08*(1+redshift)
 
     return mass
 
@@ -219,25 +224,27 @@ def stellar_mass_with_err(G0_MR, Hubble_h, redshift):
 
 
 def median_and_percentiles (bin, xmin, xmax, x_variable, y_variable): 
-
+   
     min_x=min(x_variable[x_variable > (-1e20)])
     if(min_x > xmin):
         xmin=min_x
-    
-    Nbins=(xmax-xmin)/bin+1
-
+    #print(xmin,xmax)
+    Nbins=int((xmax-xmin)/bin+1)   
+   
     median=np.zeros(Nbins, np.float32)
+    mean=np.zeros(Nbins, np.float32)
     pc16=np.zeros(Nbins, np.float32) 
     pc84=np.zeros(Nbins, np.float32)  
     x_min=xmin-bin/2.
-    
-    for ii in range(0,int(Nbins)): 
+  
+    for ii in range(0,Nbins): 
 
         x_variable_sel=x_variable[(x_variable > (x_min+(ii*bin))) & (x_variable < (x_min+(ii+1.0)*bin))] 
         y_variable_sel=y_variable[(x_variable > (x_min+(ii*bin))) & (x_variable < (x_min+(ii+1.0)*bin))] 
        
         if(len(x_variable_sel) > 0):           
             median[ii]=np.median(y_variable_sel) 
+            mean[ii]=np.mean(y_variable_sel) 
             y_sorted = np.sort(y_variable_sel)
             pc16[ii] = y_sorted[16*len(y_variable_sel)/100]      
             pc84[ii] = y_sorted[84*len(y_variable_sel)/100]  
@@ -245,9 +252,15 @@ def median_and_percentiles (bin, xmin, xmax, x_variable, y_variable):
 
     x_binned=np.arange(Nbins)*((x_min+(Nbins*bin))-(x_min+(Nbins*0.0)))/(Nbins*1.)+x_min+bin/2.
  
-    return (x_binned, median, pc16, pc84)
+    return (x_binned, median, mean, pc16, pc84)
 
 #end median_and_percentiles
+
+
+
+
+
+
 
 
 def grayify_cmap(cmap):
@@ -341,6 +354,29 @@ def plot_label (subplot, label_type, xlim, ylim, x_percentage, y_percentage, col
                   
  
 #end plot_label
+
+
+def plot_joint_MR_MRII(hist_MR, hist_MRII, cut_MR_MRII, Volume_MR, Volume_MRII, 
+                       bin, subplot, color='red',linewidth=2, linestyle='-'):
+        
+    x_axis_MRII=hist_MRII[1][0:len(hist_MRII[1][:])-1]+bin/2.
+    sel=x_axis_MRII<cut_MR_MRII
+    hist_MRII=hist_MRII[0][sel]
+    x_axis_MRII=x_axis_MRII[sel]
+        
+    x_axis_MR=hist_MR[1][0:len(hist_MR[1][:])-1]+bin/2.
+    sel=x_axis_MR>cut_MR_MRII
+    hist_MR=hist_MR[0][sel]
+    x_axis_MR=x_axis_MR[sel]
+        
+    x_axis=np.concatenate((x_axis_MRII, x_axis_MR), axis=0)
+    y_axis=np.concatenate((np.log10(hist_MRII/(Volume_MRII*bin)),np.log10(hist_MR/(Volume_MR*bin))), axis=0)
+    subplot.plot(x_axis,y_axis, color=color, linewidth=linewidth, linestyle=linestyle) 
+        
+
+#end join_MR_MRII
+        
+    
 
 
 # <codecell>

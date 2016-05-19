@@ -42,15 +42,14 @@ LGalaxiesStruct = np.dtype([
 ('EjectedMass',np.float32,1),
 ('BlackHoleMass',np.float32,1),
 ('ICM',np.float32,1),
-('MetalsColdGas',np.float32,1),
-('MetalsColdGasRings',np.float32,12),        
-('MetalsStellarMass',np.float32,1),
-('MetalsBulgeMass',np.float32,1),
-('MetalsDiskMass',np.float32,1),
-('MetalsDiskMassRings',np.float32,12),        
-('MetalsHotGas',np.float32,1),
-('MetalsEjectedMass',np.float32,1),
-('MetalsICM',np.float32,1),
+('MetalsColdGas',np.float32,3),
+('MetalsColdGasRings',np.float32,[12,3]),        
+('MetalsBulgeMass',np.float32,3),
+('MetalsDiskMass',np.float32,3),
+('MetalsDiskMassRings',np.float32,[12,3]),        
+('MetalsHotGas',np.float32,3),
+('MetalsEjectedMass',np.float32,3),
+('MetalsICM',np.float32,3),
 ('PrimordialAccretionRate',np.float32,1),
 ('CoolingRadius',np.float32,1),
 ('CoolingRate',np.float32,1),
@@ -66,26 +65,39 @@ LGalaxiesStruct = np.dtype([
 ('GasDiskRadius',np.float32,1),
 ('CosInclination',np.float32,1),
 ('DisruptOn',np.int32,1),
-('MergeOn',np.int32,1),
+('MergeOn',np.int32,1), 
 ('MagDust',np.float32,40),
 ('Mag',np.float32,40),
 ('MagBulge',np.float32,40),
 ('MassWeightAge',np.float32,1),
 ('rBandWeightAge',np.float32,1),
-('sfh_ibin',np.int32,1),
+('sfh_ibin',np.int32,1),      
 ('sfh_numbins',np.int32,1),
 ('sfh_DiskMass',np.float32,20),
 ('sfh_BulgeMass',np.float32,20),
 ('sfh_ICM',np.float32,20),
-('sfh_MetalsDiskMass',np.float32,20),
-('sfh_MetalsBulgeMass',np.float32,20),
-('sfh_MetalsICM',np.float32,20)
+('sfh_MetalsDiskMass',np.float32,[20,3]),
+('sfh_MetalsBulgeMass',np.float32,[20,3]),
+('sfh_MetalsICM',np.float32,[20,3]),
+('sfh_ElementsDiskMass',np.float32,[20,11]),
+('sfh_ElementsBulgeMass',np.float32,[20,11]),
+('sfh_ElementsICM',np.float32,[20,11]),
+('DiskMass_elements',np.float32,11),
+('DiskMass_elementsRings',np.float32,[12,11]),        
+('BulgeMass_elements',np.float32,11),
+('ColdGas_elements',np.float32,11),
+('ColdGas_elementsRings',np.float32,[12,11]),        
+('HotGas_elements',np.float32,11),
+('ICM_elements',np.float32,11),
+('EjectedMass_elements',np.float32,11)        
 ])
 
+
 PropertiesToRead = {}
-for ii in LGalaxiesStruct.names:
-	PropertiesToRead[ii] = False
-           
+for ii in LGalaxiesStruct.names:    
+    PropertiesToRead[ii] = False
+    
+    
 PropertiesToRead['Type'] = True
 #PropertiesToRead['HaloIndex'] = True
 PropertiesToRead['SnapNum'] = True
@@ -123,7 +135,7 @@ PropertiesToRead['BlackHoleMass'] = True
 #PropertiesToRead['ICM'] = True
 PropertiesToRead['MetalsColdGas'] = True
 PropertiesToRead['MetalsColdGasRings'] = True
-PropertiesToRead['MetalsStellarMass'] = True
+#PropertiesToRead['MetalsStellarMass'] = True
 PropertiesToRead['MetalsBulgeMass'] = True
 PropertiesToRead['MetalsDiskMass'] = True
 PropertiesToRead['MetalsDiskMassRings'] = True
@@ -159,7 +171,12 @@ PropertiesToRead['rBandWeightAge'] = True
 #PropertiesToRead['sfh_MetalsDiskMass'] = True
 #PropertiesToRead['sfh_MetalsBulgeMass'] = True
 #PropertiesToRead['sfh_MetalsICM'] = True
-        
+PropertiesToRead['DiskMass_elements'] = True
+PropertiesToRead['DiskMass_elementsRings'] = True
+PropertiesToRead['BulgeMass_elements'] = True
+PropertiesToRead['ColdGas_elements'] = True
+PropertiesToRead['ColdGas_elementsRings'] = True
+PropertiesToRead['HotGas_elements'] = True
 
 # <codecell>
 

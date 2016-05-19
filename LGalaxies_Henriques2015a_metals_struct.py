@@ -70,7 +70,7 @@ LGalaxiesStruct = np.dtype([
 ('sfh_ICM',np.float32,20),
 ('sfh_MetalsDiskMass',np.float32,[3,20]),
 ('sfh_MetalsBulgeMass',np.float32,[3,20]),
-('sfh_MetalsICMc',np.float32,[3,20])        
+('sfh_MetalsICM',np.float32,[3,20])        
 ])
 
 PropertiesToRead = {}
