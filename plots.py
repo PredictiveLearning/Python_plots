@@ -34,6 +34,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from astropy.table import Table
+from astropy.io import fits
 from importlib import reload
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 from matplotlib.backends.backend_pdf import PdfPages
@@ -859,11 +860,10 @@ def HI_fraction(G_MR, ThisRedshiftList, pdf):
         
         char_redshift="%0.2f" % ThisRedshiftList[ii]
         
-        xlim=[8.5,12.0]
-        ylim=[-2.,1.0]
+        xlim=[7.5,11.0]
+        ylim=[-1.,1.0]
        
-        bin=0.1
-        plot_color=['red','purple']        
+        bin=0.25
         plt.rcParams.update({'xtick.major.width': 1.0, 'ytick.major.width': 1.0, 
                              'xtick.minor.width': 1.0, 'ytick.minor.width': 1.0})
         fig = plt.figure(figsize=(5,4))
@@ -875,37 +875,45 @@ def HI_fraction(G_MR, ThisRedshiftList, pdf):
         subplot.xaxis.set_major_locator(MultipleLocator(1))    
         subplot.xaxis.set_minor_locator(MultipleLocator(0.25))
             
-        xlab='$log_{10}(M_*[h^{-2}M_{\odot}])$'
-        ylab='$M_{\mathrm{Cold}}/M_*$'     
+        xlab='$log_{10}(M_{\mathrm{HI}}[h^{-2}M_{\odot}])$'
+        ylab='$\mathrm{log_{10}}(M_{\mathrm{HI}}/L_{\mathrm{r}})$'     
         subplot.set_xlabel(xlab, fontsize=16), subplot.set_ylabel(ylab, fontsize=16)   
             
         (sel)=select_current_redshift(G_MR, ThisRedshiftList, ii, FullSnapshotList_MR)        
         G0_MR=G_MR[sel]          
-        G0_MR=G0_MR[(G0_MR['StellarMass']>0.) & (G0_MR['ColdGas']>0.)]
-        StellarMass=stellar_mass_with_err(G0_MR, Hubble_h, ThisRedshiftList[ii])
+        G0_MR=G0_MR[(G0_MR['StellarMass']>0.) & (G0_MR['ColdGas']>0.)]        
         if(opt_rings==1):
-            gas=(np.log10(G0_MR['ColdGas']*(1.-G0_MR['H2fraction'])*1.e10*Hubble_h))              
+            HI=(np.log10(G0_MR['ColdGas']*(1.-G0_MR['H2fraction'])*1.e10*Hubble_h))              
         else:            
-            gas=(np.log10(G0_MR['ColdGas']*0.54*1.e10*Hubble_h))  
-            
-        Fraction=gas-StellarMass 
+            HI=(np.log10(G0_MR['ColdGas']*0.54*1.e10*Hubble_h))
+           
+        Lr=mag_to_lum(G0_MR['MagDust'][:,17])      
+        Fraction=np.log10((10**HI/(Hubble_h*Hubble_h))/Lr)
    
-        (x_binned, median, mean, pc16, pc84)=median_and_percentiles (bin, xlim[0], xlim[1], StellarMass, Fraction)          
+        (x_binned, median, mean, pc16, pc84)=median_and_percentiles (bin, xlim[0], xlim[1], HI, Fraction)          
         sel=(median!=0)        
-        subplot.plot(x_binned[sel], median[sel],color=plot_color[ii], linewidth=2)     
-        subplot.plot(x_binned[sel], pc16[sel],color=plot_color[ii], linewidth=2, linestyle='--')
-        subplot.plot(x_binned[sel], pc84[sel],color=plot_color[ii], linewidth=2, linestyle='--')
+        subplot.plot(x_binned[sel], median[sel],color='red', linewidth=2)     
+        subplot.plot(x_binned[sel], pc16[sel],color='red', linewidth=2, linestyle='--')
+        subplot.plot(x_binned[sel], pc84[sel],color='red', linewidth=2, linestyle='--')
     
     
-        file = Datadir + 'peeples_2015.txt'
-        obs = Table.read(file, format='ascii', data_start=0)       
-        obs_x = (obs['col1']+obs['col2'])/2.
-        obs_y = np.log10(obs['col3'])       
-        obs_y_err = [np.log10(obs['col3']/(obs['col3']-obs['col4'])),np.log10((obs['col3']+obs['col4'])/obs['col3'])]
+        #OBSERVATIONS
+        file=Datadir+'Haynes_newfile'
+        fits_table=fits.open(file)
+        haynes = fits_table[1]
                
-        subplot.errorbar(obs_x, obs_y, yerr=obs_y_err,
-                 fmt='o', markersize=5, ecolor='blue', color='blue')
-              
+        haynes_MHI=haynes.data['HI']
+        haynes_Magr=haynes.data['mr']-5*(np.log10(haynes.data['distance']*1.e6)-1)
+        haynes_Lr=mag_to_lum(haynes_Magr)
+        fraction=np.log10(10**haynes_MHI/haynes_Lr)
+        (x_binned, median, mean, pc16, pc84)=median_and_percentiles(bin, xlim[0], xlim[1]-0.25, haynes_MHI, fraction) 
+        obs_x = x_binned
+        obs_y = (pc84+pc16)/2       
+        obs_y_err = (pc84-pc16)/2               
+        subplot.errorbar(obs_x, obs_y, yerr=obs_y_err, fmt='o', markersize=5, ecolor='blue', color='blue')
+                
+        fits_table.close()
+            
         #MCMC sample
         if opt_plot_MCMC_sample==1:
             file = MCMCSampledir + 'mcmc_plus_obs_HIFractionvsStellarMass_z'+char_redshift+'.txt' 
@@ -925,7 +933,7 @@ def HI_fraction(G_MR, ThisRedshiftList, pdf):
             
         #LABELS        
         plot_label (subplot, 'label', xlim, ylim, x_percentage=0.075, y_percentage=0.2, 
-                    color='black', xlog=0, ylog=0, label='Peeples 2015', 
+                    color='black', xlog=0, ylog=0, label='Haynes 2011', 
                     fontsize=13, fontweight='normal') 
         plot_label (subplot, 'symbol', xlim, ylim, x_percentage=0.05, y_percentage=0.225, 
                     color='blue', xlog=0, ylog=0, sym='o', sym_size=5, err_size=0.15) 
@@ -937,8 +945,8 @@ def HI_fraction(G_MR, ThisRedshiftList, pdf):
                 x_percentage=0.04, y_percentage=0.12, color='red', x2_percentage=0.13, 
                 xlog=0, ylog=0, linestyle='-', linewidth=2)
         
-        plot_label (subplot, 'label', xlim, ylim, x_percentage=0.55, y_percentage=0.8, 
-                    color='black', xlog=0, ylog=0, label='Gas Fraction', 
+        plot_label (subplot, 'label', xlim, ylim, x_percentage=0.55, y_percentage=0.9, 
+                    color='black', xlog=0, ylog=0, label='HI/Lr', 
                     fontsize=13, fontweight='normal')   
             
     plt.tight_layout()

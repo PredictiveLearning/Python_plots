@@ -13,6 +13,7 @@ grayify_cmap
 plot_label_three_models
 plot_label
 plot_joint_MR_MRII
+mag_to_lum
 """
     
     
@@ -377,6 +378,11 @@ def plot_joint_MR_MRII(hist_MR, hist_MRII, cut_MR_MRII, Volume_MR, Volume_MRII,
 #end join_MR_MRII
         
     
+def mag_to_lum(mag):
+
+    return 10.**(-0.4*(mag-4.68))
+
+#end 
 
 
 # <codecell>
