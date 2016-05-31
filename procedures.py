@@ -54,7 +54,7 @@ def read_snap(folder,FirstFile,LastFile,
     
     #read only headers to figure out total nGals
     print ("\n\nReading Headers\n")
-    for iredshift in range(0,len(FullRedshiftList)-1):
+    for iredshift in range(0,len(FullRedshiftList)):
         if RedshiftsToRead[iredshift]:              
             for ifile in range(FirstFile,LastFile+1):
                 char_redshift="%0.2f" % FullRedshiftList[iredshift]
@@ -72,7 +72,7 @@ def read_snap(folder,FirstFile,LastFile,
   
     print ("\n")
     offset=0
-    for iredshift in range(0,len(FullRedshiftList)-1):
+    for iredshift in range(0,len(FullRedshiftList)):
         if RedshiftsToRead[iredshift]:  
             print ("\nReading redshift: ", FullRedshiftList[iredshift], "\n")
             for ifile in range(FirstFile,LastFile+1):

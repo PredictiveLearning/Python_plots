@@ -7,7 +7,7 @@
 
 # <p>Use functions read_snap or read_tree to read catalogs. These are both defined in procedures.py. In case of read_snap, SnapshotList will be returned containing the list of snapshots read (usefull to later select galaxies in a given redshift).<p>
 
-# In[11]:
+# In[264]:
 
 import numpy as np
 get_ipython().magic('matplotlib inline')
@@ -21,6 +21,7 @@ get_ipython().magic('pylab inline')
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from astropy.table import Table
+from astropy.io import fits
 from importlib import reload
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 from matplotlib.backends.backend_pdf import PdfPages
@@ -36,8 +37,8 @@ import plots_input
 reload (plots_input)
 from plots_input import *
 
-FirstFile = 5
-LastFile =  5
+FirstFile = 0
+LastFile =  39
 
 Volume_MR = (BoxSize_MR**3.0) * (LastFile - FirstFile + 1) / MaxTreeFiles 
 Volume_MRII = (BoxSize_MRII**3.0) * (LastFile - FirstFile + 1) / MaxTreeFiles 
@@ -45,8 +46,8 @@ Volume_MRII = (BoxSize_MRII**3.0) * (LastFile - FirstFile + 1) / MaxTreeFiles
 print('Reading started')
 
 if CatalogType=='snap':       
-    #from LGalaxies_Henriques2015a_struct import LGalaxiesStruct
-    #from LGalaxies_Henriques2015a_struct import PropertiesToRead
+    from LGalaxies_Henriques2015a_struct import LGalaxiesStruct
+    from LGalaxies_Henriques2015a_struct import PropertiesToRead
     #from LGalaxies_Henriques2015a_metals_struct import LGalaxiesStruct
     #from LGalaxies_Henriques2015a_metals_struct import PropertiesToRead
     #from LGalaxies_Henriques2015a_Elements_struct import LGalaxiesStruct
@@ -55,8 +56,8 @@ if CatalogType=='snap':
     #from LGalaxies_fu13_Rings_struct import PropertiesToRead
     #from LGalaxies_Henriques2015a_Rings_struct import LGalaxiesStruct
     #from LGalaxies_Henriques2015a_Rings_struct import PropertiesToRead   
-    from LGalaxies_Henriques2015a_Elements_Rings_struct import LGalaxiesStruct
-    from LGalaxies_Henriques2015a_Elements_Rings_struct import PropertiesToRead
+    #from LGalaxies_Henriques2015a_Elements_Rings_struct import LGalaxiesStruct
+    #from LGalaxies_Henriques2015a_Elements_Rings_struct import PropertiesToRead
     #from LGalaxies_Henriques2015a_Caterpillar_struct import LGalaxiesStruct
     #from LGalaxies_Henriques2015a_Caterpillar_struct import PropertiesToRead
     print('\n\nDoing MR')
@@ -139,7 +140,7 @@ if(opt_rings==1):
 
 # # Plots for snapshot output
 
-# In[18]:
+# In[266]:
 
 
 with PdfPages('./fig/plots.pdf') as pdf:  
@@ -196,6 +197,12 @@ with PdfPages('./fig/plots.pdf') as pdf:
         from plots import stellar_mass_function
         ThisRedshiftList=[0.0,1.0,2.0,3.0]                 
         stellar_mass_function(G_MR, Volume_MR, G_MRII, Volume_MRII, ThisRedshiftList, pdf)
+    
+    if opt_redfraction_color_cut_cuts==1:
+        print('Doing redfraction_color_cut_cuts')
+        from plots import redfraction_color_cut_cuts
+        ThisRedshiftList=[0.0,0.4,1.0,2.0,3.0]        
+        redfraction_color_cut_cuts(G_MR, ThisRedshiftList, pdf)
     
     if opt_redfraction_color_cut==1:
         print('Doing redfraction_color_cut')
@@ -263,6 +270,12 @@ with PdfPages('./fig/plots.pdf') as pdf:
         ThisRedshiftList=[0.4,1.0,2.0,3.0]        
         UVJ_colour(G_MR, ThisRedshiftList, pdf)
         
+    if opt_UVJ_grid==1:
+        print('Doing UVJ_grid')
+        from plots import UVJ_grid
+        ThisRedshiftList=[1.0,1.5,2.0]        
+        UVJ_grid(G_MR, ThisRedshiftList, pdf)
+        
     if opt_morphology_vs_stellarmass==1:
         print('Doing morphology_vs_stellarmass')
         from plots import morphology_vs_stellarmass
@@ -276,8 +289,8 @@ with PdfPages('./fig/plots.pdf') as pdf:
         sizes_vs_stellarmass(G_MR, ThisRedshiftList, pdf)        
             
             
-            
-            
+           
+    #ADDITIONAL PLOTS              
     if opt_bluck_red_fractions==1:
         print('Doing bluck_red_fractions')
         from plots import bluck_red_fractions
@@ -300,13 +313,23 @@ with PdfPages('./fig/plots.pdf') as pdf:
         print('Doing BHmass_in_radio')
         from plots import BHmass_in_radio
         ThisRedshiftList=[0.0]        
-        BHmass_in_radio(G_MR, ThisRedshiftList, pdf)    
+        BHmass_in_radio(G_MR, ThisRedshiftList, pdf) 
+        
+    if opt_fabian_fb==1:
+        print('Doing fabian_fb')
+        from plots import fabian_fb
+        ThisRedshiftList=[0.0,0.5,1.0,2.0,3.0,5.0]        
+        fabian_fb(G_MR, Volume_MR, ThisRedshiftList, pdf)  
         
     if opt_misc_plots==1:
         print('Doing test_plots')
         from plots import test_plots     
         test_plots(G_MR, SnapshotList, pdf)
            
+            
+         
+       
+            
     #PLOTS FOR H2_AND_RINGS
     if(opt_rings==1): 
         print('')
@@ -369,7 +392,7 @@ with PdfPages('./fig/plots.pdf') as pdf:
 
 # # Plots for tree output
 
-# In[11]:
+# In[35]:
 
 with PdfPages('./fig/plots.pdf') as pdf:  
     import procedures
