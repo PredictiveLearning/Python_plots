@@ -7,7 +7,7 @@
 
 # <p>Use functions read_snap or read_tree to read catalogs. These are both defined in procedures.py. In case of read_snap, SnapshotList will be returned containing the list of snapshots read (usefull to later select galaxies in a given redshift).<p>
 
-# In[30]:
+# In[148]:
 
 import numpy as np
 get_ipython().magic('matplotlib inline')
@@ -39,7 +39,7 @@ reload (plots_input)
 from plots_input import *
 
 FirstFile = 40
-LastFile =  40
+LastFile =  49
 
 Volume_MR = (BoxSize_MR**3.0) * (LastFile - FirstFile + 1) / MaxTreeFiles 
 Volume_MRII = (BoxSize_MRII**3.0) * (LastFile - FirstFile + 1) / MaxTreeFiles 
@@ -47,8 +47,8 @@ Volume_MRII = (BoxSize_MRII**3.0) * (LastFile - FirstFile + 1) / MaxTreeFiles
 print('Reading started')
 
 if CatalogType=='snap':       
-    #from LGalaxies_Henriques2015a_struct import LGalaxiesStruct
-    #from LGalaxies_Henriques2015a_struct import PropertiesToRead
+    from LGalaxies_Henriques2015a_struct import LGalaxiesStruct
+    from LGalaxies_Henriques2015a_struct import PropertiesToRead
     #from LGalaxies_Henriques2015a_metals_struct import LGalaxiesStruct
     #from LGalaxies_Henriques2015a_metals_struct import PropertiesToRead
     #from LGalaxies_Henriques2015a_Elements_struct import LGalaxiesStruct
@@ -59,8 +59,8 @@ if CatalogType=='snap':
     #from LGalaxies_Henriques2015a_Rings_struct import PropertiesToRead     
     #from LGalaxies_Henriques2015a_Caterpillar_struct import LGalaxiesStruct
     #from LGalaxies_Henriques2015a_Caterpillar_struct import PropertiesToRead
-    from LGalaxies_Henriques2015a_Elements_Rings_struct import LGalaxiesStruct
-    from LGalaxies_Henriques2015a_Elements_Rings_struct import PropertiesToRead
+    #from LGalaxies_Henriques2015a_Elements_Rings_struct import LGalaxiesStruct
+    #from LGalaxies_Henriques2015a_Elements_Rings_struct import PropertiesToRead
     
     print('\n\nDoing MR')
     (G_MR, SnapshotList_MR) = read_snap(DirName_MR,FirstFile,LastFile,
@@ -142,7 +142,7 @@ if(opt_rings==1):
 
 # # Plots for snapshot output
 
-# In[31]:
+# In[152]:
 
 
 with PdfPages('./fig/plots.pdf') as pdf:  

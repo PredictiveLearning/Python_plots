@@ -15,24 +15,24 @@ WMAP1=0
 WMAP7=0
 
 #RUN OPTIONS
-MRII=1
-opt_plot_MCMC_sample=1
-opt_detailed_enrichment=1
-opt_rings=1
+MRII=0
+opt_plot_MCMC_sample=0
+opt_detailed_enrichment=0
+opt_rings=0
 
 #PLOT OPTIONS
 opt_stellar_mass_vs_halo_mass=0
-opt_stellar_mass_function=1
+opt_stellar_mass_function=0
 opt_redfraction_color_cut_cuts=0
-opt_redfraction_color_cut=1
-opt_metals_vs_stellarmass=1
-opt_gasmetals_vs_stellarmass=1
-opt_BHBM=0
-opt_SFRF=1
-opt_gas_fraction=1
-opt_HI_fraction=1
-opt_HI_MF=1
-opt_morphology_vs_stellarmass=1
+opt_redfraction_color_cut=0
+opt_metals_vs_stellarmass=0
+opt_gasmetals_vs_stellarmass=0
+opt_BHBM=1
+opt_SFRF=0
+opt_gas_fraction=0
+opt_HI_fraction=0
+opt_HI_MF=0
+opt_morphology_vs_stellarmass=0
 
 opt_sfr_vs_stellar_mass=0
 opt_ur_vs_r=0
@@ -51,8 +51,8 @@ opt_evo_milkyway_gas_profile=0
 opt_test_H2_prescriptions=0
 
 #MISC
-opt_BHBM_by_sfr=0
-opt_AGN_quenching=0
+opt_BHBM_by_sfr=1
+opt_AGN_quenching=1
 opt_bluck_red_fractions=0
 opt_sat_fraction=0
 opt_HotGas_fraction=0
@@ -76,14 +76,14 @@ Datadir = '/net/bootes/export/data1/data/'
 MCMCdir = '/net/bootes//export/data1/Workspace/LGal_Development_Branch/MCMC/'
 MCMCSampledir = '/net/bootes//export/data1/Workspace/LGal_Development_Branch/output/bestfit/'
 
-DirName_MR = '/net/bootes/export/data1/SAM/test6/MR/'
-DirName_MRII = '/net/bootes/export/data1/SAM/test6/MRII/'
+#DirName_MR = '/net/bootes/export/data1/SAM/test5/MR/'
+#DirName_MRII = '/net/bootes/export/data1/SAM/test5/MRII/'
 
 #DirName_MR = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/new_BH_growth/MR/'
 #DirName_MRII = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/new_BH_growth/MRII/'
 
-#DirName_MR = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/MR/'
-#DirName_MRII = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/MRII/'
+DirName_MR = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/MR/'
+DirName_MRII = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/MRII/'
 
 #DirName_MR = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/new_MR_fb_plus_001/'
 #DirName_MR = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/new_MR_fb_minus_001/'
@@ -112,15 +112,22 @@ file_previous_model2=Datadir+'/Henriques2014a/Henriques2014a'
 prefix_previous_model2='Henriques2015'
 linestyle_previous_model2='--'
     
+#HENRIQUES15
 slope_color_cut=[0.075,0.275, 0.3, 0.32,0.38]
-offset_color_cut=[1.92,1.213, 1.18,0.99,0.79]
+offset_color_cut=[1.85,1.213, 1.18,0.99,0.79]     
+ 
+#HENRIQUES16
+#slope_color_cut=[0.075,0.275, 0.3, 0.32,0.38]
+#offset_color_cut=[1.92,1.213, 1.18,0.99,0.79]
+
 #slope_color_cut=[0.075, 0.5, 0.48, 0.38, 0.18];
-#offset_color_cut=[1.8, 1.085, 1.1, 1.0, 1.15];   
+#offset_color_cut=[2.05, 1.085, 1.0, 1.0, 1.15];    
+ 
 minimum_y_color_cut=[0.0,1.3,1.3,1.3,1.3]
  
 MCMC_slope_color_cut=[0.075, 0.5, 0.48, 0.38, 0.18];
 MCMC_offset_color_cut=[1.8, 1.085, 1.1, 1.0, 1.15];    
-    
+   
 obs_offset_color_cut=[0.244,0.69,0.59,0.59,0.59]
 obs_slope_color_cut=[1.9,0.88,0.88,0.88,0.88]
 
