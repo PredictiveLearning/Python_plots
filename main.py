@@ -7,7 +7,7 @@
 
 # <p>Use functions read_snap or read_tree to read catalogs. These are both defined in procedures.py. In case of read_snap, SnapshotList will be returned containing the list of snapshots read (usefull to later select galaxies in a given redshift).<p>
 
-# In[264]:
+# In[30]:
 
 import numpy as np
 get_ipython().magic('matplotlib inline')
@@ -29,6 +29,7 @@ from matplotlib.colors import LogNorm
 from decimal import *
 import sys
 from scipy.ndimage import zoom 
+from mpl_toolkits.axes_grid.inset_locator import inset_axes
 
 import procedures
 reload (procedures)
@@ -37,8 +38,8 @@ import plots_input
 reload (plots_input)
 from plots_input import *
 
-FirstFile = 0
-LastFile =  39
+FirstFile = 40
+LastFile =  40
 
 Volume_MR = (BoxSize_MR**3.0) * (LastFile - FirstFile + 1) / MaxTreeFiles 
 Volume_MRII = (BoxSize_MRII**3.0) * (LastFile - FirstFile + 1) / MaxTreeFiles 
@@ -46,8 +47,8 @@ Volume_MRII = (BoxSize_MRII**3.0) * (LastFile - FirstFile + 1) / MaxTreeFiles
 print('Reading started')
 
 if CatalogType=='snap':       
-    from LGalaxies_Henriques2015a_struct import LGalaxiesStruct
-    from LGalaxies_Henriques2015a_struct import PropertiesToRead
+    #from LGalaxies_Henriques2015a_struct import LGalaxiesStruct
+    #from LGalaxies_Henriques2015a_struct import PropertiesToRead
     #from LGalaxies_Henriques2015a_metals_struct import LGalaxiesStruct
     #from LGalaxies_Henriques2015a_metals_struct import PropertiesToRead
     #from LGalaxies_Henriques2015a_Elements_struct import LGalaxiesStruct
@@ -55,11 +56,12 @@ if CatalogType=='snap':
     #from LGalaxies_fu13_Rings_struct import LGalaxiesStruct
     #from LGalaxies_fu13_Rings_struct import PropertiesToRead
     #from LGalaxies_Henriques2015a_Rings_struct import LGalaxiesStruct
-    #from LGalaxies_Henriques2015a_Rings_struct import PropertiesToRead   
-    #from LGalaxies_Henriques2015a_Elements_Rings_struct import LGalaxiesStruct
-    #from LGalaxies_Henriques2015a_Elements_Rings_struct import PropertiesToRead
+    #from LGalaxies_Henriques2015a_Rings_struct import PropertiesToRead     
     #from LGalaxies_Henriques2015a_Caterpillar_struct import LGalaxiesStruct
     #from LGalaxies_Henriques2015a_Caterpillar_struct import PropertiesToRead
+    from LGalaxies_Henriques2015a_Elements_Rings_struct import LGalaxiesStruct
+    from LGalaxies_Henriques2015a_Elements_Rings_struct import PropertiesToRead
+    
     print('\n\nDoing MR')
     (G_MR, SnapshotList_MR) = read_snap(DirName_MR,FirstFile,LastFile,
                      PropertiesToRead,LGalaxiesStruct,RedshiftsToRead,FullRedshiftList)
@@ -140,7 +142,7 @@ if(opt_rings==1):
 
 # # Plots for snapshot output
 
-# In[266]:
+# In[31]:
 
 
 with PdfPages('./fig/plots.pdf') as pdf:  
@@ -290,7 +292,19 @@ with PdfPages('./fig/plots.pdf') as pdf:
             
             
            
-    #ADDITIONAL PLOTS              
+    #ADDITIONAL PLOTS   
+    if opt_BHBM_by_sfr==1:
+        print('Doing BHBM_by_sfr')
+        from plots import BHBM_by_sfr
+        ThisRedshiftList=[0.0,1.0,2.0]        
+        BHBM_by_sfr(G_MR, ThisRedshiftList, pdf)
+    
+    if opt_AGN_quenching==1:
+        print('Doing AGN_quenching')
+        from plots import AGN_quenching
+        ThisRedshiftList=[0.0,1.0,2.0]        
+        AGN_quenching(G_MR, ThisRedshiftList, pdf)
+    
     if opt_bluck_red_fractions==1:
         print('Doing bluck_red_fractions')
         from plots import bluck_red_fractions
@@ -392,7 +406,7 @@ with PdfPages('./fig/plots.pdf') as pdf:
 
 # # Plots for tree output
 
-# In[35]:
+# In[205]:
 
 with PdfPages('./fig/plots.pdf') as pdf:  
     import procedures
