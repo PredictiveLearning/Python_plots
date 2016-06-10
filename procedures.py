@@ -14,6 +14,7 @@ plot_label_three_models
 plot_label
 plot_joint_MR_MRII
 mag_to_lum
+get_slope
 """
     
     
@@ -332,14 +333,16 @@ def plot_label_three_models (subplot, xlim, ylim, position):
                 
 def plot_label (subplot, label_type, xlim, ylim, x_percentage, y_percentage, color, 
                 x2_percentage=0., xlog=0, ylog=0, label='', linestyle='-', linewidth=2, 
-                fontsize=16, fontweight='normal', sym='o', sym_size=5, err_size=0.1):    
+                fontsize=16, fontweight='normal', sym='o', sym_size=5, err_size=0.1, 
+                rotation=0,backgroundcolor='none'):    
     
      if xlog==0 & ylog==0:
       
          if label_type=='label':
              x=xlim[0]+(xlim[1]-xlim[0])*x_percentage
              y=ylim[0]+(ylim[1]-ylim[0])*y_percentage             
-             subplot.text(x,y,label, fontsize=fontsize, fontweight=fontweight)
+             subplot.text(x,y,label, fontsize=fontsize, fontweight=fontweight,rotation=rotation, 
+                          color=color, backgroundcolor=backgroundcolor)
          else:
              if label_type =='line':
                  x1=xlim[0]+(xlim[1]-xlim[0])*x_percentage
@@ -383,6 +386,14 @@ def mag_to_lum(mag):
     return 10.**(-0.4*(mag-4.68))
 
 #end 
+
+def get_slope(x1=1., y1=1., x2=1., y2=1.):
+
+    slope=(y2-y1)/(x2-x1)
+    b=y1-(y2-y1)/(x2-x1)*x1
+    
+    return (slope,b)
+#end
 
 
 # <codecell>
