@@ -22,12 +22,14 @@ opt_rings=0
 
 #PLOT OPTIONS
 opt_stellar_mass_vs_halo_mass=0
-opt_stellar_mass_function=0
+opt_stellar_mass_vs_halo_mass_fractional=0
+opt_stellar_mass_function=1
+opt_stellar_mass_function_z0_overplot=1
 opt_redfraction_color_cut_cuts=0
 opt_redfraction_color_cut=0
 opt_metals_vs_stellarmass=0
 opt_gasmetals_vs_stellarmass=0
-opt_BHBM=1
+opt_BHBM=0
 opt_SFRF=0
 opt_gas_fraction=0
 opt_HI_fraction=0
@@ -50,9 +52,10 @@ opt_H2fraction_vs_stellarmass=0
 opt_evo_milkyway_gas_profile=0
 opt_test_H2_prescriptions=0
 
-#MISC
-opt_BHBM_by_sfr=1
-opt_AGN_quenching=1
+#MIS
+opt_BHBM_by_sfr=0
+opt_AGN_quenching=0
+opt_growth_channels=0
 opt_bluck_red_fractions=0
 opt_sat_fraction=0
 opt_HotGas_fraction=0
@@ -74,16 +77,26 @@ opt_anime_mass_gr=0
 
 Datadir = '/net/bootes/export/data1/data/'
 MCMCdir = '/net/bootes//export/data1/Workspace/LGal_Development_Branch/MCMC/'
-MCMCSampledir = '/net/bootes//export/data1/Workspace/LGal_Development_Branch/output/bestfit/'
+#MCMCSampledir = '/net/bootes//export/data1/Workspace/LGal_Development_Branch/output/bestfit/final_'
+#MCMCSampledir = '/net/bootes//export/data1/Workspace/LGal_Development_Branch/output/task0_'
+#MCMCSampledir = '/net/bootes//export/data1/Workspace/LGal_Development_Branch/output/bestfit/task0_'
+#MCMCSampledir = '/net/bootes//export/data1/Workspace/cosma/task1_'
+MCMCSampledir = '/net/bootes//export/data1/Workspace/cosma/final_'
 
 #DirName_MR = '/net/bootes/export/data1/SAM/test5/MR/'
-#DirName_MRII = '/net/bootes/export/data1/SAM/test5/MRII/'
+#DirName_MRII = '/net/bootes/export/data1/SAM/test18/MRII/'
+#DirName_MR = '/export/data1/SAM/Hen15_tests/MR/'
+#DirName_MRII = '/export/data1/SAM/Hen15_tests/MRII/'
+#DirName_MR = '/export/data1/SAM/Hen15_tests/only_SN/MR/'
+#DirName_MR = '/export/data1/SAM/Hen15_tests/only_AGN/MR/'
+DirName_MR = '/export/data1/SAM/Hen15_tests/no_feedback/MR/'
+
 
 #DirName_MR = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/new_BH_growth/MR/'
 #DirName_MRII = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/new_BH_growth/MRII/'
 
-DirName_MR = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/MR/'
-DirName_MRII = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/MRII/'
+#DirName_MR = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/MR/'
+#DirName_MRII = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/MRII/'
 
 #DirName_MR = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/new_MR_fb_plus_001/'
 #DirName_MR = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/new_MR_fb_minus_001/'
@@ -115,13 +128,17 @@ linestyle_previous_model2='--'
 #HENRIQUES15
 slope_color_cut=[0.075,0.275, 0.3, 0.32,0.38]
 offset_color_cut=[1.85,1.213, 1.18,0.99,0.79]     
- 
+    
 #HENRIQUES16
 #slope_color_cut=[0.075,0.275, 0.3, 0.32,0.38]
 #offset_color_cut=[1.92,1.213, 1.18,0.99,0.79]
 
+#NO AGN
 #slope_color_cut=[0.075, 0.5, 0.48, 0.38, 0.18];
-#offset_color_cut=[2.05, 1.085, 1.0, 1.0, 1.15];    
+#offset_color_cut=[1.95, 1.085, 1.0, 1.0, 1.15];  
+
+#slope_color_cut=[0.5, 0.5, 0.48, 0.38, 0.18];
+#offset_color_cut=[1.085, 1.085, 1.0, 1.0, 1.15];  
  
 minimum_y_color_cut=[0.0,1.3,1.3,1.3,1.3]
  

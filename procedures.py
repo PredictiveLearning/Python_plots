@@ -217,7 +217,7 @@ def select_current_redshift(G_MR, ThisRedshiftList, ii, SnapshotList):
 def stellar_mass_with_err(G0_MR, Hubble_h, redshift):
     
     np.random.seed(seed=10)
-    mass= np.log10(G0_MR['StellarMass']*1.e10*Hubble_h) + np.random.randn(len(G0_MR['StellarMass']))*0.08*(1+redshift)
+    mass= np.log10(G0_MR['StellarMass']*1.e10*Hubble_h) + np.random.randn(len(G0_MR['StellarMass']))*0.08*(1+redshift)    
     #mass= np.log10(G0_MR['StellarMass']*1.e10*Hubble_h) #+ np.random.randn(len(G0_MR['StellarMass']))*0.08*(1+redshift)
 
     return mass
@@ -334,7 +334,7 @@ def plot_label_three_models (subplot, xlim, ylim, position):
 def plot_label (subplot, label_type, xlim, ylim, x_percentage, y_percentage, color, 
                 x2_percentage=0., xlog=0, ylog=0, label='', linestyle='-', linewidth=2, 
                 fontsize=16, fontweight='normal', sym='o', sym_size=5, err_size=0.1, 
-                rotation=0,backgroundcolor='none'):    
+                rotation=0,backgroundcolor='none', alpha=1.):    
     
      if xlog==0 & ylog==0:
       
@@ -342,7 +342,7 @@ def plot_label (subplot, label_type, xlim, ylim, x_percentage, y_percentage, col
              x=xlim[0]+(xlim[1]-xlim[0])*x_percentage
              y=ylim[0]+(ylim[1]-ylim[0])*y_percentage             
              subplot.text(x,y,label, fontsize=fontsize, fontweight=fontweight,rotation=rotation, 
-                          color=color, backgroundcolor=backgroundcolor)
+                          color=color, backgroundcolor=backgroundcolor, alpha=alpha)
          else:
              if label_type =='line':
                  x1=xlim[0]+(xlim[1]-xlim[0])*x_percentage
@@ -377,6 +377,7 @@ def plot_joint_MR_MRII(hist_MR, hist_MRII, cut_MR_MRII, Volume_MR, Volume_MRII,
     y_axis=np.concatenate((np.log10(hist_MRII/(Volume_MRII*bin)),np.log10(hist_MR/(Volume_MR*bin))), axis=0)
     subplot.plot(x_axis,y_axis, color=color, linewidth=linewidth, linestyle=linestyle) 
         
+    return (x_axis, y_axis)    
 
 #end join_MR_MRII
         

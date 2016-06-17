@@ -7,7 +7,7 @@
 
 # <p>Use functions read_snap or read_tree to read catalogs. These are both defined in procedures.py. In case of read_snap, SnapshotList will be returned containing the list of snapshots read (usefull to later select galaxies in a given redshift).<p>
 
-# In[148]:
+# In[249]:
 
 import numpy as np
 get_ipython().magic('matplotlib inline')
@@ -38,8 +38,8 @@ import plots_input
 reload (plots_input)
 from plots_input import *
 
-FirstFile = 40
-LastFile =  49
+FirstFile = 5
+LastFile =  5
 
 Volume_MR = (BoxSize_MR**3.0) * (LastFile - FirstFile + 1) / MaxTreeFiles 
 Volume_MRII = (BoxSize_MRII**3.0) * (LastFile - FirstFile + 1) / MaxTreeFiles 
@@ -47,8 +47,10 @@ Volume_MRII = (BoxSize_MRII**3.0) * (LastFile - FirstFile + 1) / MaxTreeFiles
 print('Reading started')
 
 if CatalogType=='snap':       
-    from LGalaxies_Henriques2015a_struct import LGalaxiesStruct
-    from LGalaxies_Henriques2015a_struct import PropertiesToRead
+    #from LGalaxies_Henriques2015a_struct import LGalaxiesStruct
+    #from LGalaxies_Henriques2015a_struct import PropertiesToRead
+    from LGalaxies_Henriques2016a_struct import LGalaxiesStruct
+    from LGalaxies_Henriques2016a_struct import PropertiesToRead
     #from LGalaxies_Henriques2015a_metals_struct import LGalaxiesStruct
     #from LGalaxies_Henriques2015a_metals_struct import PropertiesToRead
     #from LGalaxies_Henriques2015a_Elements_struct import LGalaxiesStruct
@@ -61,6 +63,8 @@ if CatalogType=='snap':
     #from LGalaxies_Henriques2015a_Caterpillar_struct import PropertiesToRead
     #from LGalaxies_Henriques2015a_Elements_Rings_struct import LGalaxiesStruct
     #from LGalaxies_Henriques2015a_Elements_Rings_struct import PropertiesToRead
+    #from LGalaxies_Henriques2016a_Elements_Rings_struct import LGalaxiesStruct
+    #from LGalaxies_Henriques2016a_Elements_Rings_struct import PropertiesToRead
     
     print('\n\nDoing MR')
     (G_MR, SnapshotList_MR) = read_snap(DirName_MR,FirstFile,LastFile,
@@ -142,7 +146,7 @@ if(opt_rings==1):
 
 # # Plots for snapshot output
 
-# In[152]:
+# In[250]:
 
 
 with PdfPages('./fig/plots.pdf') as pdf:  
@@ -193,12 +197,23 @@ with PdfPages('./fig/plots.pdf') as pdf:
         from plots import stellar_mass_vs_halo_mass
         ThisRedshiftList=[0.0]        
         stellar_mass_vs_halo_mass(G_MR, ThisRedshiftList, pdf)
+        
+    if opt_stellar_mass_vs_halo_mass_fractional==1:
+        print('Doing SMHM_fractional')
+        from plots import stellar_mass_vs_halo_mass_fractional
+        ThisRedshiftList=[0.0]        
+        stellar_mass_vs_halo_mass_fractional(G_MR, G_MRII, ThisRedshiftList, pdf)
             
     if opt_stellar_mass_function==1:
         print('Doing SMF')
         from plots import stellar_mass_function
         ThisRedshiftList=[0.0,1.0,2.0,3.0]                 
         stellar_mass_function(G_MR, Volume_MR, G_MRII, Volume_MRII, ThisRedshiftList, pdf)
+    
+    if opt_stellar_mass_function_z0_overplot==1:
+        print('Doing SMF_z0_overplot')
+        from plots import stellar_mass_function_z0_overplot                  
+        stellar_mass_function_z0_overplot(pdf)
     
     if opt_redfraction_color_cut_cuts==1:
         print('Doing redfraction_color_cut_cuts')
@@ -305,6 +320,12 @@ with PdfPages('./fig/plots.pdf') as pdf:
         ThisRedshiftList=[0.0,1.0,2.0]        
         AGN_quenching(G_MR, ThisRedshiftList, pdf)
     
+    if opt_growth_channels==1:
+        print('Doing growth_channels')
+        from plots import growth_channels
+        ThisRedshiftList=[0.0]        
+        growth_channels(G_MR, G_MRII, ThisRedshiftList, pdf)       
+        
     if opt_bluck_red_fractions==1:
         print('Doing bluck_red_fractions')
         from plots import bluck_red_fractions
