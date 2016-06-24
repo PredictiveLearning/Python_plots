@@ -15,6 +15,7 @@ plot_label
 plot_joint_MR_MRII
 mag_to_lum
 get_slope
+read_file
 """
     
     
@@ -396,6 +397,25 @@ def get_slope(x1=1., y1=1., x2=1., y2=1.):
     return (slope,b)
 #end
 
+
+def read_file(fa):
+
+    index=0
+    for line in fa:
+        if(index==0):                
+            fields = line.strip().split()  
+            N_elements=int(fields[0])
+            x_axis=np.zeros(N_elements,dtype=np.float32)
+            y_axis=np.zeros(N_elements,dtype=np.float32)               
+        else:
+            fields = line.strip().split()               
+            x_axis[index-1]=float(fields[0])
+            y_axis[index-1]=float(fields[1])               
+        index+=1    
+        
+    return(x_axis,y_axis)  
+
+#end read_file
 
 # <codecell>
 

@@ -392,19 +392,20 @@ def stellar_mass_function(G_MR, Volume_MR, G_MRII, Volume_MRII, ThisRedshiftList
 def stellar_mass_function_z0_overplot(pdf):
            
     xlim=[8.0,12.5]
-    ylim=[-6.5, 0.5]
+    ylim=[-5.5, 0.5]
         
     plot_color=['red','purple']        
     plt.rcParams.update({'xtick.major.width': 1.0, 'ytick.major.width': 1.0, 
                              'xtick.minor.width': 1.0, 'ytick.minor.width': 1.0})
-    fig = plt.figure(figsize=(5,4))
+    fig = plt.figure(figsize=(6,5))
     subplot=plt.subplot()
     subplot.set_ylim(ylim), subplot.set_xlim(xlim)
     
     #format axis
     majorFormatter = FormatStrFormatter('%d')
     subplot.xaxis.set_major_locator(MultipleLocator(1))    
-    subplot.xaxis.set_minor_locator(MultipleLocator(0.25)) 
+    subplot.xaxis.set_minor_locator(MultipleLocator(0.5)) 
+    subplot.yaxis.set_minor_locator(MultipleLocator(0.5)) 
     
     xlab='$\mathrm{log_{10}}(M_*[h^{-2}M_{\odot}])$'      
     ylab='$\mathrm{log_{10}}(\phi [h^3 \mathrm{Mpc^{-3}} \mathrm{log_{10}}(M^{-1})])$'         
@@ -413,60 +414,20 @@ def stellar_mass_function_z0_overplot(pdf):
     char_redshift="%0.2f" % 0.00  
      
     fa = open(Datadir+"SMF_Hen15_z"+char_redshift+".txt", "r") 
-    index=0
-    for line in fa:
-        if(index==0):                
-            fields = line.strip().split()    
-            x_axis_hen15=np.zeros(int(fields[0]),dtype=np.float32)
-            y_axis_hen15=np.zeros(int(fields[0]),dtype=np.float32)               
-        else:
-            fields = line.strip().split()               
-            x_axis_hen15[index-1]=float(fields[0])
-            y_axis_hen15[index-1]=float(fields[1])               
-        index+=1    
-    subplot.plot(x_axis_hen15,y_axis_hen15, color='red', linewidth=2, linestyle='-')  
+    (x_axis,y_axis)=read_file(fa)    
+    subplot.plot(x_axis,y_axis, color='red', linewidth=2, linestyle='-')  
     
     fa = open(Datadir+"SMF_Hen15_only_SN_z"+char_redshift+".txt", "r") 
-    index=0
-    for line in fa:
-        if(index==0):                
-            fields = line.strip().split()    
-            x_axis_hen15=np.zeros(int(fields[0]),dtype=np.float32)
-            y_axis_hen15=np.zeros(int(fields[0]),dtype=np.float32)               
-        else:
-            fields = line.strip().split()               
-            x_axis_hen15[index-1]=float(fields[0])
-            y_axis_hen15[index-1]=float(fields[1])               
-        index+=1    
-    subplot.plot(x_axis_hen15,y_axis_hen15, color='blue', linewidth=2, linestyle='-')
+    (x_axis,y_axis)=read_file(fa)    
+    subplot.plot(x_axis,y_axis, color='blue', linewidth=2, linestyle='-')  
     
     fa = open(Datadir+"SMF_Hen15_only_AGN_z"+char_redshift+".txt", "r") 
-    index=0
-    for line in fa:
-        if(index==0):                
-            fields = line.strip().split()    
-            x_axis_hen15=np.zeros(int(fields[0]),dtype=np.float32)
-            y_axis_hen15=np.zeros(int(fields[0]),dtype=np.float32)               
-        else:
-            fields = line.strip().split()               
-            x_axis_hen15[index-1]=float(fields[0])
-            y_axis_hen15[index-1]=float(fields[1])               
-        index+=1    
-    subplot.plot(x_axis_hen15,y_axis_hen15, color='brown', linewidth=2, linestyle='-') 
+    (x_axis,y_axis)=read_file(fa)    
+    subplot.plot(x_axis,y_axis, color='brown', linewidth=2, linestyle='-')  
     
     fa = open(Datadir+"SMF_Hen15_no_feedback_z"+char_redshift+".txt", "r") 
-    index=0
-    for line in fa:
-        if(index==0):                
-            fields = line.strip().split()    
-            x_axis_hen15=np.zeros(int(fields[0]),dtype=np.float32)
-            y_axis_hen15=np.zeros(int(fields[0]),dtype=np.float32)               
-        else:
-            fields = line.strip().split()               
-            x_axis_hen15[index-1]=float(fields[0])
-            y_axis_hen15[index-1]=float(fields[1])               
-        index+=1    
-    subplot.plot(x_axis_hen15,y_axis_hen15, color='black', linewidth=2, linestyle='-') 
+    (x_axis,y_axis)=read_file(fa)    
+    subplot.plot(x_axis,y_axis, color='black', linewidth=2, linestyle='-')  
         
     #OBSERVATIONS             
     file = MCMCdir + '/ObsConstraints/StellarMassFunction_z'+char_redshift+'.txt'        
@@ -481,12 +442,33 @@ def stellar_mass_function_z0_overplot(pdf):
                      fmt='o', markersize=5, ecolor='blue', color='blue')
     #sub = plt.subplot(111)
    
+
+    #LABELS
     plot_label (subplot, 'label', xlim, ylim, x_percentage=0.075, y_percentage=0.91, 
                 color='black', xlog=0, ylog=0, label='Observations used in MCMC', 
                 fontsize=13, fontweight='normal') 
     plot_label (subplot, 'symbol', xlim, ylim, x_percentage=0.05, y_percentage=0.935, 
                 color='blue', xlog=0, ylog=0, sym='o', sym_size=5, err_size=0.15)   
         
+    plot_label (subplot, 'label', xlim, ylim, x_percentage=0.12, y_percentage=0.45, 
+                color='black', xlog=0, ylog=0, label='Hen15', fontsize=13, fontweight='normal') 
+    plot_label (subplot, 'line', xlim, ylim, x_percentage=0.04, y_percentage=0.465, 
+                color='red', x2_percentage=0.1, xlog=0, ylog=0, linestyle='-', linewidth=2)  
+    
+    plot_label (subplot, 'label', xlim, ylim, x_percentage=0.12, y_percentage=0.4, 
+                color='black', xlog=0, ylog=0, label='only SN', fontsize=13, fontweight='normal') 
+    plot_label (subplot, 'line', xlim, ylim, x_percentage=0.04, y_percentage=0.415, 
+                color='blue', x2_percentage=0.1, xlog=0, ylog=0, linestyle='-', linewidth=2)
+    
+    plot_label (subplot, 'label', xlim, ylim, x_percentage=0.12, y_percentage=0.35, 
+                color='black', xlog=0, ylog=0, label='only AGN', fontsize=13, fontweight='normal') 
+    plot_label (subplot, 'line', xlim, ylim, x_percentage=0.04, y_percentage=0.365, 
+                color='brown', x2_percentage=0.1, xlog=0, ylog=0, linestyle='-', linewidth=2)
+    
+    plot_label (subplot, 'label', xlim, ylim, x_percentage=0.12, y_percentage=0.3, 
+                color='black', xlog=0, ylog=0, label='no feedback', fontsize=13, fontweight='normal') 
+    plot_label (subplot, 'line', xlim, ylim, x_percentage=0.04, y_percentage=0.315, 
+                color='black', x2_percentage=0.1, xlog=0, ylog=0, linestyle='-', linewidth=2)
     plt.tight_layout()
     plt.savefig('./fig/plots_stellar_mass_function_z0_overplot.pdf')
     pdf.savefig()
@@ -2319,6 +2301,7 @@ def sizes_vs_stellarmass(G_MR, ThisRedshiftList, pdf):
     
 def BHBM_by_sfr(G_MR, ThisRedshiftList, pdf):
     
+    plot_inset=1
     
     '''xlim=[9.0,11.5]
     ylim=[-13.0, -7.]   
@@ -2358,12 +2341,17 @@ def BHBM_by_sfr(G_MR, ThisRedshiftList, pdf):
     SSFR_cut=[-11.,-10.5,-10.]
    
     xlim=[9.0,11.5]
-    ylim=[4.5, 10.]   
+    ylim=[4.5, 10.]
+    if(plot_inset==0):
+        ylim=[4.5, 9.]
+        
+    inset_xlim=[9.0,11.5]
+    inset_ylim=[-6.0, -1.]    
         
     plot_color=['red','orange','green','blue']        
     plt.rcParams.update({'xtick.major.width': 1.0, 'ytick.major.width': 1.0, 
                          'xtick.minor.width': 1.0, 'ytick.minor.width': 1.0})
-    fig = plt.figure(figsize=(10,8)) 
+    fig = plt.figure(figsize=(7,6)) 
     subplot=plt.subplot()
     subplot.set_ylim(ylim), subplot.set_xlim(xlim)    
       
@@ -2377,26 +2365,26 @@ def BHBM_by_sfr(G_MR, ThisRedshiftList, pdf):
     subplot.set_xlabel(xlab, fontsize=16), subplot.set_ylabel(ylab, fontsize=16)   
 
     
-    
-    # this is an inset axes over the main axes
-    plt.rcParams.update({'font.size': 10, 'xtick.labelsize': 10, 'ytick.labelsize': 10,
-                         'xtick.major.width': 1.0, 'ytick.major.width': 1.0, 
-                         'xtick.minor.width': 1.0, 'ytick.minor.width': 1.0})
-    #inset_xlim=[4.,9.]
-    #inset_ylim=[.0, .5]   
-    inset = inset_axes(subplot, width="100%", height="100%", 
-                       bbox_to_anchor=(0.12, 0.62, 0.38, 0.33), 
-                       bbox_transform=subplot.figure.transFigure)
-    #fig.subplots_adjust(hspace=0.4)
-    inset.set_ylim(ylim), inset.set_xlim(xlim)    
-   
-    inset.xaxis.set_major_locator(MultipleLocator(1))    
-    inset.xaxis.set_minor_locator(MultipleLocator(0.5)) 
-    #xlab='$\mathrm{log_{10}}(M_{\mathrm{BH}}[h^{-2}M_{\odot}])$'       
-    #ylab='$Fraction$' 
-    inset.yaxis.set_label_position("right")
-    inset.set_xlabel(xlab, fontsize=14), inset.set_ylabel(ylab, fontsize=14, rotation=270, labelpad=20)   
-    inset.tick_params(axis='y', which='both', left='on', labelleft='off', right='on',labelright='on')
+    if(plot_inset==1):
+        # this is an inset axes over the main axes
+        plt.rcParams.update({'font.size': 10, 'xtick.labelsize': 10, 'ytick.labelsize': 10,
+                             'xtick.major.width': 1.0, 'ytick.major.width': 1.0, 
+                             'xtick.minor.width': 1.0, 'ytick.minor.width': 1.0})
+        #inset_xlim=[4.,9.]
+        #inset_ylim=[.0, .5]   
+        inset = inset_axes(subplot, width="100%", height="100%", 
+                           bbox_to_anchor=(0.16, 0.65, 0.38, 0.3), 
+                           bbox_transform=subplot.figure.transFigure)
+        #fig.subplots_adjust(hspace=0.4)
+        inset.set_ylim(inset_ylim), inset.set_xlim(inset_xlim)    
+
+        inset.xaxis.set_major_locator(MultipleLocator(1))    
+        inset.xaxis.set_minor_locator(MultipleLocator(0.5))    
+        inset.yaxis.set_label_position("right")
+        xlab='$\mathrm{log_{10}}(M_{\star}[h^{-2}M_{\odot}])$'       
+        ylab='$\mathrm{log_{10}}(M_{\mathrm{BH}}/M_{\mathrm{vir}}^{0.097}\mathrm{x}(1+z)^{-1.5})$' 
+        inset.set_xlabel(xlab, fontsize=10), inset.set_ylabel(ylab, fontsize=10, rotation=270, labelpad=20)   
+        inset.tick_params(axis='y', which='both', left='on', labelleft='off', right='on',labelright='on')
        
     for ii in range(0,len(ThisRedshiftList)):        
                     
@@ -2405,16 +2393,26 @@ def BHBM_by_sfr(G_MR, ThisRedshiftList, pdf):
         G0_MR=G0_MR_unsel[(np.log10(G0_MR_unsel['StellarMass']*1.e10*Hubble_h) > xlim[0]-1.) & 
                           (np.log10(G0_MR_unsel['BlackHoleMass']*1.e10) > ylim[0]-1.) &
                           (G0_MR_unsel['Type'] == 0)]
-        G0_MR=np.random.choice(G0_MR, size=5000.)
-     
+        #median
+        bin=0.1 
         log_StellarMass=(np.log10(G0_MR['StellarMass']*1.e10*Hubble_h)) 
         log_BHMass=(np.log10(G0_MR['BlackHoleMass']*1.e10)) 
+        inset_y_axis=np.log10(G0_MR['BlackHoleMass']/(G0_MR['Mvir']**0.097)/((1+ThisRedshiftList[ii])**1.5))
+        (x_binned, median, mean, pc16, pc84)=median_and_percentiles (bin, ylim[0], ylim[1],log_BHMass, log_StellarMass) 
+        (inset_x_binned, inset_median, inset_mean, inset_pc16, inset_pc84)=median_and_percentiles (bin, inset_ylim[0], inset_ylim[1],inset_y_axis, log_StellarMass) 
+        
+        G0_MR=np.random.choice(G0_MR, size=5000.)     
+        log_StellarMass=(np.log10(G0_MR['StellarMass']*1.e10*Hubble_h)) 
+        log_BHMass=(np.log10(G0_MR['BlackHoleMass']*1.e10)) 
+        inset_y_axis=np.log10(G0_MR['BlackHoleMass']/(G0_MR['Mvir']**0.097)/((1+ThisRedshiftList[ii])**1.5))
         log_SSFR=np.log10((G0_MR['Sfr']/(G0_MR['StellarMass']*1.e10/Hubble_h)))
         color_ur=G0_MR['MagDust'][:,15]-G0_MR['MagDust'][:,17]  
         Magr=G0_MR['MagDust'][:,17]-5.*np.log10(Hubble_h)
         color_UV=G0_MR['MagDust'][:,0]-G0_MR['MagDust'][:,2]  
         color_VJ=G0_MR['MagDust'][:,2]-G0_MR['MagDust'][:,7]   
         
+                        
+         
        
         if(ii==0):    
             '''bin=[0.25,0.25]
@@ -2467,112 +2465,54 @@ def BHBM_by_sfr(G_MR, ThisRedshiftList, pdf):
         y_arr=x_arr*slope+b          
         subplot.plot(x_arr,y_arr,color=plot_color[ii], linestyle='--', linewidth=2)         
                     
-        #median
-        (sel)=select_current_redshift(G_MR, ThisRedshiftList, ii, FullSnapshotList_MR)   
-        G0_MR_unsel=G_MR[sel]         
-        G0_MR=G0_MR_unsel[(G0_MR_unsel['StellarMass'] > 0.) & (G0_MR_unsel['BlackHoleMass'] > 0.) &
-                          (G0_MR_unsel['Type'] == 0)]     
-        log_StellarMass=(np.log10(G0_MR['StellarMass']*1.e10*Hubble_h)) 
-        log_BHMass=(np.log10(G0_MR['BlackHoleMass']*1.e10)) 
-        log_SSFR=np.log10((G0_MR['Sfr']/(G0_MR['StellarMass']*1.e10/Hubble_h)))
-        color_ur=G0_MR['MagDust'][:,15]-G0_MR['MagDust'][:,17]  
-        Magr=G0_MR['MagDust'][:,17]-5.*np.log10(Hubble_h)
-        color_UV=G0_MR['MagDust'][:,0]-G0_MR['MagDust'][:,2]  
-        color_VJ=G0_MR['MagDust'][:,2]-G0_MR['MagDust'][:,7]  
-             
-        bin=0.1
-        #(x_binned, median, mean, pc16, pc84)=median_and_percentiles (bin, xlim[0], xlim[1], log_StellarMass, log_BHMass)   
-        #sel=median>ylim[0]
-        #subplot.plot(x_binned[sel], median[sel],color=plot_color[ii], linewidth=2)       
-        (x_binned, median, mean, pc16, pc84)=median_and_percentiles (bin, ylim[0], ylim[1],log_BHMass, log_StellarMass)      
+        #median        
         sel=(x_binned>4.7) & (x_binned<8.5) &(median>xlim[0])  
         subplot.plot(median[sel],x_binned[sel], color=plot_color[ii], linewidth=2,linestyle='-')
-        #subplot.plot(x_binned[sel], pc16[sel],color=plot_color[ii], linewidth=2,linestyle=':')
-        #subplot.plot(x_binned[sel], pc84[sel],color=plot_color[ii], linewidth=2,linestyle=':')
-             
+            
             
         #inset 
-        ellipse = Ellipse(xy=(9.0, 5.5), width=2.5, height=1.7, angle=20,
-                          fc='lightblue', edgecolor='lightblue', lw=2, alpha=0.3)
-        inset.add_patch(ellipse)   
-        ellipse = Ellipse(xy=(10.6, 7.5), width=4.2, height=1.2, angle=70,
-                          fc='pink', edgecolor='pink', lw=2, alpha=0.3)
-        inset.add_patch(ellipse)   
-        inset.plot(median[sel],x_binned[sel], color=plot_color[ii], linewidth=2,alpha=0.3)
-        
-        if(ii==0):
-            label='in-situ star formation'
-            plot_label (inset, 'label', xlim, ylim, x_percentage=0.02, y_percentage=0.35, 
-                        color='blue', xlog=0, ylog=0, label=label, fontsize=12, fontweight='normal',rotation=10)            
-            label='disk formation'
-            plot_label (inset, 'label', xlim, ylim, x_percentage=0.06, y_percentage=0.52, 
-                        color='blue', xlog=0, ylog=0, label=label, fontsize=12, fontweight='normal')
-            label='weak BH growth'
-            plot_label (inset, 'label', xlim, ylim, x_percentage=0.04, y_percentage=0.44, 
-                        color='blue', xlog=0, ylog=0, label=label, fontsize=12, fontweight='normal')
-        
-        
-            label='merger-driven growth'
-            plot_label (inset, 'label', xlim, ylim, x_percentage=0.43, y_percentage=0.83, 
-                        color='red', xlog=0, ylog=0, label=label, fontsize=12, fontweight='normal',rotation=37) 
+        if(plot_inset==1):
+            if(ii==0):       
+                sel=np.log10(G0_MR['Sfr']/(G0_MR['StellarMass']*1.e10/Hubble_h))<SSFR_cut[ii]
+                inset.scatter(log_StellarMass[sel], inset_y_axis[sel], s=2.5, color='red') 
+                sel=np.log10(G0_MR['Sfr']/(G0_MR['StellarMass']*1.e10/Hubble_h))>SSFR_cut[ii]
+                inset.scatter(log_StellarMass[sel], inset_y_axis[sel], s=2.5, color='blue')           
+                   
+            if(ii==0): 
+                x_arr=np.arange(9.8,10.22,0.005)  
+                #z=0
+                (slope0,b0)=get_slope(x1=9.,y1=-4.15,x2=11.,y2=-4.15)
+                #z=2
+                (slope2,b2)=get_slope(x1=9.,y1=-4.25,x2=11.,y2=-4.25)
+                inset.fill_between(x_arr,x_arr*slope0+b0,x_arr*slope2+b2, facecolor='lightgrey', 
+                                   interpolate=True, alpha=0.4, edgecolor='black') 
+
+                (slope,b)=get_slope(x1=9.,y1=-4.2,x2=11.,y2=-4.2)
+                x_arr=np.arange(xlim[0],xlim[1]+0.05,0.05)     
+                y_arr=x_arr*slope+b          
+                inset.plot(x_arr,y_arr,color='black', linestyle='--', linewidth=2)  
             
-            label='bulge formation'
-            plot_label (inset, 'label', xlim, ylim, x_percentage=0.3, y_percentage=0.86, 
-                        color='red', xlog=0, ylog=0, label=label, fontsize=12, fontweight='normal') 
-            label='strong BH growth'
-            plot_label (inset, 'label', xlim, ylim, x_percentage=0.28, y_percentage=0.78, 
-                        color='red', xlog=0, ylog=0, label=label, fontsize=12, fontweight='normal') 
-        
-        #inset
-        '''label="z=%0.1f" % ThisRedshiftList[ii]
-        plot_label (inset, 'label', inset_xlim, inset_ylim, x_percentage=0.15, y_percentage=0.90-ii*0.1, 
-                    color='black', xlog=0, ylog=0, label=label, fontsize=13, fontweight='normal') 
-        
-        plot_label (inset, 'line', inset_xlim, inset_ylim, x_percentage=0.04, y_percentage=0.925-ii*0.1, 
-                    color=plot_color[ii], x2_percentage=0.12, xlog=0, ylog=0, linestyle='-', linewidth=2)'''
-        
-        '''inset_bin=0.25
-        bin_arr=np.arange(inset_xlim[0],inset_xlim[1]+inset_bin,inset_bin)       
-        
-        if(ii==0):
-            sel=(color_ur>(local_offset_color_cut[ii]-local_slope_color_cut[ii]*np.tanh((Magr+20.07)/1.09)))
-        else:
-            sel=((color_UV > minimum_y_color_cut[ii]) & 
-                 (color_UV > (color_VJ*local_slope_color_cut[ii] + local_offset_color_cut[ii])))          
-        hist=np.histogram(log_BHMass[sel], bins=bin_arr, range=(inset_xlim[0],inset_xlim[1]))       
-        x_axis=hist[1][0:len(hist[1][:])-1]+inset_bin/2.  
-        hist=hist[0]
-        y_axis=hist/(np.sum(hist))
-        inset.plot(x_axis,y_axis, color=plot_color[ii], linewidth=2, linestyle='-')  
-        
-        if(ii==0):
-            sel=(color_ur<(offset_color_cut[ii]-slope_color_cut[ii]*np.tanh((Magr+20.07)/1.09)))
-        else:
-            sel=((color_UV < minimum_y_color_cut[ii]) | 
-                 (color_UV < (color_VJ*local_slope_color_cut[ii] + local_offset_color_cut[ii]))) 
-        hist=np.histogram(log_BHMass[sel], bins=bin_arr, range=(inset_xlim[0],inset_xlim[1]))       
-        x_axis=hist[1][0:len(hist[1][:])-1]+inset_bin/2. 
-        hist=hist[0]
-        y_axis=hist/(np.sum(hist))
-        inset.plot(x_axis,y_axis, color=plot_color[ii], linewidth=2, linestyle='-')'''
-            
+            #median    
+            sel=(inset_x_binned>-5.) & (inset_x_binned<-2.) &(inset_median>inset_xlim[0])      
+            inset.plot(inset_median[sel],inset_x_binned[sel], color=plot_color[ii], linewidth=2,linestyle='-')
+      
         #LABELS   
         label="median z=%0.1f" % ThisRedshiftList[ii]
         plot_label (subplot, 'label', xlim, ylim, x_percentage=0.7, y_percentage=0.20-ii*0.03, 
                     color='black', xlog=0, ylog=0, label=label, 
-                    fontsize=13, fontweight='normal', backgroundcolor='w') 
+                    fontsize=10, fontweight='normal', backgroundcolor='w') 
         
         plot_label (subplot, 'line', xlim, ylim,
                     x_percentage=0.66, y_percentage=0.207-ii*0.03, color=plot_color[ii], x2_percentage=0.69, 
                     xlog=0, ylog=0, linestyle='-', linewidth=2)
                       
         label="Quenched threshold z=%0.1f" % ThisRedshiftList[ii]
-        plot_label (subplot, 'label', xlim, ylim, x_percentage=0.7, y_percentage=0.1-ii*0.032, 
+        plot_label (subplot, 'label', xlim, ylim, x_percentage=0.65, y_percentage=0.1-ii*0.032, 
                     color='black', xlog=0, ylog=0, label=label, 
-                    fontsize=13, fontweight='normal', backgroundcolor='w') 
+                    fontsize=10, fontweight='normal', backgroundcolor='w') 
         
         plot_label (subplot, 'line', xlim, ylim,
-                    x_percentage=0.66, y_percentage=0.107-ii*0.032, color=plot_color[ii], x2_percentage=0.69, 
+                    x_percentage=0.6, y_percentage=0.107-ii*0.032, color=plot_color[ii], x2_percentage=0.69, 
                     xlog=0, ylog=0, linestyle='--', linewidth=2)
         
         
@@ -2582,17 +2522,48 @@ def BHBM_by_sfr(G_MR, ThisRedshiftList, pdf):
                         color='black', xlog=0, ylog=0, label=label, fontsize=12, fontweight='normal',
                         rotation=3, backgroundcolor='none')       
             
-            plot_label (subplot, 'label', xlim, ylim, x_percentage=0.075, y_percentage=0.48, 
-                    color='red', xlog=0, ylog=0, label='Passive (z=0)', 
-                    fontsize=13, fontweight='normal') 
-            plot_label (subplot, 'symbol', xlim, ylim, x_percentage=0.05, y_percentage=0.49, 
-                    color='red', xlog=0, ylog=0, sym='o', sym_size=5, err_size=0.) 
+            if(plot_inset==1):                         
+                plot_label (subplot, 'label', xlim, ylim, x_percentage=0.045, y_percentage=0.46, 
+                            color='red', xlog=0, ylog=0, label='Passive (z=0)', 
+                            fontsize=10, fontweight='normal') 
+                plot_label (subplot, 'symbol', xlim, ylim, x_percentage=0.03, y_percentage=0.47, 
+                            color='red', xlog=0, ylog=0, sym='o', sym_size=5, err_size=0.) 
+
+                plot_label (subplot, 'label', xlim, ylim, x_percentage=0.045, y_percentage=0.42, 
+                            color='blue', xlog=0, ylog=0, label='Star Forming (z=0)', 
+                            fontsize=10, fontweight='normal') 
+                plot_label (subplot, 'symbol', xlim, ylim, x_percentage=0.03, y_percentage=0.43, 
+                            color='blue', xlog=0, ylog=0, sym='o', sym_size=5, err_size=0.) 
+            else:
+                plot_label (subplot, 'label', xlim, ylim, x_percentage=0.065, y_percentage=0.84, 
+                            color='red', xlog=0, ylog=0, label='Passive (z=0)', 
+                            fontsize=10, fontweight='normal') 
+                plot_label (subplot, 'symbol', xlim, ylim, x_percentage=0.05, y_percentage=0.85, 
+                            color='red', xlog=0, ylog=0, sym='o', sym_size=5, err_size=0.) 
+
+                plot_label (subplot, 'label', xlim, ylim, x_percentage=0.065, y_percentage=0.8, 
+                            color='blue', xlog=0, ylog=0, label='Star Forming (z=0)', 
+                            fontsize=10, fontweight='normal') 
+                plot_label (subplot, 'symbol', xlim, ylim, x_percentage=0.05, y_percentage=0.81, 
+                            color='blue', xlog=0, ylog=0, sym='o', sym_size=5, err_size=0.)
             
-            plot_label (subplot, 'label', xlim, ylim, x_percentage=0.075, y_percentage=0.44, 
-                    color='blue', xlog=0, ylog=0, label='Star Forming (z=0)', 
-                    fontsize=13, fontweight='normal') 
-            plot_label (subplot, 'symbol', xlim, ylim, x_percentage=0.05, y_percentage=0.45, 
-                    color='blue', xlog=0, ylog=0, sym='o', sym_size=5, err_size=0.) 
+            #inset
+            if(plot_inset==1):
+                plot_label (inset, 'label', inset_xlim, inset_ylim, x_percentage=0.18, y_percentage=0.875, 
+                            color='black', xlog=0, ylog=0, label='Cooling-Heating balance', 
+                            fontsize=10, fontweight='normal') 
+
+                plot_label (inset, 'label', inset_xlim, inset_ylim, x_percentage=0.075, y_percentage=0.75, 
+                            color='red', xlog=0, ylog=0, label='Passive (z=0)', 
+                            fontsize=10, fontweight='normal') 
+                plot_label (inset, 'symbol', inset_xlim, inset_ylim, x_percentage=0.05, y_percentage=0.775, 
+                            color='red', xlog=0, ylog=0, sym='o', sym_size=5., err_size=0.) 
+
+                plot_label (inset, 'label', inset_xlim, inset_ylim, x_percentage=0.075, y_percentage=0.65, 
+                            color='blue', xlog=0, ylog=0, label='Star Forming (z=0)', 
+                            fontsize=10, fontweight='normal') 
+                plot_label (inset, 'symbol', inset_xlim, inset_ylim, x_percentage=0.05, y_percentage=0.675, 
+                            color='blue', xlog=0, ylog=0, sym='o', sym_size=5., err_size=0.) 
                      
     plt.tight_layout()
     plt.savefig('./fig/plots_bhbm_by_sfr.pdf')
@@ -2617,12 +2588,12 @@ def AGN_quenching(G_MR, ThisRedshiftList, pdf):
     SSFR_cut=[-11.,-10.5,-10.]
     
     xlim=[9.0,11.5]
-    ylim=[-6.0, 0.]
+    ylim=[4.5, 10.]   
         
     plot_color=['red','orange','green','blue']        
     plt.rcParams.update({'xtick.major.width': 1.0, 'ytick.major.width': 1.0, 
                          'xtick.minor.width': 1.0, 'ytick.minor.width': 1.0})
-    fig = plt.figure(figsize=(10,8)) 
+    fig = plt.figure(figsize=(7,6)) 
     subplot=plt.subplot()
     subplot.set_ylim(ylim), subplot.set_xlim(xlim)    
       
@@ -2636,29 +2607,6 @@ def AGN_quenching(G_MR, ThisRedshiftList, pdf):
     subplot.set_xlabel(xlab, fontsize=16), subplot.set_ylabel(ylab, fontsize=16)   
 
     
-    
-    # this is an inset axes over the main axes
-    plt.rcParams.update({'font.size': 10, 'xtick.labelsize': 10, 'ytick.labelsize': 10,
-                         'xtick.major.width': 1.0, 'ytick.major.width': 1.0, 
-                         'xtick.minor.width': 1.0, 'ytick.minor.width': 1.0})
-    #inset_xlim=[4.,9.]
-    #inset_ylim=[.0, .5]   
-    inset = inset_axes(subplot, width="100%", height="100%", 
-                       bbox_to_anchor=(0.12, 0.62, 0.38, 0.33), 
-                       bbox_transform=subplot.figure.transFigure)
-    #fig.subplots_adjust(hspace=0.4)
-    inset.set_ylim(ylim), inset.set_xlim(xlim)    
-   
-    inset.xaxis.set_major_locator(MultipleLocator(1))    
-    inset.xaxis.set_minor_locator(MultipleLocator(0.5)) 
-    #xlab='$\mathrm{log_{10}}(M_{\mathrm{BH}}[h^{-2}M_{\odot}])$'       
-    #ylab='$Fraction$' 
-    inset.yaxis.set_label_position("right")
-    inset.set_xlabel(xlab, fontsize=14), inset.set_ylabel(ylab, fontsize=14, rotation=270, labelpad=20)   
-    inset.tick_params(axis='y', which='both', left='on', labelleft='off', right='on',labelright='on')
-      
-        
-        
     for ii in range(0,len(ThisRedshiftList)):        
                     
         (sel)=select_current_redshift(G_MR, ThisRedshiftList, ii, FullSnapshotList_MR)        
@@ -2666,132 +2614,80 @@ def AGN_quenching(G_MR, ThisRedshiftList, pdf):
         G0_MR=G0_MR_unsel[(np.log10(G0_MR_unsel['StellarMass']*1.e10*Hubble_h) > xlim[0]-1.) & 
                           (np.log10(G0_MR_unsel['BlackHoleMass']*1.e10) > ylim[0]-1.) &
                           (G0_MR_unsel['Type'] == 0)]
-        G0_MR=np.random.choice(G0_MR, size=3000.)
-        
+                
         log_StellarMass=(np.log10(G0_MR['StellarMass']*1.e10*Hubble_h))        
-        y_axis=np.log10(G0_MR['BlackHoleMass']/(G0_MR['Mvir']**0.097)/((1+ThisRedshiftList[ii])**1.5))
+        log_BHMass=(np.log10(G0_MR['BlackHoleMass']*1.e10)) 
         log_SSFR=np.log10((G0_MR['Sfr']/(G0_MR['StellarMass']*1.e10/Hubble_h)))
         color_ur=G0_MR['MagDust'][:,15]-G0_MR['MagDust'][:,17]  
         Magr=G0_MR['MagDust'][:,17]-5.*np.log10(Hubble_h)
         color_UV=G0_MR['MagDust'][:,0]-G0_MR['MagDust'][:,2]  
         color_VJ=G0_MR['MagDust'][:,2]-G0_MR['MagDust'][:,7]   
-        
-       
-        if(ii==0):           
-            subplot.scatter(log_StellarMass, y_axis, s=5, color='blue') 
-            #sel=(color_ur>(local_offset_color_cut[ii]-local_slope_color_cut[ii]*np.tanh((Magr+20.07)/1.09))) 
-            #sel=(color_ur>(local_offset_color_cut[ii]-local_slope_color_cut[ii]*np.tanh((Magr+18.07)/1.09))) 
-            #sel=((color_UV > minimum_y_color_cut[ii]) & 
-            #     (color_UV > (color_VJ*local_slope_color_cut[ii] + local_offset_color_cut[ii])))
-            sel=np.log10(G0_MR['Sfr']/(G0_MR['StellarMass']*1.e10/Hubble_h))<SSFR_cut[ii]
-            subplot.scatter(log_StellarMass[sel], y_axis[sel], s=5, color='red') 
-        
-        if(ii==0): 
-            x_arr=np.arange(9.8,10.22,0.005)  
-            #z=0
-            (slope0,b0)=get_slope(x1=9.,y1=-4.15,x2=11.,y2=-4.15)
-            #z=2
-            (slope2,b2)=get_slope(x1=9.,y1=-4.25,x2=11.,y2=-4.25)
-            subplot.fill_between(x_arr,x_arr*slope0+b0,x_arr*slope2+b2, facecolor='lightgrey', 
-                                 interpolate=True, alpha=0.4, edgecolor='black')   
-        
-                 
-        #if(ii==0):                    
-        (slope,b)=get_slope(x1=9.,y1=-4.2,x2=11.,y2=-4.2)
-        x_arr=np.arange(xlim[0],xlim[1]+0.05,0.05)     
-        y_arr=x_arr*slope+b          
-        subplot.plot(x_arr,y_arr,color='black', linestyle='--', linewidth=2)         
-                    
-        #median
-        (sel)=select_current_redshift(G_MR, ThisRedshiftList, ii, FullSnapshotList_MR)   
-        G0_MR_unsel=G_MR[sel]         
-        G0_MR=G0_MR_unsel[(G0_MR_unsel['StellarMass'] > 0.) & (G0_MR_unsel['BlackHoleMass'] > 0.) &
-                          (G0_MR_unsel['Type'] == 0)]     
-        log_StellarMass=(np.log10(G0_MR['StellarMass']*1.e10*Hubble_h)) 
-        y_axis=np.log10(G0_MR['BlackHoleMass']/(G0_MR['Mvir']**0.097)/((1+ThisRedshiftList[ii])**1.5))
-        log_SSFR=np.log10((G0_MR['Sfr']/(G0_MR['StellarMass']*1.e10/Hubble_h)))
-        color_ur=G0_MR['MagDust'][:,15]-G0_MR['MagDust'][:,17]  
-        Magr=G0_MR['MagDust'][:,17]-5.*np.log10(Hubble_h)
-        color_UV=G0_MR['MagDust'][:,0]-G0_MR['MagDust'][:,2]  
-        color_VJ=G0_MR['MagDust'][:,2]-G0_MR['MagDust'][:,7]   
-        
+                
         bin=0.1        
-        (x_binned, median, mean, pc16, pc84)=median_and_percentiles (bin, ylim[0], ylim[1],y_axis, log_StellarMass)      
-        sel=(x_binned>-5.) & (x_binned<-2.) &(median>xlim[0])      
+        (x_binned, median, mean, pc16, pc84)=median_and_percentiles (bin, ylim[0], ylim[1],log_BHMass, log_StellarMass)      
+        sel=(x_binned>4.7) & (x_binned<8.5) &(median>xlim[0])    
         subplot.plot(median[sel],x_binned[sel], color=plot_color[ii], linewidth=2,linestyle='-')
                        
         #inset 
-        ellipse = Ellipse(xy=(9.0, -4.4), width=2.5, height=1.7, angle=20,
+        ellipse = Ellipse(xy=(9.2, 6.), width=3.0, height=2.0, angle=20,
                           fc='lightblue', edgecolor='lightblue', lw=2, alpha=0.3)
-        inset.add_patch(ellipse)   
-        ellipse = Ellipse(xy=(10.8, -2.3), width=4.2, height=1.2, angle=70,
+        subplot.add_patch(ellipse)   
+        ellipse = Ellipse(xy=(10.95, 8.3), width=4.2, height=1.2, angle=70,
                           fc='pink', edgecolor='pink', lw=2, alpha=0.3)
-        inset.add_patch(ellipse)   
-        inset.plot(median[sel],x_binned[sel], color=plot_color[ii], linewidth=2,alpha=0.3)
+        subplot.add_patch(ellipse)   
+        subplot.plot(median[sel],x_binned[sel], color=plot_color[ii], linewidth=2,alpha=0.3)
         
+        (slope,b)=get_slope(x1=9.,y1=8.8,x2=11.5,y2=4.8)
+        x_arr=np.arange(xlim[0],xlim[1]+0.05,0.05)     
+        y_arr=x_arr*slope+b          
+        subplot.plot(x_arr,y_arr,color='black', linestyle=':', linewidth=2) 
+            
         if(ii==0):
-            label='in-situ star formation'
-            plot_label (inset, 'label', xlim, ylim, x_percentage=0.02, y_percentage=0.35, 
-                        color='blue', xlog=0, ylog=0, label=label, fontsize=12, fontweight='normal',rotation=10)            
-            label='disk formation'
-            plot_label (inset, 'label', xlim, ylim, x_percentage=0.06, y_percentage=0.52, 
-                        color='blue', xlog=0, ylog=0, label=label, fontsize=12, fontweight='normal')
-            label='weak BH growth'
-            plot_label (inset, 'label', xlim, ylim, x_percentage=0.04, y_percentage=0.44, 
-                        color='blue', xlog=0, ylog=0, label=label, fontsize=12, fontweight='normal')
-        
-        
-            label='merger-driven growth'
-            plot_label (inset, 'label', xlim, ylim, x_percentage=0.48, y_percentage=0.84, 
-                        color='red', xlog=0, ylog=0, label=label, fontsize=12, fontweight='normal',rotation=37) 
+            label='SN feedback'
+            plot_label (subplot, 'label', xlim, ylim, x_percentage=0.6, y_percentage=0.15, 
+                        color='black', xlog=0, ylog=0, label=label, fontsize=13, fontweight='normal')
+            label='efficiency threshold'
+            plot_label (subplot, 'label', xlim, ylim, x_percentage=0.55, y_percentage=0.1, 
+                        color='black', xlog=0, ylog=0, label=label, fontsize=13, fontweight='normal')
             
-            label='bulge formation'
-            plot_label (inset, 'label', xlim, ylim, x_percentage=0.3, y_percentage=0.86, 
-                        color='red', xlog=0, ylog=0, label=label, fontsize=12, fontweight='normal') 
-            label='strong BH growth'
-            plot_label (inset, 'label', xlim, ylim, x_percentage=0.28, y_percentage=0.78, 
-                        color='red', xlog=0, ylog=0, label=label, fontsize=12, fontweight='normal') 
-       
-    
-    
-        #LABELS   
-        label="median z=%0.1f" % ThisRedshiftList[ii]
-        plot_label (subplot, 'label', xlim, ylim, x_percentage=0.7, y_percentage=0.15-ii*0.032, 
-                    color='black', xlog=0, ylog=0, label=label, 
-                    fontsize=13, fontweight='normal', backgroundcolor='w') 
-        
-        plot_label (subplot, 'line', xlim, ylim,
-                    x_percentage=0.66, y_percentage=0.157-ii*0.032, color=plot_color[ii], x2_percentage=0.69, 
-                    xlog=0, ylog=0, linestyle='-', linewidth=2)                                  
-        
-        
-        if ii==0:
-            label="Quenching threshold"
-            plot_label (subplot, 'label', xlim, ylim, x_percentage=0.7, y_percentage=0.19, 
-                        color='black', xlog=0, ylog=0, label=label, 
-                        fontsize=13, fontweight='normal', backgroundcolor='w') 
-
-            plot_label (subplot, 'line', xlim, ylim,
-                        x_percentage=0.66, y_percentage=0.197, color='black', x2_percentage=0.69, 
-                        xlog=0, ylog=0, linestyle='--', linewidth=2)
-        
-            label='quenching mass (0<z<2)'
-            plot_label (subplot, 'label', xlim, ylim, x_percentage=0.55, y_percentage=0.27, 
-                        color='black', xlog=0, ylog=0, label=label, fontsize=12, fontweight='normal',
-                        rotation=0, backgroundcolor='none')       
-            
-            plot_label (subplot, 'label', xlim, ylim, x_percentage=0.075, y_percentage=0.43, 
-                    color='red', xlog=0, ylog=0, label='Passive (z=0)', 
-                    fontsize=13, fontweight='normal') 
-            plot_label (subplot, 'symbol', xlim, ylim, x_percentage=0.05, y_percentage=0.44, 
-                    color='red', xlog=0, ylog=0, sym='o', sym_size=5, err_size=0.) 
-            
-            plot_label (subplot, 'label', xlim, ylim, x_percentage=0.075, y_percentage=0.39, 
-                    color='blue', xlog=0, ylog=0, label='Star Forming (z=0)', 
-                    fontsize=13, fontweight='normal') 
-            plot_label (subplot, 'symbol', xlim, ylim, x_percentage=0.05, y_percentage=0.40, 
-                    color='blue', xlog=0, ylog=0, sym='o', sym_size=5, err_size=0.) 
+            label='SN feedback regulated'
+            plot_label (subplot, 'label', xlim, ylim, x_percentage=0.02, y_percentage=0.38, 
+                        color='blue', xlog=0, ylog=0, label=label, fontsize=13, fontweight='normal',rotation=10)
+            label='cold-mode accretion'
+            plot_label (subplot, 'label', xlim, ylim, x_percentage=0.05, y_percentage=0.33, 
+                        color='blue', xlog=0, ylog=0, label=label, fontsize=13, fontweight='normal',rotation=10)            
                      
+            label='in-situ star formation'
+            plot_label (subplot, 'label', xlim, ylim, x_percentage=0.02, y_percentage=0.6, 
+                        color='blue', xlog=0, ylog=0, label=label, fontsize=13, fontweight='normal')            
+            label='disk formation'
+            plot_label (subplot, 'label', xlim, ylim, x_percentage=0.06, y_percentage=0.55, 
+                        color='blue', xlog=0, ylog=0, label=label, fontsize=13, fontweight='normal')
+            label='weak BH growth'
+            plot_label (subplot, 'label', xlim, ylim, x_percentage=0.05, y_percentage=0.5, 
+                        color='blue', xlog=0, ylog=0, label=label, fontsize=13, fontweight='normal')
+                   
+        
+            label='AGN feedback regulated'
+            plot_label (subplot, 'label', xlim, ylim, x_percentage=0.52, y_percentage=0.91, 
+                        color='red', xlog=0, ylog=0, label=label, fontsize=13, fontweight='normal',rotation=37) 
+            label='hot-mode accretion'
+            plot_label (subplot, 'label', xlim, ylim, x_percentage=0.58, y_percentage=0.84, 
+                        color='red', xlog=0, ylog=0, label=label, fontsize=13, fontweight='normal',rotation=37) 
+                        
+            label='significant merger-driven growth'
+            plot_label (subplot, 'label', xlim, ylim, x_percentage=0.18, y_percentage=0.9, 
+                        color='red', xlog=0, ylog=0, label=label, fontsize=13, fontweight='normal') 
+            label='bulge formation'
+            plot_label (subplot, 'label', xlim, ylim, x_percentage=0.3, y_percentage=0.85, 
+                        color='red', xlog=0, ylog=0, label=label, fontsize=13, fontweight='normal') 
+            label='strong BH growth'
+            plot_label (subplot, 'label', xlim, ylim, x_percentage=0.29, y_percentage=0.8, 
+                        color='red', xlog=0, ylog=0, label=label, fontsize=13, fontweight='normal') 
+     
+            
+    
+    
     plt.tight_layout()
     plt.savefig('./fig/plots_AGN_quenching.pdf')
     pdf.savefig()
