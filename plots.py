@@ -337,7 +337,7 @@ def stellar_mass_function(G_MR, Volume_MR, G_MRII, Volume_MRII, ThisRedshiftList
             y_axis=np.log10(hist_MR/(Volume_MR*bin))
             subplot.plot(x_axis,y_axis, color='red', linewidth=2, linestyle='-') 
             
-        fa = open(Datadir+"SMF_Hen15_no_feedback_z"+char_redshift+".txt", "w")
+        fa = open(Datadir+"SMF_Hen15__other_z"+char_redshift+".txt", "w")
         fa.write("%d\n" % len(x_axis))
         for kk in range (0,len(x_axis)):               
             fa.write("%0.2f " % x_axis[kk] + "%0.2f\n" % y_axis[kk])         
@@ -392,7 +392,7 @@ def stellar_mass_function(G_MR, Volume_MR, G_MRII, Volume_MRII, ThisRedshiftList
 def stellar_mass_function_z0_overplot(pdf):
            
     xlim=[8.0,12.5]
-    ylim=[-5.5, 0.5]
+    ylim=[-5.5, 1.0]
         
     plot_color=['red','purple']        
     plt.rcParams.update({'xtick.major.width': 1.0, 'ytick.major.width': 1.0, 
@@ -2301,7 +2301,8 @@ def sizes_vs_stellarmass(G_MR, ThisRedshiftList, pdf):
     
 def BHBM_by_sfr(G_MR, ThisRedshiftList, pdf):
     
-    plot_inset=1
+    plot_inset=0
+    other_models=1
     
     '''xlim=[9.0,11.5]
     ylim=[-13.0, -7.]   
@@ -2448,8 +2449,9 @@ def BHBM_by_sfr(G_MR, ThisRedshiftList, pdf):
             (slope0,b0)=get_slope(x1=9.,y1=5.8,x2=11.5,y2=6.25)
             #z=2
             (slope2,b2)=get_slope(x1=9.,y1=6.6,x2=11.5,y2=7.05)
-            subplot.fill_between(x_arr,x_arr*slope0+b0,x_arr*slope2+b2, facecolor='lightgrey', 
-                                 interpolate=True, alpha=0.4, edgecolor='black')   
+            if(other_models==0):
+                subplot.fill_between(x_arr,x_arr*slope0+b0,x_arr*slope2+b2, facecolor='lightgrey', 
+                                     interpolate=True, alpha=0.4, edgecolor='black')   
         
                  
         if(ii==0):                    
@@ -2462,8 +2464,9 @@ def BHBM_by_sfr(G_MR, ThisRedshiftList, pdf):
             
             
         x_arr=np.arange(xlim[0],xlim[1]+0.05,0.05)     
-        y_arr=x_arr*slope+b          
-        subplot.plot(x_arr,y_arr,color=plot_color[ii], linestyle='--', linewidth=2)         
+        y_arr=x_arr*slope+b    
+        if(other_models==0):
+            subplot.plot(x_arr,y_arr,color=plot_color[ii], linestyle='--', linewidth=2)         
                     
         #median        
         sel=(x_binned>4.7) & (x_binned<8.5) &(median>xlim[0])  
@@ -2498,29 +2501,31 @@ def BHBM_by_sfr(G_MR, ThisRedshiftList, pdf):
       
         #LABELS   
         label="median z=%0.1f" % ThisRedshiftList[ii]
-        plot_label (subplot, 'label', xlim, ylim, x_percentage=0.7, y_percentage=0.20-ii*0.03, 
+        plot_label (subplot, 'label', xlim, ylim, x_percentage=0.7, y_percentage=0.20-ii*0.034, 
                     color='black', xlog=0, ylog=0, label=label, 
-                    fontsize=10, fontweight='normal', backgroundcolor='w') 
+                    fontsize=10, fontweight='normal', backgroundcolor='none') 
         
         plot_label (subplot, 'line', xlim, ylim,
-                    x_percentage=0.66, y_percentage=0.207-ii*0.03, color=plot_color[ii], x2_percentage=0.69, 
+                    x_percentage=0.66, y_percentage=0.207-ii*0.034, color=plot_color[ii], x2_percentage=0.69, 
                     xlog=0, ylog=0, linestyle='-', linewidth=2)
                       
-        label="Quenched threshold z=%0.1f" % ThisRedshiftList[ii]
-        plot_label (subplot, 'label', xlim, ylim, x_percentage=0.65, y_percentage=0.1-ii*0.032, 
-                    color='black', xlog=0, ylog=0, label=label, 
-                    fontsize=10, fontweight='normal', backgroundcolor='w') 
+        if(other_models==0):
+            label="Quenched threshold z=%0.1f" % ThisRedshiftList[ii]
+            plot_label (subplot, 'label', xlim, ylim, x_percentage=0.65, y_percentage=0.095-ii*0.034, 
+                        color='black', xlog=0, ylog=0, label=label, 
+                        fontsize=10, fontweight='normal', backgroundcolor='w') 
         
-        plot_label (subplot, 'line', xlim, ylim,
-                    x_percentage=0.6, y_percentage=0.107-ii*0.032, color=plot_color[ii], x2_percentage=0.69, 
-                    xlog=0, ylog=0, linestyle='--', linewidth=2)
+            plot_label (subplot, 'line', xlim, ylim,
+                        x_percentage=0.6, y_percentage=0.1065-ii*0.034, color=plot_color[ii], x2_percentage=0.69, 
+                        xlog=0, ylog=0, linestyle='--', linewidth=2)
         
         
         if ii==0:
-            label='average quenching mass (0<z<2)'
-            plot_label (subplot, 'label', xlim, ylim, x_percentage=0.52, y_percentage=0.34, 
-                        color='black', xlog=0, ylog=0, label=label, fontsize=12, fontweight='normal',
-                        rotation=3, backgroundcolor='none')       
+            if(other_models==0):
+                label='average quenching mass (0<z<2)'
+                plot_label (subplot, 'label', xlim, ylim, x_percentage=0.52, y_percentage=0.34, 
+                            color='black', xlog=0, ylog=0, label=label, fontsize=12, fontweight='normal',
+                            rotation=3, backgroundcolor='none')       
             
             if(plot_inset==1):                         
                 plot_label (subplot, 'label', xlim, ylim, x_percentage=0.045, y_percentage=0.46, 
@@ -2625,7 +2630,7 @@ def AGN_quenching(G_MR, ThisRedshiftList, pdf):
                 
         bin=0.1        
         (x_binned, median, mean, pc16, pc84)=median_and_percentiles (bin, ylim[0], ylim[1],log_BHMass, log_StellarMass)      
-        sel=(x_binned>4.7) & (x_binned<8.5) &(median>xlim[0])    
+        sel=(x_binned>4.7) & (x_binned<8.) &(median>xlim[0])    
         subplot.plot(median[sel],x_binned[sel], color=plot_color[ii], linewidth=2,linestyle='-')
                        
         #inset 

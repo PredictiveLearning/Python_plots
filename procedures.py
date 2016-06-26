@@ -15,7 +15,6 @@ plot_label
 plot_joint_MR_MRII
 mag_to_lum
 get_slope
-read_file
 """
     
     
