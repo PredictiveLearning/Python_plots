@@ -6,8 +6,21 @@
 import numpy as np
 
 LGalaxiesStruct = np.dtype([
+('GalID',np.int64,1),
+('HaloID',np.int64,1),
+('FirstProgGal',np.int64,1),
+('NextProgGal',np.int64,1),
+('LastProgGal',np.int64,1),
+('FOFCentralGal',np.int64,1),
+('FileTreeNr',np.int64,1),
+('DescendantGal',np.int64,1),
+('MainLeafId',np.int64,1),
+('TreeRootId',np.int64,1),
+('SubID',np.int64,1),
+('MMSubID',np.int64,1),
+('PeanoKey',np.int32,1),
+('Redshift',np.float32,1),
 ('Type',np.int32,1),
-('HaloIndex',np.int32,1),
 ('SnapNum',np.int32,1),
 ('LookBackTimeToSnap',np.float32,1),
 ('CentralMvir',np.float32,1),
@@ -29,8 +42,8 @@ LGalaxiesStruct = np.dtype([
 ('HotRadius',np.float32,1),
 ('OriMergTime',np.float32,1),
 ('MergTime',np.float32,1),
-('flagSplashBack',np.int32,1), 
-('TimeSinceSplashBack',np.float32,1),              
+#('flagSplashBack',np.int32,1), 
+#('TimeSinceSplashBack',np.float32,1),              
 ('ColdGas',np.float32,1),
 ('StellarMass',np.float32,1),
 ('DiskMass',np.float32,1),
@@ -83,9 +96,9 @@ LGalaxiesStruct = np.dtype([
 ('sfh_MetalsDiskMass',np.float32,20),
 ('sfh_MetalsBulgeMass',np.float32,20),
 ('sfh_MetalsICM',np.float32,20),
-('sfh_MassFromInSitu',np.float32,20),
-('sfh_MassFromMergers',np.float32,20),
-('sfh_MassFromBurst',np.float32,20)
+#('sfh_MassFromInSitu',np.float32,20),
+#('sfh_MassFromMergers',np.float32,20),
+#('sfh_MassFromBurst',np.float32,20)
 ])
 
 '''('sfh_DiskMass',np.float32,20),
@@ -113,15 +126,22 @@ PropertiesToRead = {}
 for ii in LGalaxiesStruct.names:
 	PropertiesToRead[ii] = False
            
+PropertiesToRead['GalID'] = True 
+PropertiesToRead['HaloID'] = True
+PropertiesToRead['FirstProgGal'] = True
+PropertiesToRead['NextProgGal'] = True
+PropertiesToRead['LastProgGal'] = True
+PropertiesToRead['FOFCentralGal'] = True
+PropertiesToRead['MainLeafId'] = True
+PropertiesToRead['Redshift'] = True
 PropertiesToRead['Type'] = True
-#PropertiesToRead['HaloIndex'] = True
 PropertiesToRead['SnapNum'] = True
 #PropertiesToRead['LookBackTimeToSnap'] = True
 PropertiesToRead['CentralMvir'] = True
 #PropertiesToRead['CentralRvir'] = True
-PropertiesToRead['DistanceToCentralGal'] = True
-PropertiesToRead['Pos'] = True
-PropertiesToRead['Vel'] = True
+#PropertiesToRead['DistanceToCentralGal'] = True
+#PropertiesToRead['Pos'] = True
+#PropertiesToRead['Vel'] = True
 #PropertiesToRead['Len'] = True
 PropertiesToRead['Mvir'] = True
 PropertiesToRead['Rvir'] = True
@@ -136,8 +156,8 @@ PropertiesToRead['InfallSnap'] = True
 #PropertiesToRead['HotRadius'] = True
 #PropertiesToRead['OriMergTime'] = True
 #PropertiesToRead['MergTime'] = True
-PropertiesToRead['flagSplashBack'] = True
-PropertiesToRead['TimeSinceSplashBack'] = True
+#PropertiesToRead['flagSplashBack'] = True
+#PropertiesToRead['TimeSinceSplashBack'] = True
 PropertiesToRead['ColdGas'] = True
 PropertiesToRead['StellarMass'] = True
 PropertiesToRead['BulgeMass'] = True
@@ -149,8 +169,8 @@ PropertiesToRead['BlackHoleMass'] = True
 PropertiesToRead['MassFromInSitu'] = True
 PropertiesToRead['MassFromMergers'] = True
 PropertiesToRead['MassFromBursts'] = True
-PropertiesToRead['MetalsColdGas'] = True
-PropertiesToRead['MetalsStellarMass'] = True
+#PropertiesToRead['MetalsColdGas'] = True
+#PropertiesToRead['MetalsStellarMass'] = True
 #PropertiesToRead['MetalsBulgeMass'] = True
 #PropertiesToRead['MetalsDiskMass'] = True
 #PropertiesToRead['MetalsHotGas'] = True
@@ -166,14 +186,14 @@ PropertiesToRead['RadioAccretionRate'] = True
 PropertiesToRead['Sfr'] = True
 #PropertiesToRead['SfrBulge'] = True
 #PropertiesToRead['XrayLum'] = True
-PropertiesToRead['BulgeSize'] = True
-PropertiesToRead['StellarDiskRadius'] = True
-PropertiesToRead['StellarHalfMassRadius'] = True
+#PropertiesToRead['BulgeSize'] = True
+#PropertiesToRead['StellarDiskRadius'] = True
+#PropertiesToRead['StellarHalfMassRadius'] = True
 #PropertiesToRead['GasDiskRadius'] = True
 #PropertiesToRead['CosInclination'] = True
 #PropertiesToRead['DisruptOn'] = True
 #PropertiesToRead['MergeOn'] = True
-PropertiesToRead['MagDust'] = True
+#PropertiesToRead['MagDust'] = True
 #PropertiesToRead['Mag'] = True
 #PropertiesToRead['MagBulge'] = True
 PropertiesToRead['MassWeightAge'] = True

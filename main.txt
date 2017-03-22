@@ -1,20 +1,10 @@
 
-# coding: utf-8
-
-# # Python Plots for LGalaxies
-
-# ## Import Libraries and Read Catalogs
-
-# <p>Use functions read_snap or read_tree to read catalogs. These are both defined in procedures.py. In case of read_snap, SnapshotList will be returned containing the list of snapshots read (usefull to later select galaxies in a given redshift).<p>
-
-# In[ ]:
-
 import numpy as np
-get_ipython().magic('matplotlib inline')
+%matplotlib inline
 
 import pandas as pd
 
-get_ipython().magic('pylab inline')
+%pylab inline
 #import seaborn as sns
 
 import matplotlib.pyplot as plt
@@ -37,9 +27,8 @@ import plots_input
 reload (plots_input)
 from plots_input import *
 
-FirstFile = 0
-LastFile =  511
-
+FirstFile = 5
+LastFile =  5
 
 Volume_MR = (BoxSize_MR**3.0) * (LastFile - FirstFile + 1) / MaxTreeFiles / Hubble_h**3
 Volume_MRII = (BoxSize_MRII**3.0) * (LastFile - FirstFile + 1) / MaxTreeFiles  / Hubble_h**3
@@ -47,10 +36,8 @@ Volume_MRII = (BoxSize_MRII**3.0) * (LastFile - FirstFile + 1) / MaxTreeFiles  /
 print('Reading started')
 
 if CatalogType=='snap':       
-    #from LGalaxies_Henriques2015a_struct import LGalaxiesStruct
-    #from LGalaxies_Henriques2015a_struct import PropertiesToRead   
-    from LGalaxies_HWT16_struct import LGalaxiesStruct
-    from LGalaxies_HWT16_struct import PropertiesToRead   
+    from LGalaxies_Henriques2015a_struct import LGalaxiesStruct
+    from LGalaxies_Henriques2015a_struct import PropertiesToRead   
     #from LGalaxies_Henriques2015a_metals_struct import LGalaxiesStruct
     #from LGalaxies_Henriques2015a_metals_struct import PropertiesToRead
     #from LGalaxies_Henriques2015a_Elements_struct import LGalaxiesStruct
@@ -82,10 +69,8 @@ if CatalogType=='snap':
         (G_MRII, SnapshotList_MRII) = read_snap(DirName_MRII,FirstFile,LastFile,
                          PropertiesToRead,LGalaxiesStruct,RedshiftsToRead,FullRedshiftList)
 if CatalogType=='tree':    
-    #from LGalaxies_tree_Henriques2015a_struct import LGalaxiesStruct
-    #from LGalaxies_tree_Henriques2015a_struct import PropertiesToRead
-    from LGalaxies_tree_HWT16_struct import LGalaxiesStruct
-    from LGalaxies_tree_HWT16_struct import PropertiesToRead
+    from LGalaxies_tree_Henriques2015a_struct import LGalaxiesStruct
+    from LGalaxies_tree_Henriques2015a_struct import PropertiesToRead
     #from LGalaxies_tree_Henriques2015a_Rings_struct import LGalaxiesStruct
     #from LGalaxies_tree_Henriques2015a_Rings_struct import PropertiesToRead_tree
     #from LGalaxies_tree_Henriques2015a_Elements_Rings_struct import LGalaxiesStruct
@@ -134,26 +119,19 @@ for ii in range(0,RNUM):
     #print(RingRadius[ii])
 
 
-## Plots
+//if(Gal[p].ColdGas>0.)import plots if(DiskRadiusModel == 1 || DiskRadiusModel == 2)
+    {m_crit200
+      Gal[ngal].ColdGasRadius = get_initial_disk_radiu else if (ii==RNUM)s(halonr, ngal);
+      Gal[ngal].DiskRadius = Gal[ngal].ColdGasRadius;
+		      }
+Doing gasmetals_vs_stellarmass
+reload (plots) Gal[p].DiskSpin[ii]=((Gal[p].DiskSp/Gal[p].ColdGasin[ii])*(Gal[p].DiskMass)+1./sqrt(3)*coldgasspinpar*stars_to_add)/(Gal[p].DiskMass+stars_to_add);
+
+if(opt_rings==1):+ bhGROWTHININSTABILITIESx_binned, np.log10(median)'yellow','orange','yellow','orange',
+    import plots_rings
+    reload (plots else if (ii==RNUM)Jessica Hislop_rings)   
 
 
-# In[ ]:
-
-import plots 
-reload (plots) 
-import plots_ringsPropertiesToRead['StellarDiskRadius'] = True
-PropertiesToRead['StellarHalfMassRadius'] = True
-reload (plots)   
-
-
-# In[14]:
-
-
-
-
-# # Plots for snapshot output
-
-# In[6]:
 
 plt.rcParams.update({'font.size': 14, 'xtick.labelsize': 14, 'ytick.labelsize': 14, 'axes.linewidth': 2, 
                      'xtick.major.size': 6, 'xtick.major.width': 1.5, 
@@ -363,7 +341,7 @@ with PdfPages('./fig/plots.pdf') as pdf:
     if opt_cooling_heating==1:
         print('Doing cooling_heating')
         from plots import cooling_heating
-        ThisRedshiftList=[0.0,1.0,2.0,3.0]        
+        ThisRedshiftList=[0.0,1.0,2.0]        
         #BHBM_by_sfr(G_MR,G_MRII, ThisRedshiftList, pdf)
         cooling_heating(G_MR, ThisRedshiftList, pdf)
     
@@ -531,11 +509,6 @@ with PdfPages('./fig/plots.pdf') as pdf:
            
 #end with PdfPages('./fig/plots.pdf') as pdf: 
 
-
-# # Plots for tree output
-
-# In[205]:
-
 with PdfPages('./fig/plots.pdf') as pdf:  
     import procedures
     reload (procedures)
@@ -563,11 +536,6 @@ with PdfPages('./fig/plots.pdf') as pdf:
     print('All plots done')
         
 #end with PdfPages('./fig/plots.pdf') as pdf: 
-
-
-# # Compare 2 files
-
-# In[103]:
 
 #RedshiftsToRead = [False,False,False,False,False,False,True,False]
 #RedshiftsToRead = [False,False,False,False,True,False,False,False]
@@ -826,11 +794,6 @@ with PdfPages('./fig/plots.pdf') as pdf:
     
     print("All Plots Done!")
 
-
-# # Create Fits files
-
-# In[27]:
-
 ThisRedshiftList=[0.0]
 (sel)=select_current_redshift(G_MR, ThisRedshiftList, 0, FullSnapshotList_MR)
 G0_MR=G_MR[sel] 
@@ -907,9 +870,6 @@ print("")
 print("file written")
 print("")
 
-
-# In[28]:
-
 DirName_MR = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/BackSplashFlag/MR/'
 file=DirName_MR+'snap_MR_H15_BackSplash_z0.00.fits'
 HDUList=fits.open(file)
@@ -937,19 +897,11 @@ print("all done")
 print("")
 
 
-# ## Animations
-
-# In[ ]:
-
 import animations
 reload (animations)
     
 if opt_anime_mass_gr==1:   
     from animations import anime_mass_gr
     anime_mass_gr(G_MR)
-
-
-# In[ ]:
-
 
 

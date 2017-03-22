@@ -68,12 +68,12 @@ LGalaxiesStruct = np.dtype([
 ('sfh_ibin',np.int32,1),
 ('sfh_numbins',np.int32,1),
 ('sfh_DiskMass',np.float32,20),
-('sfh_BulgeMass',np.float32,20),
+('sfh_BulgeMass',np.float32,20),     
 ('sfh_ICM',np.float32,20),
 ('sfh_MetalsDiskMass',np.float32,20),
 ('sfh_MetalsBulgeMass',np.float32,20),
-('sfh_MetalsICM',np.float32,20)
-])
+('sfh_MetalsICM',np.float32,20)        
+ ])
 
 PropertiesToRead = {}
 for ii in LGalaxiesStruct.names:
@@ -84,10 +84,10 @@ PropertiesToRead['Type'] = True
 PropertiesToRead['SnapNum'] = True
 #PropertiesToRead['LookBackTimeToSnap'] = True
 PropertiesToRead['CentralMvir'] = True
-#PropertiesToRead['CentralRvir'] = True
+PropertiesToRead['CentralRvir'] = True
 PropertiesToRead['DistanceToCentralGal'] = True
 PropertiesToRead['Pos'] = True
-PropertiesToRead['Vel'] = True
+#PropertiesToRead['Vel'] = True
 #PropertiesToRead['Len'] = True
 PropertiesToRead['Mvir'] = True
 PropertiesToRead['Rvir'] = True
@@ -97,7 +97,7 @@ PropertiesToRead['Rvir'] = True
 #PropertiesToRead['StellarSpin'] = True
 #PropertiesToRead['InfallVmax'] = True
 #PropertiesToRead['InfallVmaxPeak'] = True
-#PropertiesToRead['InfallSnap'] = True
+PropertiesToRead['InfallSnap'] = True
 #PropertiesToRead['InfallHotGas'] = True
 #PropertiesToRead['HotRadius'] = True
 #PropertiesToRead['OriMergTime'] = True
@@ -106,7 +106,7 @@ PropertiesToRead['ColdGas'] = True
 PropertiesToRead['StellarMass'] = True
 PropertiesToRead['BulgeMass'] = True
 PropertiesToRead['DiskMass'] = True
-PropertiesToRead['HotGas'] = True
+#PropertiesToRead['HotGas'] = True
 #PropertiesToRead['EjectedMass'] = True
 PropertiesToRead['BlackHoleMass'] = True
 #PropertiesToRead['ICM'] = True
@@ -140,8 +140,8 @@ PropertiesToRead['MassWeightAge'] = True
 PropertiesToRead['rBandWeightAge'] = True
 #PropertiesToRead['sfh_ibin'] = True
 #PropertiesToRead['sfh_numbins'] = True
-#PropertiesToRead['sfh_DiskMass'] = True
-#PropertiesToRead['sfh_BulgeMass'] = True
+PropertiesToRead['sfh_DiskMass'] = True
+PropertiesToRead['sfh_BulgeMass'] = True
 #PropertiesToRead['sfh_ICM'] = True
 #PropertiesToRead['sfh_MetalsDiskMass'] = True
 #PropertiesToRead['sfh_MetalsBulgeMass'] = True

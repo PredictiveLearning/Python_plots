@@ -88,18 +88,19 @@ def read_snap(folder,FirstFile,LastFile,
                 nGals += this_nGals
                 print ("File ", ifile," nGals = ",this_nGals)  
                 
-                addednTreeHalos = np.fromfile(f,np.int32,this_nTrees)
+                addednTreeHalos = np.fromfile(f,np.int32,int(this_nTrees))
                 nTreeHalos = np.append(nTreeHalos,addednTreeHalos)
-                full_this_gals = np.fromfile(f,template,this_nGals) # all properties
+                full_this_gals = np.fromfile(f,template,int(this_nGals)) # all properties
                 this_gals = np.zeros(this_nGals,dtype=filter_dtype) # selected props
                 
                 for prop in template.names:
                     if props[prop]:
                         this_gals[prop] = full_this_gals[prop]
                               
-                gals[offset:offset+this_nGals] = this_gals[:]    
-                offset+=this_nGals
-                f.close()           
+                gals[offset:offset+int(this_nGals)] = this_gals[:]    
+                offset+=int(this_nGals)
+                f.close()       
+                
             #endfor
         #endif    
         #assign snapshot of current redshift given by the last galaxy on the last file 
@@ -149,7 +150,7 @@ def read_tree(folder,FirstFile,LastFile,
         one = np.fromfile(f,np.int32,1)
         nbytes = np.fromfile(f,np.int32,1)  
         nskip=nbytes/4-3
-        this_nGals = np.fromfile(f,np.int32,1)      
+        this_nGals = int(np.fromfile(f,np.int32,1))      
         nGals += this_nGals       
         print ("File ", ifile," nGals = ",this_nGals)      
         ib=np.fromfile(f,np.float32,int(nskip))          
@@ -217,17 +218,28 @@ def select_current_redshift(G_MR, ThisRedshiftList, ii, SnapshotList):
 def stellar_mass_with_err(G0_MR, Hubble_h, redshift):
     
     np.random.seed(seed=10)
-    mass= np.log10(G0_MR['StellarMass']*1.e10*Hubble_h) + np.random.randn(len(G0_MR['StellarMass']))*0.08*(1+redshift)    
+    mass= np.log10(G0_MR['StellarMass']*1.e10/Hubble_h) + np.random.randn(len(G0_MR['StellarMass']))*0.08*(1+redshift)    
     #mass= np.log10(G0_MR['StellarMass']*1.e10*Hubble_h) #+ np.random.randn(len(G0_MR['StellarMass']))*0.08*(1+redshift)
 
     return mass
 
 #end get_stellar_mass
 
+def sfr_with_err(G0_MR, Hubble_h, redshift):
+    
+    np.random.seed(seed=10)
+    sfr= np.log10(G0_MR['Sfr']) + np.random.randn(len(G0_MR['Sfr']))*0.08*(1+redshift)    
+    sfr= np.log10(G0_MR['Sfr']) + np.random.randn(len(G0_MR['Sfr']))*0.4
+    
+    return sfr
+
+#end get_stellar_mass
+
 
 def median_and_percentiles (bin, xmin, xmax, x_variable, y_variable): 
-   
+  
     min_x=min(x_variable[x_variable > (-1e20)])
+  
     if(min_x > xmin):
         xmin=min_x
     #print(xmin,xmax)
@@ -237,6 +249,7 @@ def median_and_percentiles (bin, xmin, xmax, x_variable, y_variable):
     mean=np.zeros(Nbins, np.float32)
     pc16=np.zeros(Nbins, np.float32) 
     pc84=np.zeros(Nbins, np.float32)  
+    rms=np.zeros(Nbins, np.float32) 
     x_min=xmin-bin/2.
   
     for ii in range(0,Nbins): 
@@ -248,13 +261,15 @@ def median_and_percentiles (bin, xmin, xmax, x_variable, y_variable):
             median[ii]=np.median(y_variable_sel) 
             mean[ii]=np.mean(y_variable_sel) 
             y_sorted = np.sort(y_variable_sel)
-            pc16[ii] = y_sorted[16*len(y_variable_sel)/100]      
-            pc84[ii] = y_sorted[84*len(y_variable_sel)/100]  
+            pc16[ii] = y_sorted[int(16*len(y_variable_sel)/100)]      
+            pc84[ii] = y_sorted[int(84*len(y_variable_sel)/100)]            
+            #rms[ii]=np.sqrt(np.mean((np.log10(y_variable_sel))**2))
+            rms[ii]=np.sqrt(1./len(y_variable_sel)*np.sum((mean[ii]-y_variable_sel)**2))
     #endfor
 
     x_binned=np.arange(Nbins)*((x_min+(Nbins*bin))-(x_min+(Nbins*0.0)))/(Nbins*1.)+x_min+bin/2.
  
-    return (x_binned, median, mean, pc16, pc84)
+    return (x_binned, median, mean, pc16, pc84, rms)
 
 #end median_and_percentiles
 
@@ -262,8 +277,32 @@ def median_and_percentiles (bin, xmin, xmax, x_variable, y_variable):
 
 
 
+def plot_fraction_vmax_weighted (xmin,xmax,bin,property,mag):
+        
+    Nbins=(xmax-xmin)/bin+1.      
+    frac=np.zeros(int(Nbins))
+         
+    max_d=10**((17.6-mag)/5.+1.)/1.e6 
+    weight = 1./max_d**3
+    
+    nii=np.sum(weight)
+    ind=0
+      
+    for jj in range (0,int(Nbins)):
+        cid=xmin+bin*jj
+        ww=((property > cid) & (property < cid+bin))
+        if len(ww)==0:
+            ind+=1
+            continue
+          
+        frac[ind]=np.sum(weight[ww])/nii
+        ind+=1
+        
+    x_arr=np.arange(xmin,xmax+bin,bin)        
+    
+    return (x_arr,frac)
 
-
+#end plot_fraction_vmax_weighted
 
 def grayify_cmap(cmap):
     """Return a grayscale version of the colormap"""
@@ -334,27 +373,32 @@ def plot_label_three_models (subplot, xlim, ylim, position):
 def plot_label (subplot, label_type, xlim, ylim, x_percentage, y_percentage, color, 
                 x2_percentage=0., xlog=0, ylog=0, label='', linestyle='-', linewidth=2, 
                 fontsize=16, fontweight='normal', sym='o', sym_size=5, err_size=0.1, 
-                rotation=0,backgroundcolor='none', alpha=1.):    
+                rotation=0,backgroundcolor='none', alpha=1.,back_alpha=0.,mfc='black'):    
     
-     if xlog==0 & ylog==0:
+    if(mfc=='black'):
+        mfc=color
+    
+    if xlog==0 & ylog==0:
       
-         if label_type=='label':
-             x=xlim[0]+(xlim[1]-xlim[0])*x_percentage
-             y=ylim[0]+(ylim[1]-ylim[0])*y_percentage             
-             subplot.text(x,y,label, fontsize=fontsize, fontweight=fontweight,rotation=rotation, 
-                          color=color, backgroundcolor=backgroundcolor, alpha=alpha)
-         else:
-             if label_type =='line':
-                 x1=xlim[0]+(xlim[1]-xlim[0])*x_percentage
-                 x2=xlim[0]+(xlim[1]-xlim[0])*x2_percentage
-                 y=ylim[0]+(ylim[1]-ylim[0])*y_percentage
-                 subplot.plot([x1,x2],[y,y],color=color,linestyle=linestyle, linewidth=2)
+        if label_type=='label':
+            x=xlim[0]+(xlim[1]-xlim[0])*x_percentage
+            y=ylim[0]+(ylim[1]-ylim[0])*y_percentage             
+            t=subplot.text(x,y,label, fontsize=fontsize, fontweight=fontweight,rotation=rotation, 
+                           color=color, backgroundcolor=backgroundcolor, alpha=alpha)
+            t.set_bbox(dict(alpha=back_alpha, color=backgroundcolor))
+        else:
+            if label_type =='line':
+                x1=xlim[0]+(xlim[1]-xlim[0])*x_percentage
+                x2=xlim[0]+(xlim[1]-xlim[0])*x2_percentage
+                y=ylim[0]+(ylim[1]-ylim[0])*y_percentage
+                subplot.plot([x1,x2],[y,y],color=color,linestyle=linestyle, linewidth=linewidth)
                 
-             else:
-                 if label_type=='symbol':
-                     x=xlim[0]+(xlim[1]-xlim[0])*x_percentage
-                     y=ylim[0]+(ylim[1]-ylim[0])*y_percentage                     
-                     subplot.errorbar(x,y, yerr=err_size, fmt=sym, markersize=sym_size, color=color)
+            else:
+                if label_type=='symbol':
+                    x=xlim[0]+(xlim[1]-xlim[0])*x_percentage
+                    y=ylim[0]+(ylim[1]-ylim[0])*y_percentage                     
+                    subplot.errorbar(x,y, yerr=err_size, fmt=sym, markersize=sym_size, 
+                                     color=color, markeredgecolor=color,mfc=mfc)
                   
  
 #end plot_label
@@ -398,7 +442,7 @@ def get_slope(x1=1., y1=1., x2=1., y2=1.):
 
 
 def read_file(fa):
-
+    fa = open(fa, "r") 
     index=0
     for line in fa:
         if(index==0):                
@@ -413,6 +457,48 @@ def read_file(fa):
         index+=1    
         
     return(x_axis,y_axis)  
+
+#end read_file
+
+def read_data_with_one_err(fa):
+    fa = open(fa, "r") 
+    index=0
+    for line in fa:
+        if(index==0):                
+            fields = line.strip().split()             
+            N_elements=int(fields[0])          
+            x_axis=np.zeros(N_elements,dtype=np.float32)
+            y_axis=np.zeros(N_elements,dtype=np.float32)
+            y_err=np.zeros(N_elements,dtype=np.float32)           
+        else:
+            fields = line.strip().split()               
+            x_axis[index-1]=float(fields[0])
+            y_axis[index-1]=float(fields[1])  
+            y_err[index-1]=float(fields[2])          
+        index+=1    
+        
+    return(x_axis,y_axis, y_err)  
+
+def read_data_with_err(fa):
+    fa = open(fa, "r") 
+    index=0
+    for line in fa:
+        if(index==0):                
+            fields = line.strip().split()             
+            N_elements=int(fields[0])
+            x_axis=np.zeros(N_elements,dtype=np.float32)
+            y_axis=np.zeros(N_elements,dtype=np.float32)
+            y_err_down=np.zeros(N_elements,dtype=np.float32)
+            y_err_up=np.zeros(N_elements,dtype=np.float32)
+        else:
+            fields = line.strip().split()               
+            x_axis[index-1]=float(fields[0])
+            y_axis[index-1]=float(fields[1])  
+            y_err_down[index-1]=float(fields[2])
+            y_err_up[index-1]=float(fields[3])
+        index+=1    
+        
+    return(x_axis,y_axis, y_err_down, y_err_up)  
 
 #end read_file
 

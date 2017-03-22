@@ -1,14 +1,22 @@
-# -*- coding: utf-8 -*-
-# <nbformat>3.0</nbformat>
-
-# <codecell>
-
 import numpy as np
 
 LGalaxiesStruct = np.dtype([
+('GalID',np.int64,1),
+('HaloID',np.int64,1),
+('FirstProgGal',np.int64,1),
+('NextProgGal',np.int64,1),
+('LastProgGal',np.int64,1),
+('FOFCentralGal',np.int64,1),
+('FileTreeNr',np.int64,1),
+('DescendantGal',np.int64,1),
+('MainLeafId',np.int64,1),
+('TreeRootId',np.int64,1),
+('SubID',np.int64,1),
+('MMSubID',np.int64,1),
+('PeanoKey',np.int32,1),
+('Redshift',np.float32,1),
 ('Type',np.int32,1),
-('HaloIndex',np.int32,1),
-('SnapNum',np.int32,1),
+('SnapNum',np.int32,1),    
 ('LookBackTimeToSnap',np.float32,1),
 ('CentralMvir',np.float32,1),
 ('CentralRvir',np.float32,1),
@@ -20,7 +28,8 @@ LGalaxiesStruct = np.dtype([
 ('Rvir',np.float32,1),
 ('Vvir',np.float32,1),
 ('Vmax',np.float32,1),
-('GasSpin',np.float32,3),
+#('GasSpin',np.float32,3),
+#('StellarSpin',np.float32,3),
 ('DiskSpin',np.float32,3),        
 ('InfallVmax',np.float32,1),
 ('InfallVmaxPeak',np.float32,1),
@@ -41,7 +50,6 @@ LGalaxiesStruct = np.dtype([
 ('DiskMassRings',np.float32,12),   
 ('BulgeMassRings',np.float32,12),   
 ('HotGas',np.float32,1),
-('ReheatedGas',np.float32,1),
 ('EjectedMass',np.float32,1),
 ('BlackHoleMass',np.float32,1),
 ('ICM',np.float32,1),
@@ -49,14 +57,12 @@ LGalaxiesStruct = np.dtype([
 ('MassFromMergers',np.float32,1),
 ('MassFromBursts',np.float32,1),
 ('MetalsColdGas',np.float32,3),
-('MetalsColdGasRings',np.float32,[12,3]),
-('MetalsStellarMass',np.float32,3),
+('MetalsColdGasRings',np.float32,[12,3]),   
 ('MetalsDiskMass',np.float32,3),
 ('MetalsBulgeMass',np.float32,3),
 ('MetalsDiskMassRings',np.float32,[12,3]),  
 ('MetalsBulgeMassRings',np.float32,[12,3]),  
 ('MetalsHotGas',np.float32,3),
-('MetalsReheatedGas',np.float32,3),
 ('MetalsEjectedMass',np.float32,3),
 ('MetalsICM',np.float32,3),
 ('PrimordialAccretionRate',np.float32,1),
@@ -105,7 +111,6 @@ LGalaxiesStruct = np.dtype([
 ('ColdGas_elements',np.float32,11),
 ('ColdGasRings_elements',np.float32,[12,11]),        
 ('HotGas_elements',np.float32,11),
-('ReheatedGas_elements',np.float32,11),
 ('ICM_elements',np.float32,11),
 ('EjectedMass_elements',np.float32,11)        
 ])
@@ -113,10 +118,21 @@ LGalaxiesStruct = np.dtype([
 PropertiesToRead = {}
 for ii in LGalaxiesStruct.names:    
     PropertiesToRead[ii] = False
-    
-    
+
+PropertiesToRead['GalID'] = True 
+PropertiesToRead['HaloID'] = True
+PropertiesToRead['FirstProgGal'] = True
+PropertiesToRead['NextProgGal'] = True
+PropertiesToRead['LastProgGal'] = True
+PropertiesToRead['FOFCentralGal'] = True
+#PropertiesToRead['FileTreeNr'] = True
+PropertiesToRead['DescendantGal'] = True
+PropertiesToRead['MainLeafId'] = True
+#PropertiesToRead['TreeRootId'] = True
+#PropertiesToRead['SubID'] = True
+#PropertiesToRead['MMSubID'] = True           
+PropertiesToRead['Redshift'] = True           
 PropertiesToRead['Type'] = True
-PropertiesToRead['HaloIndex'] = True
 PropertiesToRead['SnapNum'] = True
 #PropertiesToRead['LookBackTimeToSnap'] = True
 #PropertiesToRead['CentralMvir'] = True
@@ -158,7 +174,7 @@ PropertiesToRead['MassFromMergers'] = True
 PropertiesToRead['MassFromBursts'] = True
 PropertiesToRead['MetalsColdGas'] = True
 PropertiesToRead['MetalsColdGasRings'] = True
-PropertiesToRead['MetalsStellarMass'] = True
+#PropertiesToRead['MetalsStellarMass'] = True
 PropertiesToRead['MetalsDiskMass'] = True
 PropertiesToRead['MetalsBulgeMass'] = True
 PropertiesToRead['MetalsDiskMassRings'] = True
@@ -191,16 +207,14 @@ PropertiesToRead['MassWeightAge'] = True
 PropertiesToRead['rBandWeightAge'] = True
 #PropertiesToRead['sfh_ibin'] = True
 #PropertiesToRead['sfh_numbins'] = True
-
 PropertiesToRead['sfh_DiskMass'] = True
 PropertiesToRead['sfh_BulgeMass'] = True
 PropertiesToRead['sfh_DiskMassRings'] = True
 PropertiesToRead['sfh_BulgeMassRings'] = True
-PropertiesToRead['sfh_ICM'] = True
+#PropertiesToRead['sfh_ICM'] = True
 PropertiesToRead['sfh_MetalsDiskMass'] = True
 PropertiesToRead['sfh_MetalsBulgeMass'] = True
-PropertiesToRead['sfh_MetalsICM'] = True
-
+#PropertiesToRead['sfh_MetalsICM'] = True
 PropertiesToRead['sfh_ElementsDiskMass'] = True
 PropertiesToRead['sfh_ElementsBulgeMass'] = True
 
@@ -211,6 +225,3 @@ PropertiesToRead['BulgeMassRings_elements'] = True
 PropertiesToRead['ColdGas_elements'] = True
 PropertiesToRead['ColdGasRings_elements'] = True
 PropertiesToRead['HotGas_elements'] = True
-
-# <codecell>
-

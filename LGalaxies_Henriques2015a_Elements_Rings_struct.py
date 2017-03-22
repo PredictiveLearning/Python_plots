@@ -62,7 +62,7 @@ LGalaxiesStruct = np.dtype([
 ('XrayLum',np.float32,1),
 ('BulgeSize',np.float32,1),
 ('StellarDiskRadius',np.float32,1),
-('GasDiskRadius',np.float32,1),
+('GasDiskRadius',np.float32,1),      
 ('CosInclination',np.float32,1),
 ('DisruptOn',np.int32,1),
 ('MergeOn',np.int32,1), 
