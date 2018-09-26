@@ -31,9 +31,10 @@ from importlib import reload
 #plot_stellar_mass_vs_halo_mass_fractional=0
 #plot_stellar_mass_function_feedback_overplot=0
 #plot_all_masses_vs_halo_mass_fractional_z0=0
-#plot_all_masses_evo=0
 #plot_cooling_heating=0
 #plot_growth_channels=1
+#Tree
+#plot_all_masses_evo=0
 #plot_mass_fractions_evo_all_single_gal=0
 
 #HYJ18
@@ -62,33 +63,33 @@ from importlib import reload
 
 #PLOT OPTIONS
 plot_stellar_mass_vs_halo_mass_vandokkum=0
-plot_stellar_mass_vs_halo_mass_fractional=0
+plot_stellar_mass_vs_halo_mass_fractional=1
 plot_stellar_mass_vs_halo_mass_fractional_allz=0
 plot_all_masses_vs_halo_mass_fractional_allz=0
 plot_eject_hot_masses_vs_halo_mass_fractional_allz=0
-plot_all_masses_vs_halo_mass_fractional_z0=0
+plot_all_masses_vs_halo_mass_fractional_z0=1
 plot_stellar_mass_vs_halo_mass_fractional_models_overplot=0
 plot_cooling_radius=0
-plot_stellar_mass_function_z0_overplot=0
-plot_stellar_mass_function_feedback_overplot=0
+plot_stellar_mass_function_z0_overplot=1
+plot_stellar_mass_function_feedback_overplot=1
 plot_redfraction_color_cut_cuts=0
 plot_stellar_mass_function_allz_overplot=0
 plot_cumulative_ND=0
 
 
 plot_stellar_mass_function=1
-plot_redfraction_color_cut=1
+plot_redfraction_color_cut=0
 plot_redfraction_SFR_cut=0
 plot_wetzel_passive_fraction_vs_stellar_mass=0
 
-plot_metals_vs_stellarmass=1
-plot_morphology_vs_stellarmass=1
-plot_HI_over_Lr_vs_HI_bins=1
-plot_sizes_vs_stellarmass=1
-plot_sizes_vs_stellarmass_allz=1
-plot_gasmetals_vs_stellarmass=1
-plot_gasfractions_vs_stellarmass=1
-plot_HI_MF=1
+plot_metals_vs_stellarmass=0
+plot_morphology_vs_stellarmass=0
+plot_HI_over_Lr_vs_HI_bins=0
+plot_sizes_vs_stellarmass=0
+plot_sizes_vs_stellarmass_allz=0
+plot_gasmetals_vs_stellarmass=0
+plot_gasfractions_vs_stellarmass=0
+plot_HI_MF=0
 
 plot_BHBM=0
 plot_BHMvir=0
@@ -96,7 +97,7 @@ plot_SFRF=0
 plot_SFRD=0
 plot_main_sequence=0
 plot_SSFR_mass = 0
-plot_ssfr_hist=1
+plot_ssfr_hist=0
 
 plot_schmidt_kenn=0
 plot_test_metal_evo=0
@@ -133,10 +134,10 @@ plot_test_H2_prescriptions=0
 #MISC
 plot_SFH=0
 
-plot_cooling_heating=0
+plot_cooling_heating=1
 plot_BHBM_by_sfr=0
 plot_AGN_quenching=0
-plot_growth_channels=0
+plot_growth_channels=1
 plot_bluck_red_fractions=0
 plot_satellite_quench_times=0
 plot_sat_fraction=0
