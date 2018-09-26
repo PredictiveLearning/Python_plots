@@ -39,19 +39,20 @@ LGalaxiesStruct = np.dtype([
 ('MergTime',np.float32,1),
 ('ColdGas',np.float32,1),
 ('StellarMass',np.float32,1),
-('BulgeMass',np.float32,1),
 ('DiskMass',np.float32,1),
-('HotGas',np.float32,1),
+('BulgeMass',np.float32,1),
+('HotGas',np.float32,1), 
+#('ReheatedGas',np.float32,1),
 ('EjectedMass',np.float32,1),
 ('BlackHoleMass',np.float32,1),
 ('ICM',np.float32,1),
-('MassFromInSitu',np.float32,1),
-('MassFromMergers',np.float32,1),
-('MassFromBursts',np.float32,1),
+#('MassFromInSitu',np.float32,1),
+#('MassFromMergers',np.float32,1),
+#('MassFromBursts',np.float32,1),
 ('MetalsColdGas',np.float32,1),
 ('MetalsStellarMass',np.float32,1),
+('MetalsDiskMass',np.float32,1),        
 ('MetalsBulgeMass',np.float32,1),
-('MetalsDiskMass',np.float32,1),
 ('MetalsHotGas',np.float32,1),
 ('MetalsEjectedMass',np.float32,1),
 ('MetalsICM',np.float32,1),
@@ -69,8 +70,7 @@ LGalaxiesStruct = np.dtype([
 ('BulgeSize',np.float32,1),
 ('StellarDiskRadius',np.float32,1),
 ('GasDiskRadius',np.float32,1),
-('DiskHalfMassRadius',np.float32,1),
-('BulgeHalfMassRadius',np.float32,1),
+#('StellarHalfMassRadius',np.float32,1),
 ('CosInclination',np.float32,1),
 ('DisruptOn',np.int32,1),
 ('MergeOn',np.int32,1),
@@ -85,91 +85,93 @@ LGalaxiesStruct = np.dtype([
 ('sfh_DiskMass',np.float32,20),
 ('sfh_BulgeMass',np.float32,20),
 ('sfh_ICM',np.float32,20),
-('sfh_MassFromInSitu',np.float32,20),
-('sfh_MassFromMergers',np.float32,20),
-('sfh_MassFromBurst',np.float32,20),
+#('sfh_MassFromInSitu',np.float32,20),
+#('sfh_MassFromMergers',np.float32,20),
+#('sfh_MassFromBurst',np.float32,20),
 ('sfh_MetalsDiskMass',np.float32,20),
 ('sfh_MetalsBulgeMass',np.float32,20),
-('sfh_MetalsICM',np.float32,20)
+('sfh_MetalsICM',np.float32,20)      
+#('ending','i4',0)
 ])
 
-PropertiesToRead_tree = {}
+
+PropertiesToRead = {}
 for ii in LGalaxiesStruct.names:
-	PropertiesToRead_tree[ii] = False
+	PropertiesToRead[ii] = False
           
-PropertiesToRead_tree['GalID'] = True 
-PropertiesToRead_tree['HaloID'] = True
-PropertiesToRead_tree['FirstProgGal'] = True
-PropertiesToRead_tree['NextProgGal'] = True
-PropertiesToRead_tree['LastProgGal'] = True
-PropertiesToRead_tree['FOFCentralGal'] = True
-PropertiesToRead_tree['MainLeafId'] = True
-PropertiesToRead_tree['Redshift'] = True
-PropertiesToRead_tree['Type'] = True
-#PropertiesToRead_tree['HaloID'] = True
-PropertiesToRead_tree['SnapNum'] = True
-#PropertiesToRead_tree['LookBackTimeToSnap'] = True
-#PropertiesToRead_tree['CentralMvir'] = True
-#PropertiesToRead_tree['CentralRvir'] = True
-PropertiesToRead_tree['DistanceToCentralGal'] = True
-PropertiesToRead_tree['Pos'] = True
-PropertiesToRead_tree['Vel'] = True
-#PropertiesToRead_tree['Len'] = True
-PropertiesToRead_tree['Mvir'] = True
-PropertiesToRead_tree['Rvir'] = True
-PropertiesToRead_tree['Vvir'] = True
-#PropertiesToRead_tree['Vmax'] = True
-#PropertiesToRead_tree['GasSpin'] = True
-#PropertiesToRead_tree['StellarSpin'] = True
-#PropertiesToRead_tree['InfallVmax'] = True
-#PropertiesToRead_tree['InfallVmaxPeak'] = True
-#PropertiesToRead_tree['InfallSnap'] = True
-#PropertiesToRead_tree['InfallHotGas'] = True
-#PropertiesToRead_tree['HotRadius'] = True
-#PropertiesToRead_tree['OriMergTime'] = True
-#PropertiesToRead_tree['MergTime'] = True
-PropertiesToRead_tree['ColdGas'] = True
-PropertiesToRead_tree['StellarMass'] = True
-PropertiesToRead_tree['BulgeMass'] = True
-PropertiesToRead_tree['DiskMass'] = True
-PropertiesToRead_tree['HotGas'] = True
-#PropertiesToRead_tree['EjectedMass'] = True
-PropertiesToRead_tree['BlackHoleMass'] = True
-#PropertiesToRead_tree['ICM'] = True
-PropertiesToRead_tree['MetalsColdGas'] = True
-PropertiesToRead_tree['MetalsStellarMass'] = True
-#PropertiesToRead_tree['MetalsBulgeMass'] = True
-#PropertiesToRead_tree['MetalsDiskMass'] = True
-#PropertiesToRead_tree['MetalsHotGas'] = True
-#PropertiesToRead_tree['MetalsEjectedMass'] = True
-#PropertiesToRead_tree['MetalsICM'] = True
-#PropertiesToRead_tree['PrimordialAccretionRate'] = True
-#PropertiesToRead_tree['CoolingRadius'] = True
-PropertiesToRead_tree['CoolingRate'] = True
-#PropertiesToRead_tree['CoolingGas'] = True
-PropertiesToRead_tree['CoolingRate_beforeAGN'] = True
-#PropertiesToRead_tree['QuasarAccretionRate'] = True
-PropertiesToRead_tree['RadioAccretionRate'] = True
-PropertiesToRead_tree['Sfr'] = True
-#PropertiesToRead_tree['SfrBulge'] = True
-#PropertiesToRead_tree['XrayLum'] = True
-PropertiesToRead_tree['BulgeSize'] = True
-PropertiesToRead_tree['StellarDiskRadius'] = True
-#PropertiesToRead_tree['GasDiskRadius'] = True
-#PropertiesToRead_tree['CosInclination'] = True
-#PropertiesToRead_tree['DisruptOn'] = True
-#PropertiesToRead_tree['MergeOn'] = True
-PropertiesToRead_tree['MagDust'] = True
-#PropertiesToRead_tree['Mag'] = True
-#PropertiesToRead_tree['MagBulge'] = True
-PropertiesToRead_tree['MassWeightAge'] = True
-PropertiesToRead_tree['rBandWeightAge'] = True
-#PropertiesToRead_tree['sfh_ibin'] = True
-#PropertiesToRead_tree['sfh_numbins'] = True
-#PropertiesToRead_tree['sfh_DiskMass'] = True
-#PropertiesToRead_tree['sfh_BulgeMass'] = True
-#PropertiesToRead_tree['sfh_ICM'] = True
-#PropertiesToRead_tree['sfh_MetalsDiskMass'] = True
-#PropertiesToRead_tree['sfh_MetalsBulgeMass'] = True
-#PropertiesToRead_tree['sfh_MetalsICM'] = True
+PropertiesToRead['GalID'] = True 
+PropertiesToRead['HaloID'] = True
+PropertiesToRead['FirstProgGal'] = True
+PropertiesToRead['NextProgGal'] = True
+PropertiesToRead['LastProgGal'] = True
+PropertiesToRead['FOFCentralGal'] = True
+PropertiesToRead['MainLeafId'] = True
+PropertiesToRead['Redshift'] = True
+PropertiesToRead['Type'] = True
+#PropertiesToRead['HaloID'] = True
+PropertiesToRead['SnapNum'] = True
+#PropertiesToRead['LookBackTimeToSnap'] = True
+#PropertiesToRead['CentralMvir'] = True
+#PropertiesToRead['CentralRvir'] = True
+PropertiesToRead['DistanceToCentralGal'] = True
+PropertiesToRead['Pos'] = True
+PropertiesToRead['Vel'] = True
+#PropertiesToRead['Len'] = True
+PropertiesToRead['Mvir'] = True
+PropertiesToRead['Rvir'] = True
+PropertiesToRead['Vvir'] = True
+#PropertiesToRead['Vmax'] = True
+#PropertiesToRead['GasSpin'] = True
+#PropertiesToRead['StellarSpin'] = True
+#PropertiesToRead['InfallVmax'] = True
+#PropertiesToRead['InfallVmaxPeak'] = True
+#PropertiesToRead['InfallSnap'] = True
+#PropertiesToRead['InfallHotGas'] = True
+#PropertiesToRead['HotRadius'] = True
+#PropertiesToRead['OriMergTime'] = True
+#PropertiesToRead['MergTime'] = True
+#PropertiesToRead['ColdGas'] = True
+PropertiesToRead['StellarMass'] = True
+#PropertiesToRead['BulgeMass'] = True
+#PropertiesToRead['DiskMass'] = True
+#PropertiesToRead['HotGas'] = True
+#PropertiesToRead['EjectedMass'] = True
+#PropertiesToRead['BlackHoleMass'] = True
+#PropertiesToRead['ICM'] = True
+#PropertiesToRead['MetalsColdGas'] = True
+#PropertiesToRead['MetalsStellarMass'] = True
+#PropertiesToRead['MetalsBulgeMass'] = True
+#PropertiesToRead['MetalsDiskMass'] = True
+#PropertiesToRead['MetalsHotGas'] = True
+#PropertiesToRead['MetalsEjectedMass'] = True
+#PropertiesToRead['MetalsICM'] = True
+#PropertiesToRead['PrimordialAccretionRate'] = True
+#PropertiesToRead['CoolingRadius'] = True
+#PropertiesToRead['CoolingRate'] = True
+#PropertiesToRead['CoolingGas'] = True
+#PropertiesToRead['CoolingRate_beforeAGN'] = True
+#PropertiesToRead['QuasarAccretionRate'] = True
+#PropertiesToRead['RadioAccretionRate'] = True
+#PropertiesToRead['Sfr'] = True
+#PropertiesToRead['SfrBulge'] = True
+#PropertiesToRead['XrayLum'] = True
+#PropertiesToRead['BulgeSize'] = True
+#PropertiesToRead['StellarDiskRadius'] = True
+#PropertiesToRead['GasDiskRadius'] = True
+#PropertiesToRead['CosInclination'] = True
+#PropertiesToRead['DisruptOn'] = True
+#PropertiesToRead['MergeOn'] = True
+#PropertiesToRead['MagDust'] = True
+#PropertiesToRead['Mag'] = True
+#PropertiesToRead['MagBulge'] = True
+#PropertiesToRead['MassWeightAge'] = True
+#PropertiesToRead['rBandWeightAge'] = True
+#PropertiesToRead['sfh_ibin'] = True
+#PropertiesToRead['sfh_numbins'] = True
+#PropertiesToRead['sfh_DiskMass'] = True
+#PropertiesToRead['sfh_BulgeMass'] = True
+#PropertiesToRead['sfh_ICM'] = True
+#PropertiesToRead['sfh_MetalsDiskMass'] = True
+#PropertiesToRead['sfh_MetalsBulgeMass'] = True
+#PropertiesToRead['sfh_MetalsICM'] = True
         

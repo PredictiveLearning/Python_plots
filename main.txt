@@ -6,11 +6,11 @@ import pandas as pd
 
 %pylab inline
 #import seaborn as sns
-
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
-from astropy.table import Table
-from astropy.io import fits
+
+#from astropy.table import Table
+#from astropy.io import fits
 from importlib import reload
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 from matplotlib.backends.backend_pdf import PdfPages
@@ -27,8 +27,10 @@ import plots_input
 reload (plots_input)
 from plots_input import *
 
-FirstFile = 5
-LastFile =  5
+
+FirstFile = 0
+LastFile =  9
+
 
 Volume_MR = (BoxSize_MR**3.0) * (LastFile - FirstFile + 1) / MaxTreeFiles / Hubble_h**3
 Volume_MRII = (BoxSize_MRII**3.0) * (LastFile - FirstFile + 1) / MaxTreeFiles  / Hubble_h**3
@@ -36,8 +38,13 @@ Volume_MRII = (BoxSize_MRII**3.0) * (LastFile - FirstFile + 1) / MaxTreeFiles  /
 print('Reading started')
 
 if CatalogType=='snap':       
-    from LGalaxies_Henriques2015a_struct import LGalaxiesStruct
-    from LGalaxies_Henriques2015a_struct import PropertiesToRead   
+    #from LGalaxies_Henriques2015a_struct import LGalaxiesStruct
+    #from LGalaxies_Henriques2015a_struct import PropertiesToRead 
+    
+    #from LGalaxies_HWT16_struct import LGalaxiesStruct
+    #from LGalaxies_HWT16_struct import PropertiesToRead 
+    #from LGalaxies_HWB17_struct import LGalaxiesStruct
+    #from LGalaxies_HWB17_struct import PropertiesToRead
     #from LGalaxies_Henriques2015a_metals_struct import LGalaxiesStruct
     #from LGalaxies_Henriques2015a_metals_struct import PropertiesToRead
     #from LGalaxies_Henriques2015a_Elements_struct import LGalaxiesStruct
@@ -68,27 +75,41 @@ if CatalogType=='snap':
         print('\n\nDoing MRII')
         (G_MRII, SnapshotList_MRII) = read_snap(DirName_MRII,FirstFile,LastFile,
                          PropertiesToRead,LGalaxiesStruct,RedshiftsToRead,FullRedshiftList)
+ 
+'''filename = DirName_MRII+'/'+'SA_galtree_0'             
+f = open(filename,"rb")
+one = np.fromfile(f,np.int32,1)
+print(one)
+nbytes = np.fromfile(f,np.int32,1)
+this_nGals = np.fromfile(f,np.int32,1)
+#this_nGals = 6000000
+nGals = this_nGals               
+
+print("TotNgals=",nGals)'''
+    
 if CatalogType=='tree':    
     from LGalaxies_tree_Henriques2015a_struct import LGalaxiesStruct
-    from LGalaxies_tree_Henriques2015a_struct import PropertiesToRead
+    from LGalaxies_tree_Henriques2015a_struct import PropertiesToRead  
+    #from LGalaxies_tree_HWT16_struct import LGalaxiesStruct
+    #from LGalaxies_tree_HWT16_struct import PropertiesToRead
     #from LGalaxies_tree_Henriques2015a_Rings_struct import LGalaxiesStruct
     #from LGalaxies_tree_Henriques2015a_Rings_struct import PropertiesToRead_tree
     #from LGalaxies_tree_Henriques2015a_Elements_Rings_struct import LGalaxiesStruct
     #from LGalaxies_tree_Henriques2015a_Elements_Rings_struct import PropertiesToRead_tree
     #from LGalaxies_tree_Henriques2015a_Caterpillar_struct import LGalaxiesStruct
-    #from LGalaxies_tree_Henriques2015a_Caterpillar_struct import PropertiesToRead_tree   
+    #from LGalaxies_tree_Henriques2015a_Caterpillar_struct import PropertiesToRead_tree       
     #from LGalaxies_tree_Henriques2016a_struct import LGalaxiesStruct
-    #from LGalaxies_tree_Henriques2016a_struct import PropertiesToRead_tree    
+    #from LGalaxies_tree_Henriques2016a_struct import PropertiesToRead  
     #from LGalaxies_tree_Henriques2016a_Elements_Rings_struct import LGalaxiesStruct
     #from LGalaxies_tree_Henriques2016a_Elements_Rings_struct import PropertiesToRead
-    
+  
     (G_MR) = read_tree(DirName_MR,FirstFile,LastFile,PropertiesToRead,LGalaxiesStruct)
     SnapshotList = np.zeros(len(FullRedshiftList),dtype=np.int32)
-    
+        
     if(MRII==1):
         (G_MRII) = read_tree(DirName_MRII,FirstFile,LastFile,PropertiesToRead,LGalaxiesStruct)    
         SnapshotList_MRII = np.zeros(len(FullRedshiftList),dtype=np.int32)
-        
+    
     for ii in range(0,len(FullRedshiftList)):                  
         G0=G_MR[ np.rint(G_MR['Redshift']*100.) == FullRedshiftList[ii]*100. ]             
         SnapshotList[ii]=G0['SnapNum'][0]
@@ -104,34 +125,28 @@ print('reading done\n')
 #print (np.log10(G_MR['BulgeMass'][0:99]*1.e10_tree    ))
 #print (np.log10(G_MR['StellarMass'][0:99]*1.e10))
 #print (np.log10(G_MR['MetalsStellarMass'][0:99]*1.e10))
-#print (G_MR[0:5])
+#print (G_MR[0])
+#print (G_MR[1])
+#print (G_MR[2])
 #help(G_MR)
+ 
+
+#print(G_MR['Type'][0:99])
+#print(np.log10(G0_MR['StellarMass']*1.e10))
+#print(np.log10(G0_MR['HotGas']*1.e10))
+
+ 
 
 
-#DEFINE SOME VARIABLE
-#if(opt_rings==1):
-RNUM=12
-RingRadius=np.zeros(RNUM,dtype=np.float32)
-#in Kpc
-for ii in range(0,RNUM):    
-    RingRadius[ii]= 0.44*pow(1.5,ii+1)/Hubble_h;   
-    #RingRadius[ii]= 0.3*pow(1.2,ii+1)/Hubble_h;   
-    #print(RingRadius[ii])
+print(sys.getsizeof(G_MR)/1e)
 
+import plots 
+reload (plots) 
+import plots_ringsPropertiesToRead['StellarDiskRadius'] = True
+PropertiesToRead['StellarHalfMassRadius'] = True
+reload (plots)   
 
-//if(Gal[p].ColdGas>0.)import plots if(DiskRadiusModel == 1 || DiskRadiusModel == 2)
-    {m_crit200
-      Gal[ngal].ColdGasRadius = get_initial_disk_radiu else if (ii==RNUM)s(halonr, ngal);
-      Gal[ngal].DiskRadius = Gal[ngal].ColdGasRadius;
-		      }
-Doing gasmetals_vs_stellarmass
-reload (plots) Gal[p].DiskSpin[ii]=((Gal[p].DiskSp/Gal[p].ColdGasin[ii])*(Gal[p].DiskMass)+1./sqrt(3)*coldgasspinpar*stars_to_add)/(Gal[p].DiskMass+stars_to_add);
-
-if(opt_rings==1):+ bhGROWTHININSTABILITIESx_binned, np.log10(median)'yellow','orange','yellow','orange',
-    import plots_rings
-    reload (plots else if (ii==RNUM)Jessica Hislop_rings)   
-
-
+print(99%10)
 
 plt.rcParams.update({'font.size': 14, 'xtick.labelsize': 14, 'ytick.labelsize': 14, 'axes.linewidth': 2, 
                      'xtick.major.size': 6, 'xtick.major.width': 1.5, 
@@ -140,6 +155,8 @@ plt.rcParams.update({'font.size': 14, 'xtick.labelsize': 14, 'ytick.labelsize': 
                      'ytick.minor.size': 3, 'ytick.minor.width': 1.})  
 #plt.rcParams.update({'xtick.major.width': 1.0, 'ytick.major.width': 1.0, 
 #                             'xtick.minor.width': 1.0, 'ytick.minor.width': 1.0})
+
+plt.rcParams.update({'font.size': 14, 'xtick.labelsize': 14, 'ytick.labelsize': 14})
 
 with PdfPages('./fig/plots.pdf') as pdf:  
     import procedures
@@ -196,6 +213,24 @@ with PdfPages('./fig/plots.pdf') as pdf:
         from plots import stellar_mass_vs_halo_mass_fractional
         ThisRedshiftList=[0.0]        
         stellar_mass_vs_halo_mass_fractional(G_MR, G_MRII, ThisRedshiftList, pdf)
+        
+    if opt_all_masses_vs_halo_mass_fractional==1:
+        print('Doing AMHM_fractional')
+        from plots import all_masses_vs_halo_mass_fractional
+        ThisRedshiftList=[0.0, 1.0, 2.0, 3.0]        
+        all_masses_vs_halo_mass_fractional(G_MR, G_MRII, ThisRedshiftList, pdf)
+        
+    if opt_stellar_mass_vs_halo_mass_fractional_models_overplot==1:
+        print('Doing stellar_mass_vs_halo_mass_fractional_models_overplot')
+        from plots import stellar_mass_vs_halo_mass_fractional_models_overplot
+        ThisRedshiftList=[0.0]        
+        stellar_mass_vs_halo_mass_fractional_models_overplot(G_MR, G_MRII, ThisRedshiftList, pdf)
+            
+    if opt_cooling_radius==1:
+        print('Doing cooling_radius')
+        from plots import cooling_radius
+        ThisRedshiftList=[0.0]        
+        cooling_radius(G_MR, ThisRedshiftList, pdf)        
             
     if opt_stellar_mass_function==1:
         print('Doing SMF')
@@ -237,25 +272,49 @@ with PdfPages('./fig/plots.pdf') as pdf:
         print('Doing metals_vs_stellarmass')
         from plots import metals_vs_stellarmass
         ThisRedshiftList=[0.0,3.]
-        metals_vs_stellarmass(G_MR, ThisRedshiftList, pdf)
+        metals_vs_stellarmass(G_MR, G_MRII, ThisRedshiftList, pdf)
         
     if opt_gasmetals_vs_stellarmass==1:
         print('Doing gasmetals_vs_stellarmass')
         from plots import gasmetals_vs_stellarmass
-        ThisRedshiftList=[0.0,3.]
-        gasmetals_vs_stellarmass(G_MR, G_MRII, RingRadius, RNUM, ThisRedshiftList, pdf)    
+        ThisRedshiftList=[0.1,2.]
+        gasmetals_vs_stellarmass(G_MR, G_MRII, ThisRedshiftList, pdf)    
+        
+    if opt_effective_yield==1:
+        print('Doing effective_yield')
+        from plots import effective_yield
+        ThisRedshiftList=[0.1,2.]
+        effective_yield(G_MR, G_MRII, ThisRedshiftList, pdf)    
+        
+    if opt_metals_mass==1:
+        print('Doing metals_mass')
+        from plots import metals_mass
+        ThisRedshiftList=[0.1,3.]
+        metals_mass(G_MR, G_MRII, ThisRedshiftList, pdf)      
         
     if opt_BHBM==1:
         print('Doing BHBM')
         from plots import BHBM
         ThisRedshiftList=[0.0]        
-        BHBM(G_MR, ThisRedshiftList, pdf)    
+        BHBM(G_MR, ThisRedshiftList, pdf) 
+        
+    if opt_BHMvir==1:
+        print('Doing BHMvir')
+        from plots import BHMvir
+        ThisRedshiftList=[0.0]        
+        BHMvir(G_MR, ThisRedshiftList, pdf)     
         
     if opt_SFRF==1:
         print('Doing SFRF')
         from plots import SFRF
         ThisRedshiftList=[0.0, 1.0, 2.0, 3.0]        
         SFRF(G_MR, Volume_MR, G_MRII, Volume_MRII, ThisRedshiftList, pdf)
+        
+    if opt_SFRD==1:
+        print('Doing SFRD')
+        from plots import SFRD
+        ThisRedshiftList=[0.0, 1.0, 2.0, 3.0,5.0,7.0,9.0]        
+        SFRD(G_MR, Volume_MR, G_MRII, Volume_MRII, ThisRedshiftList, pdf)
         
     if opt_gas_fraction==1:
         print('Doing gas_fraction')
@@ -341,7 +400,7 @@ with PdfPages('./fig/plots.pdf') as pdf:
     if opt_cooling_heating==1:
         print('Doing cooling_heating')
         from plots import cooling_heating
-        ThisRedshiftList=[0.0,1.0,2.0]        
+        ThisRedshiftList=[0.0,1.0,2.0,3.0]        
         #BHBM_by_sfr(G_MR,G_MRII, ThisRedshiftList, pdf)
         cooling_heating(G_MR, ThisRedshiftList, pdf)
     
@@ -380,8 +439,14 @@ with PdfPages('./fig/plots.pdf') as pdf:
         print('Doing Sat Fraction')
         from plots import sat_fraction
         ThisRedshiftList=[0.0,0.4,1.0,2.0,3.0]        
-        sat_fraction(G_MR, ThisRedshiftList, pdf)
-                
+        sat_fraction(G_MR, Volume_MR, G_MRII, Volume_MRII, ThisRedshiftList, pdf)
+       
+    if opt_number_density_massive_gals==1:
+        print('Doing number_density_massive_gals')
+        from plots import number_density_massive_gals
+        ThisRedshiftList=[2.0,3.0,4.0,5.0]        
+        number_density_massive_gals(G_MR, Volume_MR, ThisRedshiftList, pdf)
+        
     if opt_HotGas_fraction==1:
         print('Doing HotGas_fraction')
         from plots import HotGas_fraction
@@ -424,7 +489,7 @@ with PdfPages('./fig/plots.pdf') as pdf:
             print('Doing gasfractions_vs_stellarmass')
             from plots_rings import gasfractions_vs_stellarmass
             ThisRedshiftList=[0.0]        
-            gasfractions_vs_stellarmass(G_MR, ThisRedshiftList, pdf)
+            gasfractions_vs_stellarmass(G_MR, G_MRII,ThisRedshiftList, pdf)
             
         if opt_H2fraction_vs_stellarmass==1:
             print('Doing H2fraction_vs_stellarmass')
@@ -436,73 +501,73 @@ with PdfPages('./fig/plots.pdf') as pdf:
             print('Doing milkyway_sfr_and_gas_profiles')
             from plots_rings import milkyway_sfr_and_gas_profiles
             ThisRedshiftList=[0.0]        
-            milkyway_sfr_and_gas_profiles(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf)
+            milkyway_sfr_and_gas_profiles(G_MR, ThisRedshiftList, pdf)
             
         if opt_evo_milkyway_gas_profile==1:
             print('Doing evo_milkyway_gas_profile')
             from plots_rings import evo_milkyway_gas_profile
             ThisRedshiftList=[0.0]        
-            evo_milkyway_gas_profile(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf)   
+            evo_milkyway_gas_profile(G_MR, ThisRedshiftList, pdf)   
             
         if opt_evo_milkyway_stellar_profiles==1:
             print('Doing evo_milkyway_stellar_profiles')
             from plots_rings import evo_milkyway_stellar_profiles
             ThisRedshiftList=[0.0]        
-            evo_milkyway_stellar_profiles(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf)       
+            evo_milkyway_stellar_profiles(G_MR, ThisRedshiftList, pdf)       
         
         if opt_test_H2_prescriptions==1:
             print('Doing test_H2_prescriptions')
             from plots_rings import test_H2_prescriptions
             ThisRedshiftList=[0.0]        
-            test_H2_prescriptions(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf)
+            test_H2_prescriptions(G_MR, ThisRedshiftList, pdf)
       
         if opt_milkyway_gradients==1:
             print('Doing milkyway_gradients')
             from plots_rings import milkyway_gradients
             ThisRedshiftList=[0.1]
-            milkyway_gradients(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf)
+            milkyway_gradients(G_MR, ThisRedshiftList, pdf)
     
         if opt_gas_metallicity_gradients_mass_bins==1:
             print('Doing gas_metallicity_gradients_mass_bins')
             from plots_rings import gas_metallicity_gradients_mass_bins
             ThisRedshiftList=[0.1]
-            gas_metallicity_gradients_mass_bins(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf)
+            gas_metallicity_gradients_mass_bins(G_MR, ThisRedshiftList, pdf)
             
         if opt_stellar_metallicity_gradients_mass_bins==1:
             print('Doing stellar_metallicity_gradients_mass_bins')
             from plots_rings import stellar_metallicity_gradients_mass_bins
             ThisRedshiftList=[0.0]
-            stellar_metallicity_gradients_mass_bins(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf)
+            stellar_metallicity_gradients_mass_bins(G_MR, ThisRedshiftList, pdf)
             
         if opt_CALIFA_gradients_morph_types==1:
             print('Doing CALIFA_gradients_morph_types')
             from plots_rings import CALIFA_gradients_morph_types
             ThisRedshiftList=[0.0]
-            CALIFA_gradients_morph_types(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf)
+            CALIFA_gradients_morph_types(G_MR, ThisRedshiftList, pdf)
             
         if opt_CALIFA_gradients_mass_bins==1:
             print('Doing CALIFA_gradients_mass_bins')
             from plots_rings import CALIFA_gradients_mass_bins
             ThisRedshiftList=[0.0]
-            CALIFA_gradients_mass_bins(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf)    
+            CALIFA_gradients_mass_bins(G_MR, ThisRedshiftList, pdf)    
             
         if opt_MANGA_gradients_late_types==1:
             print('Doing MANGA_gradients_late_types')
             from plots_rings import MANGA_gradients_late_types
             ThisRedshiftList=[0.0]
-            MANGA_gradients_late_types(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf)
+            MANGA_gradients_late_types(G_MR, ThisRedshiftList, pdf)
                                     
         if opt_SFR_gradients==1:
             print('Doing SFR_gradients')
             from plots_rings import SFR_gradients
             ThisRedshiftList=[0.1]
-            SFR_gradients(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf) 
+            SFR_gradients(G_MR, ThisRedshiftList, pdf) 
             
         if opt_test_rings==1:
             print('Doing test_rings')
             from plots_rings import test_rings
             ThisRedshiftList=[0.0]
-            test_rings(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf) 
+            test_rings(G_MR, ThisRedshiftList, pdf) 
             
     print('')
     print('All plots done')
@@ -518,12 +583,14 @@ with PdfPages('./fig/plots.pdf') as pdf:
     from plots_input import *
     import plots
     reload (plots)
+     
+    plt.rcParams.update({'font.size': 14, 'xtick.labelsize': 14, 'ytick.labelsize': 14})    
         
     if CatalogType=='tree':    
         if opt_simple_tree_map==1:
             print('Doing simple tree map')
             from plots import simple_tree_map                   
-            simple_tree_lmap(G_MR, pdf)          
+            simple_tree_map(G_MR, pdf)          
     
     if CatalogType=='tree':    
         if opt_full_tree_map==1:
@@ -531,11 +598,163 @@ with PdfPages('./fig/plots.pdf') as pdf:
             from plots import full_tree_map                   
             full_tree_map(G_MR, pdf, object_type='haloes')       
     
-    
+    if CatalogType=='tree':    
+        if opt_cooling_heating_evo==1:
+            print('Doing cooling_heating_evo')
+            from plots import cooling_heating_evo                   
+            cooling_heating_evo(G_MR, pdf)
+            
+    if CatalogType=='tree':    
+        if opt_low_mass_gal_evo==1:
+            print('Doing low_mass_gal_evo')
+            from plots import low_mass_gal_evo                   
+            low_mass_gal_evo(G_MR, pdf)        
+            
+    if CatalogType=='tree':    
+        if opt_halo_growth==1:
+            print('Doing halo_growth')
+            from plots import halo_growth                   
+            halo_growth(G_MR, pdf)     
+            
+    if CatalogType=='tree':    
+        if opt_halo_growth_normalized==1:
+            print('Doing halo_growth_normalized')
+            from plots import halo_growth_normalized                   
+            halo_growth_normalized(G_MR, pdf)             
+            
+    if CatalogType=='tree':    
+        if opt_baryon_fraction==1:
+            print('Doing baryon_fraction')
+            from plots import baryon_fraction                   
+            baryon_fraction(G_MR, pdf)     
+            
+    if CatalogType=='tree':    
+        if opt_halo_growth_rate==1:
+            print('Doing halo_growth_rate')
+            from plots import halo_growth_rate                   
+            halo_growth_rate(G_MR, pdf)        
+            
+            
+    if CatalogType=='tree':    
+        if opt_accretion_history==1:
+            print('Doing accretion_history')
+            from plots import accretion_history                   
+            accretion_history(G_MR, pdf)        
+            
     print('')
     print('All plots done')
         
 #end with PdfPages('./fig/plots.pdf') as pdf: 
+
+#sel=G_MRII['GalID']==5006211
+#sel=G_MRII['GalID']==5006213
+#print(G_MRII[sel]['SnapNum'], G_MRII[sel]['GalID'], G_MRII[sel]['LastProgGal'])
+
+'''
+#print(np.max(G_MRII['GalID']))
+new_sel=(G_MRII['GalID']>=G_MRII[sel]['GalID']) & (G_MRII['GalID']<=G_MRII[sel]['LastProgGal'])
+#print(np.max(G_MRII['GalID']))
+'''
+#print(G_MRII[new_sel]['SnapNum'])
+#print(G_MRII['HaloID'][0:9])
+#print(G_MRII['SnapNum'][0:9])
+
+'''
+sel=(G_MRII['SnapNum']==62)
+minID=np.min(G_MRII[sel]['GalID'])
+maxID=np.max(G_MRII[sel]['LastProgGal'])
+print(maxID-minID)
+sel=(G_MRII['GalID']>=minID) & (G_MRII['GalID']<=maxID)
+print(np.max(G_MRII['SnapNum'][sel]))
+'''
+
+sel=(G_MRII['SnapNum']==62)
+G_sel=G_MRII[sel]
+
+print(len(G_sel))
+max_snap=0
+min_snap=70
+for ii in range(0,len(G_sel)):
+#for ii in range(0,1):    
+    sel=(G_MRII['GalID']>=G_sel['GalID'][ii]) & (G_MRII['GalID']<=G_sel['LastProgGal'][ii])    
+    if(np.max(G_MRII['SnapNum'][sel])>max_snap):
+        max_snap=np.max(G_MRII['SnapNum'][sel])
+    if(np.min(G_MRII['SnapNum'][sel])<min_snap):
+        min_snap=np.min(G_MRII['SnapNum'][sel])
+    if(max_snap>62):
+        print(max_snap)
+        break
+    if(ii%10==0):
+        print(ii)
+        
+print(min_snap)        
+print(max_snap)        
+
+
+'''subplot=plt.subplot()
+
+xlim=[9.0, 12.0]
+ylim=[0.,25.]         
+subplot.set_ylim(ylim), subplot.set_xlim(xlim)
+
+xlab='$\log_{10}(M_*[\mathrm{M}_{\odot}])$' 
+ylab='$MinorMergerRate (Gyr^{-1})$'
+subplot.set_xlabel(xlab, fontsize=14), subplot.set_ylabel(ylab, fontsize=14) 
+
+ThisRedshiftList=[1.0]
+(sel)=select_current_redshift(G_MR, ThisRedshiftList, 0, FullSnapshotList_MR)
+        
+G0_MR=G_MR[sel]             
+#G0_MR=G0_MR[(G0_MR['StellarMass']>0.0) & (G0_MR['Type']==0)]
+
+G0_MR=G0_MR[(G0_MR['NMinorMergers']>0.0)]
+stellarmass=np.log10(G0_MR['StellarMass']*1.e10)
+MinorMergerRate=(G0_MR['NMinorMergers'])#*1.e9
+subplot.scatter(stellarmass,MinorMergerRate, color='red')
+bin=0.5
+(x_binned,median,mean,pc16,pc84,rms)=median_and_percentiles(bin,xlim[0],xlim[1],stellarmass,MinorMergerRate) 
+subplot.plot(x_binned,median, color='red', linewidth=2, linestyle='-')  
+
+G0_MR=G0_MR[(G0_MR['NMajorMergers']>0.0)]
+stellarmass=np.log10(G0_MR['StellarMass']*1.e10)
+MajorMergerRate=(G0_MR['NMajorMergers'])#*1.e9
+subplot.scatter(stellarmass,MajorMergerRate, color='blue')
+bin=0.5
+(x_binned,median,mean,pc16,pc84,rms)=median_and_percentiles(bin,xlim[0],xlim[1],stellarmass,MajorMergerRate) 
+subplot.plot(x_binned,median, color='blue', linewidth=2, linestyle='-') '''
+
+#print(G0_MR['MinorMergerRate'][0:199])
+
+
+
+subplot=plt.subplot()
+
+xlim=[9.0, 12.0]
+ylim=[0.,25.]         
+subplot.set_ylim(ylim), subplot.set_xlim(xlim)
+
+xlab='$\log_{10}(M_*[\mathrm{M}_{\odot}])$' 
+ylab='$MinorMergerRate (Gyr^{-1})$'
+subplot.set_xlabel(xlab, fontsize=14), subplot.set_ylabel(ylab, fontsize=14) 
+
+ThisRedshiftList=[0.0]
+(sel)=select_current_redshift(G_MR, ThisRedshiftList, 0, FullSnapshotList_MR)
+        
+G0_MR=G_MR[sel]             
+#G0_MR=G0_MR[(G0_MR['StellarMass']>0.0) & (G0_MR['Type']==0)]
+
+sel=G0_MR['DiskMassRings_elements'][:,3,3]<0
+print(G0_MR['DiskMassRings_elements'][sel,3,3])
+print(len(G0_MR['DiskMassRings_elements'][sel,3,3]))
+print(len(G0_MR['DiskMassRings_elements'][sel,3,3])/len(G0_MR['DiskMassRings_elements'][:,3,3]))
+
+print(np.max(G0_MR['DiskMass'][sel]*1.e10))
+
+sel=G0_MR['DiskMass_elements'][:,3]<0
+print(G0_MR['DiskMass_elements'][sel,3])
+print(len(G0_MR['DiskMass_elements'][sel,3]))
+print(len(G0_MR['DiskMass_elements'][sel,3])/len(G0_MR['DiskMass_elements'][:,3]))
+
 
 #RedshiftsToRead = [False,False,False,False,False,False,True,False]
 #RedshiftsToRead = [False,False,False,False,True,False,False,False]
@@ -810,8 +1029,8 @@ G=G0_MR
 # C: Single-precision Complex
 # M: Double-precision Complex
 # A: Character
-col1 = fits.Column(name='Type',                   format='I', array=G['Type'])
-col2 = fits.Column(name='SnapNum',                format='I', array=G['SnapNum'])
+col1 = fits.Column(name='Type',                   format='J', array=G['Type'])
+col2 = fits.Column(name='SnapNum',                format='J', array=G['SnapNum'])
 col3 = fits.Column(name='CentralMvir',            format='F', array=G['CentralMvir'])
 col4 = fits.Column(name='DistanceToCentralGalX',  format='F', array=G['DistanceToCentralGal'][:,0])
 col5 = fits.Column(name='DistanceToCentralGalY',  format='F', array=G['DistanceToCentralGal'][:,1])
@@ -897,11 +1116,200 @@ print("all done")
 print("")
 
 
+G=G_MR
+
+# L: Logical (Boolean)
+# B: Unsigned Byte
+# I: 16-bit Integer
+# J: 32-bit Integer
+# K: 64-bit Integer
+# E: Single-precision Floating Point
+# D: Double-precision Floating Point
+# C: Single-precision Complex
+# M: Double-precision Complex
+# A: Character
+col1 = fits.Column(name='Type',                   format='J', array=G['Type'])
+col2 = fits.Column(name='SnapNum',                format='J', array=G['SnapNum'])
+col3 = fits.Column(name='CentralMvir',            format='F', array=G['CentralMvir'])
+col4 = fits.Column(name='DistanceToCentralGalX',  format='F', array=G['DistanceToCentralGal'][:,0])
+col5 = fits.Column(name='DistanceToCentralGalY',  format='F', array=G['DistanceToCentralGal'][:,1])
+col6 = fits.Column(name='DistanceToCentralGalZ',  format='F', array=G['DistanceToCentralGal'][:,2])
+col7 = fits.Column(name='PosX',                   format='F', array=G['Pos'][:,0])
+col8 = fits.Column(name='PosY',                   format='F', array=G['Pos'][:,1])
+col9 = fits.Column(name='PosZ',                   format='F', array=G['Pos'][:,2])
+col10 = fits.Column(name='VelX',                  format='F', array=G['Vel'][:,0])
+col11 = fits.Column(name='VelY',                  format='F', array=G['Vel'][:,1])
+col12 = fits.Column(name='VelZ',                  format='F', array=G['Vel'][:,2])
+col13 = fits.Column(name='Mvir',                  format='F', array=G['Mvir'])
+col14 = fits.Column(name='Rvir',                  format='F', array=G['Rvir'])
+col15 = fits.Column(name='Vvir',                  format='F', array=G['Vvir'])
+col16 = fits.Column(name='ColdGas',               format='F', array=G['ColdGas'])
+col17 = fits.Column(name='StellarMass',           format='F', array=G['StellarMass'])
+col18 = fits.Column(name='BulgeMass',             format='F', array=G['BulgeMass'])
+col19 = fits.Column(name='DiskMass',              format='F', array=G['DiskMass'])
+col20 = fits.Column(name='BlackHoleMass',         format='F', array=G['BlackHoleMass'])
+col21 = fits.Column(name='Sfr',                   format='F', array=G['Sfr'])
+col22 = fits.Column(name='BulgeSize',             format='F', array=G['BulgeSize'])
+col23 = fits.Column(name='StellarDiskRadius',     format='F', array=G['StellarDiskRadius'])
+col24 = fits.Column(name='MagDust_sdssu',         format='F', array=G['MagDust'][:,15])
+col25 = fits.Column(name='MagDust_sdssg',         format='F', array=G['MagDust'][:,16])
+col26 = fits.Column(name='MagDust_sdssr',         format='F', array=G['MagDust'][:,17])
+col27 = fits.Column(name='MagDust_sdssi',         format='F', array=G['MagDust'][:,18])
+col28 = fits.Column(name='MagDust_sdssz',         format='F', array=G['MagDust'][:,19])
+col29 = fits.Column(name='MassWeightAge',         format='F', array=G['MassWeightAge'])
+col30 = fits.Column(name='rBandWeightAge',        format='F', array=G['rBandWeightAge'])
+
+col31 = fits.Column(name='GalID',                 format='K', array=G['GalID'])
+col32 = fits.Column(name='HaloID',                format='K', array=G['HaloID'])
+col33 = fits.Column(name='FirstProgGal',          format='K', array=G['FirstProgGal'])
+col34 = fits.Column(name='NextProgGal',           format='K', array=G['NextProgGal'])
+col35 = fits.Column(name='LastProgGal',           format='K', array=G['LastProgGal'])
+col36 = fits.Column(name='FOFCentralGal',         format='K', array=G['FOFCentralGal'])
+col37 = fits.Column(name='FileTreeNr',            format='K', array=G['FileTreeNr'])
+col38 = fits.Column(name='DescendantGal',         format='K', array=G['DescendantGal'])
+col39 = fits.Column(name='MainLeafId',            format='K', array=G['MainLeafId'])
+col40 = fits.Column(name='TreeRootId',            format='K', array=G['TreeRootId'])
+col41 = fits.Column(name='SubID',                 format='K', array=G['SubID'])
+col42 = fits.Column(name='MMSubID',               format='K', array=G['MMSubID'])
+
+
+cols = fits.ColDefs([col1,col2,col3,col4,col5,col6,col7,col8,col9,col10,
+                     col11,col12,col13,col14,col15,col16,col17,col18,col19,col20,
+                     col21,col22,col23,col24,col25,col26,col27,col28,col29,col30,
+                     col31,col32,col33,col34,col35,col36,col37,col38,col39,col40,
+                     col41,col42])
+
+tbhdu = fits.new_table(cols)
+
+
+file='/net/bootes/scratch2/SAM/Henriques2015a/GalTree/MR/GalTree_MR_H15_0_29.fits'
+
+prihdr = fits.Header()
+prihdr['COMMENT'] = "File containing the galaxy Tree catalog for the Henriques et al. 2015 model"
+prihdu = fits.PrimaryHDU(header=prihdr)
+thdulist = fits.HDUList([prihdu, tbhdu])
+thdulist.writeto(file, clobber=True)
+
+#header_0 = fits.Header()
+#hdu = fits.PrimaryHDU(data=data_arr) header=header_0)
+#hdulist = fits.HDUList([hdu])
+#hdulist.writeto(file, clobber=True)
+
+
+print("")
+print("file written")
+print("")
+
+file='/net/bootes/scratch2/SAM/Henriques2015a/GalTree/MR/GalTree_MR_H15_0_29.fits'
+HDUList=fits.open(file)
+print("")
+print("file read")
+print("")
+
+#HDUList.info()
+
+model = HDUList[1].data 
+#print(model['StellarMass'])
+
+
+
+sel=((np.log10(model['Stellarmass']*1.e10/0.673)>9.25) & (model['Stellarmass']>0.) & 
+     (model['PosX']/0.673<350) & (model['PosY']/0.673<350) & (model['PosZ']/0.673<350))
+
+
+print(len(model[sel]))
+
+print(model[0])
+print(model[1])
+
+HDUList.close()
+print("")
+print("all done")
+print("")
+
+
+
+
 import animations
 reload (animations)
     
 if opt_anime_mass_gr==1:   
     from animations import anime_mass_gr
     anime_mass_gr(G_MR)
+
+file = Datadir + '/catalog_for_andrea.txt'
+obs = Table.read(file, format='ascii') 
+
+mass_with_err=obs['stellarmass']+ np.random.randn(len(obs['stellarmass']))*0.08*(1+obs['z_geo'])
+
+fa = open(Datadir+'/new_catalog_for_andrea.txt', "w")
+
+for kk in range (0,len(obs['stellarmass'])): 
+    fa.write("%0.2f " % obs['stellarmass'][kk] + "%0.2f " % mass_with_err[kk] + 
+            "%0.2f " % obs['SFR'][kk] + "%0.2f " % obs['rbandWeightedAge'][kk] + 
+             "%0.2f " % obs['massWeightedAge'][kk] + "%0.2f " % obs['z_geo'][kk] +
+            "%0.2f\n" % obs['z_app'][kk])         
+fa.close()
+
+with PdfPages('./fig/plots.pdf') as pdf:  
+
+    xlim=[10.0,12.5]
+    ylim=[-13.0, -7.0]
+     
+    fig = plt.figure(figsize=(one_one_size_small[0],one_one_size_small[1]))
+    subplot=plt.subplot()
+    subplot.set_ylim(ylim), subplot.set_xlim(xlim)    
+        
+    xlab='$\mathrm{log_{10}}(M_{*}[M_{\odot}])$'       
+    ylab='$\mathrm{SSFR}$' 
+    subplot.set_xlabel(xlab, fontsize=14), subplot.set_ylabel(ylab, fontsize=14)   
+
+    for ii in range (1,25):
+        print("doing file",ii)
+        if(ii<10):
+            file = Datadir + '/catalog_for_andrea_0'+str(ii)+'.txt'
+        else:
+            file = Datadir + '/catalog_for_andrea_'+str(ii)+'.txt'
+        obs = Table.read(file, format='ascii') 
+        
+        x_rand=np.random.randn(len(obs['stellarmass']))
+        mass_with_err=obs['stellarmass']+ x_rand *0.04*(1+obs['z_geo'])-np.log10(Hubble_h)
+        SFR=10**(np.log10(obs['SFR'])+ x_rand *0.04*(1+obs['z_geo']))
+        #mass=obs['stellarmass']-np.log10(Hubble_h)        
+        sel=(mass_with_err>11.0) & (obs['SFR']<10)
+        sel=(mass_with_err>11.0) & (SFR<10)
+        #print(mass_with_err[sel])
+        #print(obs['SFR'][sel])
+
+        #if(ii==1):
+        #    plt.scatter(mass_with_err, np.log10(obs['SFR']/10**mass_with_err), s=5, color='black') 
+        #plt.scatter(mass_with_err[sel], np.log10(obs['SFR'][sel]/10**mass_with_err[sel]), s=5, color='red') 
+        
+        if(ii==1):
+            plt.scatter(mass_with_err, np.log10(SFR/10**mass_with_err), s=5, color='black') 
+        plt.scatter(mass_with_err[sel], np.log10(SFR[sel]/10**mass_with_err[sel]), s=5, color='red') 
+
+    print("plots done")
+    plt.tight_layout()   
+    pdf.savefig()
+    plt.close()
+
+
+ print(get_slope(0.2,100.,200.,2.))
+
+import pymssql
+
+conn = pymssql.connect(server="http://gavo.mpa-garching.mpg.de/MyMillennium/", user="bmh20", 
+                       password="fPMitZK", database="MyDB")
+cursor = conn.cursor()
+
+cursor.execute("SELECT COUNT(*) as count FROM Henriques2015a..MRscPlanck1")
+row = cursor.fetchone()
+
+conn.close()
+
+print(row)
+
+
 
 

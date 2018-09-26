@@ -15,12 +15,13 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from astropy.table import Table
 from astropy.io import fits
-from importlib import reload
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 from matplotlib.backends.backend_pdf import PdfPages
 from matplotlib.colors import LogNorm
 import sys
 from scipy.ndimage import zoom
+from importlib import reload
+import inspect   
 
 import procedures
 reload (procedures)
@@ -29,8 +30,8 @@ import plots_input
 reload (plots_input)
 from plots_input import *
 
-def milkyway_sfr_and_gas_profiles(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf):
-  
+def milkyway_sfr_and_gas_profiles(ThisRedshiftList):
+    
     plot_color=['red','purple']        
    
     fig = plt.figure(figsize=(two_two_size_small[0],two_two_size_small[1]))
@@ -125,9 +126,10 @@ def milkyway_sfr_and_gas_profiles(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf)
         #            (G0_MR['Vvir']>200.) & (G0_MR['Vvir']<235.) & (G0_MR['Type']==0) & 
         #            (G0_MR['BulgeMass']/G0_MR['StellarMass']<0.15)] 
         G0_MR=G0_MR[(G0_MR['StellarMass']>0.) & (G0_MR['DiskMass']>0.) & (G0_MR['Type']==0) & 
-                    (np.log10(G0_MR['Sfr']/(G0_MR['StellarMass']*1e10/Hubble_h))>-11.) &                   
-                    (G0_MR['Vvir']>180.) & (G0_MR['Vvir']<235.) &
+                    #(np.log10(G0_MR['Sfr']/(G0_MR['StellarMass']*1e10/Hubble_h))>-11.) &                   
+                    (G0_MR['Vvir']>200.) & (G0_MR['Vvir']<235.) &
                     (G0_MR['BulgeMass']/G0_MR['StellarMass']<0.15)] 
+        #180, 235
         #G0_MR=G0_MR[(np.log10(G0_MR['StellarMass']*1.e10/Hubble_h)>10.) & (G0_MR['DiskMass']>0.) &       
         #            (G0_MR['Vmax']>125.) & (G0_MR['MagDust'][:,1]<-20.) &
         #            ((G0_MR['BulgeMass']/G0_MR['StellarMass'])<0.15)]
@@ -283,11 +285,12 @@ def milkyway_sfr_and_gas_profiles(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf)
                             color='black',x2_percentage=0.08,xlog=0,ylog=0,linestyle='-',linewidth=2)
             
     plt.tight_layout()
-    plt.savefig('./fig/milkyway_sfr_and_gas_profiles.pdf')
-    plt.savefig('./fig/HYW17_plots_milkyway_sfr_and_gas_profiles.pdf')
-    pdf.savefig()
+    current_function =  inspect.getframeinfo(inspect.currentframe()).function   
+    plt.savefig('./fig/plots_'+current_function+'.pdf')
+    plt.savefig('./fig/HYJ18_milkyway_sfr_and_gas_profiles.pdf')
     plt.close()
 
+    return   
 #end  milkyway_sfr_and_gas_profiles
 
 
@@ -301,8 +304,8 @@ def milkyway_sfr_and_gas_profiles(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf)
  
      
 
-def milkyway_gradients(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf):
-          
+def milkyway_gradients(ThisRedshiftList):
+         
     #Model SELECTION
     ii=0   
     (sel)=select_current_redshift(G_MR, ThisRedshiftList, ii, FullSnapshotList_MR)                 
@@ -440,17 +443,17 @@ def milkyway_gradients(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf):
                         color='blue', xlog=0, ylog=0, sym='o', sym_size=5, err_size=0.04)
         
     plt.tight_layout()
-    plt.savefig('./fig/plots_milkyway_gradients.pdf')
-    plt.savefig('./fig/HYW17_plots_milkyway_gradients.pdf')
-    pdf.savefig()
+    current_function =  inspect.getframeinfo(inspect.currentframe()).function   
+    plt.savefig('./fig/plots_'+current_function+'.pdf')
+    plt.savefig('./fig/HYJ18_plots_milkyway_gradients.pdf')
     plt.close()
     
-    
+    return 
 #end gas_milkyway_gradients
 
 
-def gas_metallicity_gradients_mass_bins(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf):
-       
+def gas_metallicity_gradients_mass_bins(ThisRedshiftList):
+     
     ii=0   
     
     plot_color=['blue','green','red']
@@ -607,8 +610,8 @@ def gas_metallicity_gradients_mass_bins(G_MR, RingRadius, RNUM, ThisRedshiftList
                 if(len(y_variable[sel])>0.):
                     (x_binned, median, mean, pc16, pc84, rms)=median_and_percentiles (bin, xlim[0], xlim[1], 
                                                                                       x_variable[sel], y_variable[sel])
-                #print(np.log10(median))
-                subplot.plot(x_binned, np.log10(median), color=plot_color[kk], linewidth=2)
+                    #print(np.log10(median))
+                    subplot.plot(x_binned, np.log10(median), color=plot_color[kk], linewidth=2)
             
                 #median_radius=np.median(G0_MR['GasDiskRadius'][G0_MR['GasDiskRadius']>0.]*1000./Hubble_h)
                 #Rings=np.log10(RingRadius/median_radius)
@@ -661,21 +664,19 @@ def gas_metallicity_gradients_mass_bins(G_MR, RingRadius, RNUM, ThisRedshiftList
     #endfor -> i_radius
               
     plt.tight_layout()
-    plt.savefig('./fig/plots_gas_metallicity_gradients_mass_bins.pdf')
+    current_function =  inspect.getframeinfo(inspect.currentframe()).function   
+    plt.savefig('./fig/plots_'+current_function+'.pdf')
     plt.savefig('./fig/HYW17_plots_gas_metallicity_gradients_mass_bins.pdf')
-    pdf.savefig()
     plt.close()
     
-    
-    
-    
+    return 
     
 #end gas_metallicity_gradients
 
 
 
-def stellar_metallicity_gradients_mass_bins(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf):
-       
+def stellar_metallicity_gradients_mass_bins(ThisRedshiftList):
+     
     ii=0   
     
     plot_color=['purple','blue','lightblue','green','orange','red','brown']    
@@ -761,14 +762,12 @@ def stellar_metallicity_gradients_mass_bins(G_MR, RingRadius, RNUM, ThisRedshift
     #endfor -> i_radius
               
     plt.tight_layout()
-    plt.savefig('./fig/plots_stellar_metallicity_gradients_mass_bins.pdf')
+    current_function =  inspect.getframeinfo(inspect.currentframe()).function   
+    plt.savefig('./fig/plots_'+current_function+'.pdf')
     plt.savefig('./fig/HYW17_plots_stellar_metallicity_gradients_mass_bins.pdf')
-    pdf.savefig()
     plt.close()
     
-    
-    
-    
+    return    
     
 #end stellar_metallicity_gradients
 
@@ -776,8 +775,8 @@ def stellar_metallicity_gradients_mass_bins(G_MR, RingRadius, RNUM, ThisRedshift
 
 
 
-def CALIFA_gradients_morph_types(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf):
-       
+def CALIFA_gradients_morph_types(ThisRedshiftList):
+      
     ii=0   
     
     plot_color=['brown','red','orange','green','lightblue','blue','darkblue']    
@@ -883,153 +882,156 @@ def CALIFA_gradients_morph_types(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf):
                               (np.log10(G0_MR_unsel['StellarMass']*1e10/Hubble_h)<mass_high[k_type])]
      
             NGals=len(G0_MR)
-            x_variable=np.zeros(int(RNUM*NGals),dtype=np.float32) 
-            y_variable=np.zeros(int(RNUM*NGals),dtype=np.float32)   
+            if(NGals>0):
+                x_variable=np.zeros(int(RNUM*NGals),dtype=np.float32) 
+                y_variable=np.zeros(int(RNUM*NGals),dtype=np.float32)   
                 
-            r_bulge=G0_MR['BulgeSize']*1000./Hubble_h #From Mpc/h to kpc
+                r_bulge=G0_MR['BulgeSize']*1000./Hubble_h #From Mpc/h to kpc
        
-            #SFH structure needed for age gradients
-            fa = open(DirName_MR+"SFH_Bins","rb")                
-            nbins =  np.fromfile(fa,np.int32,1)
-            template = np.dtype([('SnapNum',np.int32,1),
-                                 ('Bin',np.int32,1),
-                                 ('Lookbacktime',np.float64,1),                           
-                                 ('dt',np.float64,1),
-                                 ('nbins',np.int32,1)
-                                ])
-            SFH = np.fromfile(fa,template,int(nbins))    
-            fa.close()            
+                #SFH structure needed for age gradients
+                fa = open(DirName_MR+"SFH_Bins","rb")                
+                nbins =  np.fromfile(fa,np.int32,1)
+                template = np.dtype([('SnapNum',np.int32,1),
+                                     ('Bin',np.int32,1),
+                                     ('Lookbacktime',np.float64,1),                           
+                                     ('dt',np.float64,1),
+                                     ('nbins',np.int32,1)
+                                    ])
+                SFH = np.fromfile(fa,template,int(nbins))    
+                fa.close()            
     
     
-            for jj in range(0,RNUM):
+                for jj in range(0,RNUM):
             
-                x_variable[NGals*jj:NGals*(jj+1)]=RingRadius[jj]/(G0_MR['StellarHalfMassRadius']*1000./Hubble_h)
+                    x_variable[NGals*jj:NGals*(jj+1)]=RingRadius[jj]/(G0_MR['StellarHalfMassRadius']*1000./Hubble_h)
                 
-                if(opt_rings_in_bulges==1):
-                    BulgeMass_this_ring=G0_MR['BulgeMassRings'][:,jj]*1e10/Hubble_h
-                else:
-                    if(jj==0):
-                        r_bulge_m=1.-1./(1.+RingRadius[0]/r_bulge)
-                    else:
-                        r_bulge_m=(1/(1+RingRadius[jj-1]/r_bulge)-1/(1+RingRadius[jj]/r_bulge))
-                    BulgeMass_this_ring=G0_MR['BulgeMass']*r_bulge_m*1e10/Hubble_h  
-                    BulgeMass_this_ring[r_bulge==0.]=0.   
-                    
-                StellarMass_this_ring=G0_MR['DiskMassRings'][:,jj]*1e10/Hubble_h+BulgeMass_this_ring    
-            
-                #***************************    
-                #*   stellar metallicity   *
-                #*************************** 
-                if(plot_prop==0): 
-                    #METALS    
                     if(opt_rings_in_bulges==1):
-                        if(opt_detailed_enrichment==1):                  
-                            MetalsBulgeMass_this_ring=(G0_MR['MetalsBulgeMassRings'][:,jj,0] + 
-                                                      G0_MR['MetalsBulgeMassRings'][:,jj,1] +
-                                                      G0_MR['MetalsBulgeMassRings'][:,jj,2])
-                        else:            
-                            MetalsBulgeMass_this_ring=G0_MR['MetalsBulgeMassRings'][:,jj]
+                        BulgeMass_this_ring=G0_MR['BulgeMassRings'][:,jj]*1e10/Hubble_h
                     else:
-                        if(opt_detailed_enrichment==1): 
-                            MetalsBulgeMass_this_ring=(G0_MR['MetalsBulgeMass'][:,0]+ 
-                                                       G0_MR['MetalsBulgeMass'][:,1]+
-                                                       G0_MR['MetalsBulgeMass'][:,2])*r_bulge_m
-                        else:              
-                            MetalsBulgeMass_this_ring=G0_MR['MetalsBulgeMass']*r_bulge_m            
-                        MetalsBulgeMass_this_ring[r_bulge==0]=0. 
-            
-                    if(opt_detailed_enrichment==1):                  
-                        MetalsDiskMass_this_ring=(G0_MR['MetalsDiskMassRings'][:,jj,0] + 
-                                                  G0_MR['MetalsDiskMassRings'][:,jj,1] +
-                                                  G0_MR['MetalsDiskMassRings'][:,jj,2])
-                    else:            
-                        MetalsDiskMass_this_ring=G0_MR['MetalsDiskMassRings'][:,jj]
-                
-                    MetalsStellarMass_this_ring=(MetalsDiskMass_this_ring+MetalsBulgeMass_this_ring)*1e10/Hubble_h
-            
-                    y_variable[NGals*jj:NGals*(jj+1)]= MetalsStellarMass_this_ring/StellarMass_this_ring/0.02
-          
-
-        
-                #***************************    
-                #* stellar surface density *
-                #***************************
-                if(plot_prop==1): 
-                    #1e6 -> from kpc^2 to pc^2
-                    if(jj==0):
-                        y_variable[NGals*jj:NGals*(jj+1)]=StellarMass_this_ring/(3.14*RingRadius[0]**2*1e6) 
-                    else:
-                        y_variable[NGals*jj:NGals*(jj+1)]=StellarMass_this_ring/(3.14*(RingRadius[jj]**2-RingRadius[jj-1]**2)*1e6)        
-        
-        
-                #***************************    
-                #*    mass-weighted AGE    *
-                #***************************
-                if(plot_prop==2):
-                    #we only need the SFH strucutre from the current snap
-                    SFH=SFH[SFH['SnapNum']==G0_MR['SnapNum'][0]]     
-                    #if(jj==0):
-                    #    print(np.log10(SFH['Lookbacktime']))
-                    age=np.zeros(NGals)
-                    for ii in range(0,len(SFH)):
-                        sel=G0_MR['sfh_DiskMassRings'][:,jj,ii]>0.
-                        age[sel]+=SFH['Lookbacktime'][ii]*(G0_MR['sfh_DiskMassRings'][sel,jj,ii]*(1.-0.43))*1e10/Hubble_h
-                        if(opt_rings_in_bulges==1):
-                            sel=G0_MR['sfh_BulgeMassRings'][:,jj,ii]>0.
-                            age[sel]+=SFH['Lookbacktime'][ii]*(G0_MR['sfh_BulgeMassRings'][sel,jj,ii]*(1.-0.43))*1e10/Hubble_h
-                    if(opt_rings_in_bulges==0):     
-                        age+=G0_MR['MassWeightAge']*1e9*BulgeMass_this_ring    
-                    #sel=StellarMass_this_ring>0.
-                    #age[sel]=age[sel]/StellarMass_this_ring[sel]               
-                    #scale the massweighted ages by the global light weighted age
-                    y_variable[NGals*jj:NGals*(jj+1)] = (age/StellarMass_this_ring *
-                                                         G0_MR['rBandWeightAge']/G0_MR['MassWeightAge'])                    
-                    #y_variable[NGals*jj:NGals*(jj+1)]=age/(G0_MR['DiskMassRings'][:,jj]*1e10/Hubble_h)
-                
-                    '''if(jj==0):
-                        age=np.log10(np.mean(G0_MR['MassWeightAge']*1e9))        
-                        subplot.scatter([(k_type+1)*0.1,(k_type+1)*0.1]
-                                        ,[age,age],color=plot_color[k_type],marker='o',s=20)'''                    
-            #endfor RNUM
-        
-            bin=0.1
-            sel=y_variable>0. 
-            if(len(y_variable[sel])>0.):
-                (x_binned, median, mean, pc16, pc84, rms)=median_and_percentiles (bin, xlim[0], xlim[1], 
-                                                                                  x_variable[sel], y_variable[sel])
-              
-            subplot.plot(x_binned, np.log10(median), color=plot_color[k_type], linewidth=2)
-          
-        
-            #labels    
-            x_values=[0.1,0.16,0.25,0.34,0.43,0.56,0.65]
-            if(plot_prop==0):
-                label=morph_types[k_type]
-                plot_label (subplot, 'label',xlim,ylim,x_percentage=x_values[k_type],y_percentage=0.85, 
-                            color=plot_color[k_type],xlog=0,ylog=0,label=label,fontsize=15,fontweight='normal')            
+                        if(jj==0):
+                            r_bulge_m=1.-1./(1.+RingRadius[0]/r_bulge)
+                        else:
+                            r_bulge_m=(1/(1+RingRadius[jj-1]/r_bulge)-1/(1+RingRadius[jj]/r_bulge))
+                        BulgeMass_this_ring=G0_MR['BulgeMass']*r_bulge_m*1e10/Hubble_h  
+                        BulgeMass_this_ring[r_bulge==0.]=0.   
                     
-            if(plot_prop==1):
-                plot_label (subplot, 'label', xlim, ylim, x_percentage=0.69, y_percentage=0.9, 
-                            color='black', xlog=0, ylog=0,label=prefix_this_model, fontsize=13, fontweight='normal')        
-                plot_label (subplot,'line',xlim,ylim,x_percentage=0.6,y_percentage=0.92,
-                            color='brown',x2_percentage=0.67,xlog=0,ylog=0,linestyle='-',linewidth=2)
-                plot_label (subplot, 'label', xlim, ylim, x_percentage=0.69, y_percentage=0.8, 
-                            color='black', xlog=0, ylog=0,label='CALIFA', fontsize=13, fontweight='normal')        
-                plot_label (subplot,'line',xlim,ylim,x_percentage=0.6,y_percentage=0.82,
-                            color='brown',x2_percentage=0.67,xlog=0,ylog=0,linestyle='--',linewidth=2)
+                    StellarMass_this_ring=G0_MR['DiskMassRings'][:,jj]*1e10/Hubble_h+BulgeMass_this_ring    
+            
+                    #***************************    
+                    #*   stellar metallicity   *
+                    #*************************** 
+                    if(plot_prop==0): 
+                        #METALS    
+                        if(opt_rings_in_bulges==1):
+                            if(opt_detailed_enrichment==1):                  
+                                MetalsBulgeMass_this_ring=(G0_MR['MetalsBulgeMassRings'][:,jj,0] + 
+                                                          G0_MR['MetalsBulgeMassRings'][:,jj,1] +
+                                                          G0_MR['MetalsBulgeMassRings'][:,jj,2])
+                            else:            
+                                MetalsBulgeMass_this_ring=G0_MR['MetalsBulgeMassRings'][:,jj]
+                        else:
+                            if(opt_detailed_enrichment==1): 
+                                MetalsBulgeMass_this_ring=(G0_MR['MetalsBulgeMass'][:,0]+ 
+                                                           G0_MR['MetalsBulgeMass'][:,1]+
+                                                           G0_MR['MetalsBulgeMass'][:,2])*r_bulge_m
+                            else:              
+                                MetalsBulgeMass_this_ring=G0_MR['MetalsBulgeMass']*r_bulge_m            
+                            MetalsBulgeMass_this_ring[r_bulge==0]=0. 
+                
+                        if(opt_detailed_enrichment==1):                  
+                            MetalsDiskMass_this_ring=(G0_MR['MetalsDiskMassRings'][:,jj,0] + 
+                                                      G0_MR['MetalsDiskMassRings'][:,jj,1] +
+                                                      G0_MR['MetalsDiskMassRings'][:,jj,2])
+                        else:            
+                            MetalsDiskMass_this_ring=G0_MR['MetalsDiskMassRings'][:,jj]
+                    
+                        MetalsStellarMass_this_ring=(MetalsDiskMass_this_ring+MetalsBulgeMass_this_ring)*1e10/Hubble_h
+                
+                        y_variable[NGals*jj:NGals*(jj+1)]= MetalsStellarMass_this_ring/StellarMass_this_ring/0.02
+              
+    
+            
+                    #***************************    
+                    #* stellar surface density *
+                    #***************************
+                    if(plot_prop==1): 
+                        #1e6 -> from kpc^2 to pc^2
+                        if(jj==0):
+                            y_variable[NGals*jj:NGals*(jj+1)]=StellarMass_this_ring/(3.14*RingRadius[0]**2*1e6) 
+                        else:
+                                y_variable[NGals*jj:NGals*(jj+1)]=StellarMass_this_ring/(3.14*(RingRadius[jj]**2-RingRadius[jj-1]**2)*1e6)        
+            
+            
+                    #***************************    
+                    #*    mass-weighted AGE    *
+                    #***************************
+                    if(plot_prop==2):
+                        #we only need the SFH strucutre from the current snap
+                        SFH=SFH[SFH['SnapNum']==G0_MR['SnapNum'][0]]     
+                        #if(jj==0):
+                        #    print(np.log10(SFH['Lookbacktime']))
+                        age=np.zeros(NGals)
+                        for ii in range(0,len(SFH)):
+                            sel=G0_MR['sfh_DiskMassRings'][:,jj,ii]>0.
+                            age[sel]+=SFH['Lookbacktime'][ii]*(G0_MR['sfh_DiskMassRings'][sel,jj,ii]*
+                                                               (1.-0.43))*1e10/Hubble_h
+                            if(opt_rings_in_bulges==1):
+                                sel=G0_MR['sfh_BulgeMassRings'][:,jj,ii]>0.
+                                age[sel]+=SFH['Lookbacktime'][ii]*(G0_MR['sfh_BulgeMassRings'][sel,jj,ii]*
+                                                                   (1.-0.43))*1e10/Hubble_h
+                            else:     
+                                age+=G0_MR['MassWeightAge']*1e9*BulgeMass_this_ring    
+                            #sel=StellarMass_this_ring>0.
+                        #age[sel]=age[sel]/StellarMass_this_ring[sel]               
+                        #scale the massweighted ages by the global light weighted age
+                        y_variable[NGals*jj:NGals*(jj+1)] = (age/StellarMass_this_ring *
+                                                                 G0_MR['rBandWeightAge']/G0_MR['MassWeightAge'])                    
+                        #y_variable[NGals*jj:NGals*(jj+1)]=age/(G0_MR['DiskMassRings'][:,jj]*1e10/Hubble_h)
+                    
+                        '''if(jj==0):
+                            age=np.log10(np.mean(G0_MR['MassWeightAge']*1e9))        
+                            subplot.scatter([(k_type+1)*0.1,(k_type+1)*0.1]
+                                            ,[age,age],color=plot_color[k_type],marker='o',s=20)'''                    
+                #endfor RNUM
+            
+                bin=0.1
+                sel=y_variable>0. 
+                if(len(y_variable[sel])>0.):
+                    (x_binned, median, mean, pc16, pc84, rms)=median_and_percentiles (bin, xlim[0], xlim[1], 
+                                                                                      x_variable[sel], y_variable[sel])
+                  
+                subplot.plot(x_binned, np.log10(median), color=plot_color[k_type], linewidth=2)
+              
+        
+                #labels    
+                x_values=[0.1,0.16,0.25,0.34,0.43,0.56,0.65]
+                if(plot_prop==0):
+                    label=morph_types[k_type]
+                    plot_label (subplot, 'label',xlim,ylim,x_percentage=x_values[k_type],y_percentage=0.85, 
+                                color=plot_color[k_type],xlog=0,ylog=0,label=label,fontsize=15,fontweight='normal')            
+                    
+                if(plot_prop==1):
+                    plot_label (subplot, 'label', xlim, ylim, x_percentage=0.69, y_percentage=0.9, color='black', 
+                                xlog=0, ylog=0,label=prefix_this_model, fontsize=13, fontweight='normal')        
+                    plot_label (subplot,'line',xlim,ylim,x_percentage=0.6,y_percentage=0.92,
+                                color='brown',x2_percentage=0.67,xlog=0,ylog=0,linestyle='-',linewidth=2)
+                    plot_label (subplot, 'label', xlim, ylim, x_percentage=0.69, y_percentage=0.8, 
+                                color='black', xlog=0, ylog=0,label='CALIFA', fontsize=13, fontweight='normal')        
+                    plot_label (subplot,'line',xlim,ylim,x_percentage=0.6,y_percentage=0.82,
+                                color='brown',x2_percentage=0.67,xlog=0,ylog=0,linestyle='--',linewidth=2)
+                
                 
         #endfor -> morph_types
     #endfor -> plot_prop
        
         
     plt.tight_layout()
-    plt.savefig('./fig/plots_CALIFA_gradients_morph_types.pdf')
-    plt.savefig('./fig/HYW17_plots_CALIFA_gradients_morph_types.pdf')
-    pdf.savefig()
+    current_function =  inspect.getframeinfo(inspect.currentframe()).function   
+    plt.savefig('./fig/plots_'+current_function+'.pdf')
+    plt.savefig('./fig/HYJ18_CALIFA_gradients_morph_types.pdf')
     plt.close()
     
-    
-    
+    return 
 #end gradients_morph_types
 
 
@@ -1052,7 +1054,7 @@ def CALIFA_gradients_morph_types(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf):
 
 
 
-def CALIFA_gradients_mass_bins(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf):
+def CALIFA_gradients_mass_bins(ThisRedshiftList):
        
     ii=0   
     
@@ -1300,13 +1302,12 @@ def CALIFA_gradients_mass_bins(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf):
        
         
     plt.tight_layout()
-    plt.savefig('./fig/plots_CALIFA_gradients_mass_bins.pdf')
-    plt.savefig('./fig/HYW17_plots_CALIFA_gradients_mass_bins.pdf')
-    pdf.savefig()
+    current_function =  inspect.getframeinfo(inspect.currentframe()).function   
+    plt.savefig('./fig/plots_'+current_function+'.pdf')
+    plt.savefig('./fig/HYJ18_CALIFA_gradients_mass_bins.pdf')
     plt.close()
     
-    
-    
+    return 
 #end gradients_mass_bins
 
 
@@ -1322,8 +1323,8 @@ def CALIFA_gradients_mass_bins(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf):
 
 
 
-def MANGA_gradients_late_types(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf):
-       
+def MANGA_gradients_late_types(ThisRedshiftList):
+    
     ii=0   
     
     plot_color=['brown','red','orange','green','lightblue','blue','darkblue']    
@@ -1496,44 +1497,53 @@ def MANGA_gradients_late_types(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf):
             #OBSERVATIONS
             if(plot_prop==0):
                 if(i_mass==0):
-                    file = Datadir + '/MANGA_gradients/goddard2016_LT_age.txt'
+                    file = Datadir + '/MANGA_gradients/goddard2016_LT_new_MAD.txt'
                     obs = Table.read(file, format='ascii')             
-                    subplot.fill_between(obs['Radius_P1'],obs['MW_Age_P1']+obs['MW_Error_P1'],
-                                         obs['MW_Age_P1']-obs['MW_Error_P1'], facecolor='lightblue', 
+                    subplot.fill_between(obs['Radius'],obs['MW_Age_M1']+obs['MW_Age_Error_M1'],
+                                         obs['MW_Age_M1']-obs['MW_Age_Error_M1'], facecolor='lightblue', 
                                          interpolate=True, alpha=0.4, edgecolor='steelblue') 
+                    subplot.plot(obs['Radius'],obs['MW_Age_M1'],color='blue', linewidth=2)
                 if(i_mass==1):    
-                    subplot.fill_between(obs['Radius_P2'],obs['MW_Age_P2']+obs['MW_Error_P2'],
-                                         obs['MW_Age_P2']-obs['MW_Error_P2'], facecolor='lightblue', 
+                    subplot.fill_between(obs['Radius'],obs['MW_Age_M2']+obs['MW_Age_Error_M2'],
+                                         obs['MW_Age_M2']-obs['MW_Age_Error_M2'], facecolor='lightblue', 
                                          interpolate=True, alpha=0.4, edgecolor='steelblue') 
+                    subplot.plot(obs['Radius'],obs['MW_Age_M2'],color='blue', linewidth=2)
                 if(i_mass==2):    
-                    subplot.fill_between(obs['Radius_P3'],obs['MW_Age_P3']+obs['MW_Error_P3'],
-                                         obs['MW_Age_P3']-obs['MW_Error_P3'], facecolor='lightblue', 
+                    subplot.fill_between(obs['Radius'],obs['MW_Age_M3']+obs['MW_Age_Error_M3'],
+                                         obs['MW_Age_M3']-obs['MW_Age_Error_M3'], facecolor='lightblue', 
                                          interpolate=True, alpha=0.4, edgecolor='steelblue') 
+                    subplot.plot(obs['Radius'],obs['MW_Age_M3'],color='blue', linewidth=2)
                 if(i_mass==3):    
-                    subplot.fill_between(obs['Radius_P4'],obs['MW_Age_P4']+obs['MW_Error_P4'],
-                                         obs['MW_Age_P4']-obs['MW_Error_P4'], facecolor='lightblue', 
+                    subplot.fill_between(obs['Radius'],obs['MW_Age_M4']+obs['MW_Age_Error_M4'],
+                                         obs['MW_Age_M4']-obs['MW_Age_Error_M4'], facecolor='lightblue', 
                                          interpolate=True, alpha=0.4, edgecolor='steelblue') 
+                    subplot.plot(obs['Radius'],obs['MW_Age_M4'],color='blue', linewidth=2)
                     
               
             if(plot_prop==1):
                 if(i_mass==0):
-                    file = Datadir + '/MANGA_gradients/goddard2016_LT_metallicity.txt'
-                    obs = Table.read(file, format='ascii')
-                    subplot.fill_between(obs['Radius_P1'],obs['MW_Age_P1']+obs['MW_Error_P1'],
-                                         obs['MW_Age_P1']-obs['MW_Error_P1'], facecolor='lightblue', 
+                    file = Datadir + '/MANGA_gradients/goddard2016_LT_new_MAD.txt'
+                    obs = Table.read(file, format='ascii')             
+                    subplot.fill_between(obs['Radius'],obs['MW_Metallicity_M1']+obs['MW_Metallicity_Error_M1'],
+                                         obs['MW_Metallicity_M1']-obs['MW_Metallicity_Error_M1'], facecolor='lightblue', 
                                          interpolate=True, alpha=0.4, edgecolor='steelblue') 
+                    subplot.plot(obs['Radius'],obs['MW_Metallicity_M1'],color='blue', linewidth=2)
                 if(i_mass==1):    
-                    subplot.fill_between(obs['Radius_P2'],obs['MW_Age_P2']+obs['MW_Error_P2'],
-                                         obs['MW_Age_P2']-obs['MW_Error_P2'], facecolor='lightblue', 
+                    subplot.fill_between(obs['Radius'],obs['MW_Metallicity_M2']+obs['MW_Metallicity_Error_M2'],
+                                         obs['MW_Metallicity_M2']-obs['MW_Metallicity_Error_M2'], facecolor='lightblue', 
                                          interpolate=True, alpha=0.4, edgecolor='steelblue') 
+                    subplot.plot(obs['Radius'],obs['MW_Metallicity_M2'],color='blue', linewidth=2)
                 if(i_mass==2):    
-                    subplot.fill_between(obs['Radius_P3'],obs['MW_Age_P3']+obs['MW_Error_P3'],
-                                         obs['MW_Age_P3']-obs['MW_Error_P3'], facecolor='lightblue', 
+                    subplot.fill_between(obs['Radius'],obs['MW_Metallicity_M3']+obs['MW_Metallicity_Error_M3'],
+                                         obs['MW_Metallicity_M3']-obs['MW_Metallicity_Error_M3'], facecolor='lightblue', 
                                          interpolate=True, alpha=0.4, edgecolor='steelblue') 
+                    subplot.plot(obs['Radius'],obs['MW_Metallicity_M3'],color='blue', linewidth=2)
                 if(i_mass==3):    
-                    subplot.fill_between(obs['Radius_P4'],obs['MW_Age_P4']+obs['MW_Error_P4'],
-                                         obs['MW_Age_P4']-obs['MW_Error_P4'], facecolor='lightblue', 
+                    subplot.fill_between(obs['Radius'],obs['MW_Metallicity_M4']+obs['MW_Metallicity_Error_M4'],
+                                         obs['MW_Metallicity_M4']-obs['MW_Metallicity_Error_M4'], facecolor='lightblue', 
                                          interpolate=True, alpha=0.4, edgecolor='steelblue') 
+                    subplot.plot(obs['Radius'],obs['MW_Metallicity_M4'],color='blue', linewidth=2)
+                               
           
             #if(plot_prop==0):
             label="%0.2f" % mass_low[i_mass] + r'$<\mathrm{log_{10}}(M_*[M_{\odot}])<$' + "%0.2f" % mass_high[i_mass]
@@ -1545,20 +1555,19 @@ def MANGA_gradients_late_types(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf):
        
         
     plt.tight_layout()
-    plt.savefig('./fig/plots_MANGA_gradients_late_types.pdf')
-    plt.savefig('./fig/HYW17_plots_MANGA_gradients_late_types.pdf')
-    pdf.savefig()
+    current_function =  inspect.getframeinfo(inspect.currentframe()).function   
+    plt.savefig('./fig/plots_'+current_function+'.pdf')
+    plt.savefig('./fig/HYJ18_MANGA_gradients_late_types.pdf')
     plt.close()
     
-    
-    
+    return 
 #end gradients_morph_types
 
 
 
 
 
-def SFR_gradients(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf):
+def SFR_gradients(ThisRedshiftList):
   
     fig = plt.figure(figsize=(10,10))
     grid = gridspec.GridSpec(2, 2)
@@ -1607,10 +1616,11 @@ def SFR_gradients(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf):
    
         
     plt.tight_layout()
-    plt.savefig('./fig/plots_metals_vs_stellarmass.pdf')
-    pdf.savefig()
+    current_function =  inspect.getframeinfo(inspect.currentframe()).function   
+    plt.savefig('./fig/plots_'+current_function+'.pdf')
     plt.close()
     
+    return 
 #end SFR_gradients
 
 
@@ -1625,7 +1635,7 @@ def SFR_gradients(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf):
 
 
 
-def gasfractions_vs_stellarmass(G_MR, ThisRedshiftList, pdf):
+def gasfractions_vs_stellarmass(ThisRedshiftList):
   
     plot_color=['red','purple']        
    
@@ -1646,10 +1656,11 @@ def gasfractions_vs_stellarmass(G_MR, ThisRedshiftList, pdf):
         G0_MR=G_MR[sel]    
         #G0_MR=G0_MR[(G0_MR['StellarMass']>0.) & (G0_MR['ColdGas']>0.) & 
         #            (G0_MR['Vvir']>120.) & (G0_MR['BulgeMass']/G0_MR['StellarMass']<0.15)]
-        G0_MR=G0_MR[(np.log10(G0_MR['StellarMass']*1.e10/Hubble_h)>10.) & (G0_MR['ColdGas']>0.) & 
+        G0_MR=G0_MR[(np.log10(G0_MR['StellarMass']*1.e10/Hubble_h)>7.) & (G0_MR['ColdGas']>0.) & 
                     (np.log10(G0_MR['Sfr']/(G0_MR['StellarMass']*1.e10/Hubble_h))>-11.)] 
         #G0_MR=G0_MR[(np.log10(G0_MR['StellarMass']*1.e10/Hubble_h)>10.) & (G0_MR['ColdGas']>0.)]
         StellarMass=stellar_mass_with_err(G0_MR, Hubble_h, ThisRedshiftList[ii])
+        
         
         xlim=[9.5,11.5]
         ylim=[-2.0,0.5]
@@ -1690,14 +1701,13 @@ def gasfractions_vs_stellarmass(G_MR, ThisRedshiftList, pdf):
                 sel=G0_MR['H2fraction']>0.
                 Fraction=np.log10(G0_MR['H2fraction']/(1.-G0_MR['H2fraction']))
         
-           
+    
             (x_binned, median,mean,pc16,pc84,rms)=median_and_percentiles(bin,xlim[0],xlim[1],StellarMass[sel],Fraction[sel])    
             sel=(median!=0)        
             subplot.plot(x_binned[sel],median[sel],color=plot_color[ii],linewidth=2)     
             subplot.plot(x_binned[sel],pc16[sel],color=plot_color[ii],linewidth=2,linestyle='--')
             subplot.plot(x_binned[sel],pc84[sel],color=plot_color[ii],linewidth=2,linestyle='--')
-        
-        
+           
             #OBSERVATIONS PLOT  
             if(i_gas==0):
                 #Cold
@@ -1773,15 +1783,16 @@ def gasfractions_vs_stellarmass(G_MR, ThisRedshiftList, pdf):
             
                 
     plt.tight_layout()
-    plt.savefig('./fig/plots_gasfractions_vs_stellarmass.pdf')
-    plt.savefig('./fig/HYW17_plots_gasfractions_vs_stellarmass.pdf')
-    pdf.savefig()
+    current_function =  inspect.getframeinfo(inspect.currentframe()).function   
+    plt.savefig('./fig/plots_'+current_function+'.pdf')
+    plt.savefig('./fig/HYJ18_gasfractions_vs_stellarmass.pdf')
     plt.close()
 
+    return 
 #end
 
 
-def H2fraction_vs_stellarmass(G_MR, ThisRedshiftList, pdf):
+def H2fraction_vs_stellarmass(ThisRedshiftList):
   
     plot_color=['red','purple']        
   
@@ -1822,10 +1833,11 @@ def H2fraction_vs_stellarmass(G_MR, ThisRedshiftList, pdf):
        
             
     plt.tight_layout()
-    plt.savefig('./fig/plots_H2fraction_vs_stellarmass.pdf')
-    pdf.savefig()
+    current_function =  inspect.getframeinfo(inspect.currentframe()).function   
+    plt.savefig('./fig/plots_'+current_function+'.pdf')
     plt.close()
 
+    return   
 #end H2fraction_vs_stellarmass
 
 
@@ -1838,7 +1850,7 @@ def H2fraction_vs_stellarmass(G_MR, ThisRedshiftList, pdf):
 
 
 
-def evo_milkyway_gas_profile(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf):
+def evo_milkyway_gas_profile(ThisRedshiftList):
   
     plot_color=['red','purple']        
    
@@ -1954,18 +1966,18 @@ def evo_milkyway_gas_profile(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf):
        
             
     plt.tight_layout()
-    plt.savefig('./fig/plots_evo_milkyway_gas_profile.pdf')
-    pdf.savefig()
+    current_function =  inspect.getframeinfo(inspect.currentframe()).function   
+    plt.savefig('./fig/plots_'+current_function+'.pdf')
     plt.close()
 
+    return     
 #end evo_milkyway_gas_profile
 
 
 
 
-def evo_milkyway_stellar_profiles(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf):
+def evo_milkyway_stellar_profiles(ThisRedshiftList):
      
-    
     #select galaxies at z=0 and then follow progenitors
     ii=0
     (sel)=select_current_redshift(G_MR, ThisRedshiftList, ii, FullSnapshotList_MR)        
@@ -2065,10 +2077,10 @@ def evo_milkyway_stellar_profiles(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf)
         
     plt.tight_layout()
     plt.savefig('./fig/plots_evo_milkyway_stellar_profiles_disc.pdf')
-    pdf.savefig()
-    plt.close()
+    #pdf.savefig()
+    #plt.close()
     
-    
+    output.append(fig)
     
     
     
@@ -2166,16 +2178,15 @@ def evo_milkyway_stellar_profiles(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf)
         
     
     plt.tight_layout()
-    plt.savefig('./fig/plots_evo_milkyway_stellar_profiles_bulge.pdf')
-    pdf.savefig()
+    current_function =  inspect.getframeinfo(inspect.currentframe()).function   
+    plt.savefig('./fig/plots_'+current_function+'.pdf')
     plt.close()
 
+    return  
 #end evo_milkyway_stellar_profiles
 
-def test_H2_prescriptions(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf):
+def test_H2_prescriptions(ThisRedshiftList):
   
-    
-
     for ii in range(0,len(ThisRedshiftList)):        
                    
         #HII
@@ -2271,10 +2282,11 @@ def test_H2_prescriptions(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf):
                     fontsize=13, fontweight='normal')   
        
     plt.tight_layout()
-    plt.savefig('./fig/plots_test.pdf')
-    pdf.savefig()
+    current_function =  inspect.getframeinfo(inspect.currentframe()).function   
+    plt.savefig('./fig/plots_'+current_function+'.pdf')
     plt.close()
 
+    return   
 #end test_H2_prescriptions
 
 
@@ -2285,8 +2297,8 @@ def test_H2_prescriptions(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf):
 
 
 
-def test_rings(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf):
-        
+def test_rings(ThisRedshiftList):
+    
     ii=0   
         
     plot_color=['blue','green','red']        
@@ -2396,12 +2408,9 @@ def test_rings(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf):
     subplot.scatter(np.log10(Metals*1e10), np.log10(MetalsRings*1e10),s=5, color='black')  
 
        
-    pdf.savefig()
-    plt.close()       
-
-    
-    
-    
+    #pdf.savefig()
+    #plt.close()       
+  
     
     
     
@@ -2501,11 +2510,9 @@ def test_rings(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf):
         subplot.scatter(np.log10(Elements), np.log10(ElementsRings),s=5, color='red') 
     
         plt.tight_layout()        
-        pdf.savefig()
-        plt.close()   
-
-        
-        
+        #pdf.savefig()
+        #plt.close()           
+       
     #***************************
     #*     TEST SFH ARRAYS     *
     #***************************
@@ -2605,10 +2612,9 @@ def test_rings(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf):
     subplot.plot(x,x) 
     
     plt.tight_layout()       
-    pdf.savefig()
-    plt.close()    
-    
-    
+    #pdf.savefig()
+    #plt.close()    
+   
     
     
     #***************************
@@ -2705,8 +2711,9 @@ def test_rings(G_MR, RingRadius, RNUM, ThisRedshiftList, pdf):
     
     #print(sfh_Mass)
     plt.tight_layout()       
-    pdf.savefig()
+    current_function =  inspect.getframeinfo(inspect.currentframe()).function   
+    plt.savefig('./fig/plots_'+current_function+'.pdf')
     plt.close()    
-        
-        
+       
+    return       
 #end test_rings        

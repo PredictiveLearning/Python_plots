@@ -1,21 +1,13 @@
+# -*- coding: utf-8 -*-
+# <nbformat>3.0</nbformat>
+
+# <codecell>
+
 import numpy as np
 
 LGalaxiesStruct = np.dtype([
-('GalID',np.int64,1),
-('HaloID',np.int64,1),
-('FirstProgGal',np.int64,1),
-('NextProgGal',np.int64,1),
-('LastProgGal',np.int64,1),
-('FOFCentralGal',np.int64,1),
-('FileTreeNr',np.int64,1),
-('DescendantGal',np.int64,1),
-('MainLeafId',np.int64,1),
-('TreeRootId',np.int64,1),
-('SubID',np.int64,1),
-('MMSubID',np.int64,1),
-('PeanoKey',np.int32,1),
-('Redshift',np.float32,1),
 ('Type',np.int32,1),
+('HaloIndex',np.int32,1),
 ('SnapNum',np.int32,1),
 ('LookBackTimeToSnap',np.float32,1),
 ('CentralMvir',np.float32,1),
@@ -58,6 +50,7 @@ LGalaxiesStruct = np.dtype([
 ('CoolingRate_beforeAGN',np.float32,1),
 ('QuasarAccretionRate',np.float32,1),
 ('RadioAccretionRate',np.float32,1),
+#('MassRadio',np.float32,1),
 ('Sfr',np.float32,1),
 ('SfrBulge',np.float32,1),
 ('XrayLum',np.float32,1),
@@ -67,57 +60,38 @@ LGalaxiesStruct = np.dtype([
 ('CosInclination',np.float32,1),
 ('DisruptOn',np.int32,1),
 ('MergeOn',np.int32,1),
-#('MagDust',np.float32,40),
-#('Mag',np.float32,40),
-#('MagBulge',np.float32,40),
-('MagDust',np.float32,20),
-('Mag',np.float32,20),
-('MagBulge',np.float32,20),
-('MagICL',np.float32,20),
+('MagDust',np.float32,40),
+('Mag',np.float32,40),
+('MagBulge',np.float32,40),
 ('MassWeightAge',np.float32,1),
 ('rBandWeightAge',np.float32,1),
 ('sfh_ibin',np.int32,1),
 ('sfh_numbins',np.int32,1),
 ('sfh_DiskMass',np.float32,20),
-('sfh_BulgeMass',np.float32,20),
+('sfh_BulgeMass',np.float32,20),     
 ('sfh_ICM',np.float32,20),
 ('sfh_MetalsDiskMass',np.float32,20),
 ('sfh_MetalsBulgeMass',np.float32,20),
-('sfh_MetalsICM',np.float32,20)
-])
+('sfh_MetalsICM',np.float32,20)        
+ ])
 
 PropertiesToRead = {}
 for ii in LGalaxiesStruct.names:
 	PropertiesToRead[ii] = False
-          
-PropertiesToRead['GalID'] = True 
-PropertiesToRead['HaloID'] = True
-PropertiesToRead['FirstProgGal'] = True
-PropertiesToRead['NextProgGal'] = True
-PropertiesToRead['LastProgGal'] = True
-PropertiesToRead['FOFCentralGal'] = True
-PropertiesToRead['DescendantGal'] = True
-PropertiesToRead['FileTreeNr'] = True
-PropertiesToRead['DescendantGal'] = True
-PropertiesToRead['MainLeafId'] = True
-PropertiesToRead['TreeRootId'] = True
-PropertiesToRead['SubID'] = True
-PropertiesToRead['MMSubID'] = True
-
-PropertiesToRead['Redshift'] = True
+           
 PropertiesToRead['Type'] = True
-#PropertiesToRead['HaloID'] = True
+#PropertiesToRead['HaloIndex'] = True
 PropertiesToRead['SnapNum'] = True
 #PropertiesToRead['LookBackTimeToSnap'] = True
 PropertiesToRead['CentralMvir'] = True
-#PropertiesToRead['CentralRvir'] = True
+PropertiesToRead['CentralRvir'] = True
 PropertiesToRead['DistanceToCentralGal'] = True
 PropertiesToRead['Pos'] = True
-PropertiesToRead['Vel'] = True
+#PropertiesToRead['Vel'] = True
 #PropertiesToRead['Len'] = True
 PropertiesToRead['Mvir'] = True
 PropertiesToRead['Rvir'] = True
-PropertiesToRead['Vvir'] = True
+#PropertiesToRead['Vvir'] = True
 #PropertiesToRead['Vmax'] = True
 #PropertiesToRead['GasSpin'] = True
 #PropertiesToRead['StellarSpin'] = True
@@ -132,12 +106,12 @@ PropertiesToRead['ColdGas'] = True
 PropertiesToRead['StellarMass'] = True
 PropertiesToRead['BulgeMass'] = True
 PropertiesToRead['DiskMass'] = True
-PropertiesToRead['HotGas'] = True
-PropertiesToRead['EjectedMass'] = True
+#PropertiesToRead['HotGas'] = True
+#PropertiesToRead['EjectedMass'] = True
 PropertiesToRead['BlackHoleMass'] = True
-PropertiesToRead['ICM'] = True
-#PropertiesToRead['MetalsColdGas'] = True
-#PropertiesToRead['MetalsStellarMass'] = True
+#PropertiesToRead['ICM'] = True
+PropertiesToRead['MetalsColdGas'] = True
+PropertiesToRead['MetalsStellarMass'] = True
 #PropertiesToRead['MetalsBulgeMass'] = True
 #PropertiesToRead['MetalsDiskMass'] = True
 #PropertiesToRead['MetalsHotGas'] = True
@@ -145,10 +119,11 @@ PropertiesToRead['ICM'] = True
 #PropertiesToRead['MetalsICM'] = True
 #PropertiesToRead['PrimordialAccretionRate'] = True
 #PropertiesToRead['CoolingRadius'] = True
-PropertiesToRead['CoolingRate'] = True
-PropertiesToRead['CoolingRate_beforeAGN'] = True
+#PropertiesToRead['CoolingRate'] = True
+#PropertiesToRead['CoolingRate_beforeAGN'] = True
 #PropertiesToRead['QuasarAccretionRate'] = True
 #PropertiesToRead['RadioAccretionRate'] = True
+#PropertiesToRead['MassRadio'] = True
 PropertiesToRead['Sfr'] = True
 #PropertiesToRead['SfrBulge'] = True
 #PropertiesToRead['XrayLum'] = True
@@ -165,10 +140,14 @@ PropertiesToRead['MassWeightAge'] = True
 PropertiesToRead['rBandWeightAge'] = True
 #PropertiesToRead['sfh_ibin'] = True
 #PropertiesToRead['sfh_numbins'] = True
-#PropertiesToRead['sfh_DiskMass'] = True
-#PropertiesToRead['sfh_BulgeMass'] = True
+PropertiesToRead['sfh_DiskMass'] = True
+PropertiesToRead['sfh_BulgeMass'] = True
 #PropertiesToRead['sfh_ICM'] = True
 #PropertiesToRead['sfh_MetalsDiskMass'] = True
 #PropertiesToRead['sfh_MetalsBulgeMass'] = True
 #PropertiesToRead['sfh_MetalsICM'] = True
         
+
+# <codecell>
+
+

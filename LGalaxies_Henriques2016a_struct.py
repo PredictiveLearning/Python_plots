@@ -29,8 +29,10 @@ LGalaxiesStruct = np.dtype([
 ('HotRadius',np.float32,1),
 ('OriMergTime',np.float32,1),
 ('MergTime',np.float32,1),
-('flagSplashBack',np.int32,1), 
-('TimeSinceSplashBack',np.float32,1),              
+#('flagSplashBack',np.int32,1), 
+#('TimeSinceSplashBack',np.float32,1),  
+#('NMajorMergers',np.float32,1),  
+#('NMinorMergers',np.float32,1),   
 ('ColdGas',np.float32,1),
 ('StellarMass',np.float32,1),
 ('DiskMass',np.float32,1),
@@ -48,7 +50,7 @@ LGalaxiesStruct = np.dtype([
 ('MetalsDiskMass',np.float32,1),
 ('MetalsBulgeMass',np.float32,1),
 ('MetalsHotGas',np.float32,1),
-('MetalsReheatedGas',np.float32,1),
+#('MetalsReheatedGas',np.float32,1),
 ('MetalsEjectedMass',np.float32,1),
 ('MetalsICM',np.float32,1),
 ('PrimordialAccretionRate',np.float32,1),
@@ -83,9 +85,9 @@ LGalaxiesStruct = np.dtype([
 ('sfh_MetalsDiskMass',np.float32,20),
 ('sfh_MetalsBulgeMass',np.float32,20),
 ('sfh_MetalsICM',np.float32,20),
-('sfh_MassFromInSitu',np.float32,20),
-('sfh_MassFromMergers',np.float32,20),
-('sfh_MassFromBurst',np.float32,20)
+#('sfh_MassFromInSitu',np.float32,20),
+#('sfh_MassFromMergers',np.float32,20),
+#('sfh_MassFromBurst',np.float32,20)
 ])
 
 '''('sfh_DiskMass',np.float32,20),
@@ -136,16 +138,18 @@ PropertiesToRead['InfallSnap'] = True
 #PropertiesToRead['HotRadius'] = True
 #PropertiesToRead['OriMergTime'] = True
 #PropertiesToRead['MergTime'] = True
-PropertiesToRead['flagSplashBack'] = True
-PropertiesToRead['TimeSinceSplashBack'] = True
+#PropertiesToRead['flagSplashBack'] = True
+#PropertiesToRead['TimeSinceSplashBack'] = True
+#PropertiesToRead['NMajorMergers'] = True
+#PropertiesToRead['NMinorMergers'] = True
 PropertiesToRead['ColdGas'] = True
 PropertiesToRead['StellarMass'] = True
 PropertiesToRead['BulgeMass'] = True
 PropertiesToRead['DiskMass'] = True
 PropertiesToRead['HotGas'] = True
-#PropertiesToRead['EjectedMass'] = True
+PropertiesToRead['EjectedMass'] = True
 PropertiesToRead['BlackHoleMass'] = True
-#PropertiesToRead['ICM'] = True
+PropertiesToRead['ICM'] = True
 PropertiesToRead['MassFromInSitu'] = True
 PropertiesToRead['MassFromMergers'] = True
 PropertiesToRead['MassFromBursts'] = True

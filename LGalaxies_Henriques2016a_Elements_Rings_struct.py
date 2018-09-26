@@ -29,8 +29,10 @@ LGalaxiesStruct = np.dtype([
 ('HotRadius',np.float32,1),
 ('OriMergTime',np.float32,1),
 ('MergTime',np.float32,1),
-('flagSplashBack',np.int32,1), 
-('TimeSinceSlashBack',np.float32,1),    
+#('flagSplashBack',np.int32,1), 
+#('TimeSinceSlashBack',np.float32,1),   
+#('NMajorMergers',np.float32,1),  
+#('NMinorMergers',np.float32,1),   
 ('ColdGas',np.float32,1),
 ('ColdGasRings',np.float32,12),
 ('H2fraction',np.float32,1), 
@@ -56,9 +58,9 @@ LGalaxiesStruct = np.dtype([
 ('MetalsDiskMassRings',np.float32,[12,3]),  
 ('MetalsBulgeMassRings',np.float32,[12,3]),  
 ('MetalsHotGas',np.float32,3),
-('MetalsReheatedGas',np.float32,3),
+#('MetalsReheatedGas',np.float32,3),
 ('MetalsEjectedMass',np.float32,3),
-('MetalsICM',np.float32,3),
+('MetalsICM',np.float32,3), 
 ('PrimordialAccretionRate',np.float32,1),
 ('CoolingRadius',np.float32,1),
 ('CoolingRate',np.float32,1),
@@ -91,23 +93,23 @@ LGalaxiesStruct = np.dtype([
 ('sfh_ICM',np.float32,20),
 ('sfh_MetalsDiskMass',np.float32,[20,3]),
 ('sfh_MetalsBulgeMass',np.float32,[20,3]),
-('sfh_MetalsICM',np.float32,[20,3]),        
-('sfh_MassFromInSitu',np.float32,20),
-('sfh_MassFromMergers',np.float32,20),
-('sfh_MassFromBurst',np.float32,20),
-('sfh_ElementsDiskMass',np.float32,[20,11]),
-('sfh_ElementsBulgeMass',np.float32,[20,11]),
-('sfh_ElementsICM',np.float32,[20,11]),
-('DiskMass_elements',np.float32,11),
-('BulgeMass_elements',np.float32,11),
-('DiskMassRings_elements',np.float32,[12,11]),        
-('BulgeMassRings_elements',np.float32,[12,11]),    
-('ColdGas_elements',np.float32,11),
-('ColdGasRings_elements',np.float32,[12,11]),        
-('HotGas_elements',np.float32,11),
-('ReheatedGas_elements',np.float32,11),
-('ICM_elements',np.float32,11),
-('EjectedMass_elements',np.float32,11)        
+('sfh_MetalsICM',np.float32,[20,3]),      
+#('sfh_MassFromInSitu',np.float32,20),
+#('sfh_MassFromMergers',np.float32,20),
+#('sfh_MassFromBurst',np.float32,20),
+##('sfh_ElementsDiskMass',np.float32,[20,11]),
+##('sfh_ElementsBulgeMass',np.float32,[20,11]),
+##('sfh_ElementsICM',np.float32,[20,11]),
+##('DiskMass_elements',np.float32,11),
+##('BulgeMass_elements',np.float32,11),
+##('DiskMassRings_elements',np.float32,[12,11]),        
+##('BulgeMassRings_elements',np.float32,[12,11]),    
+##('ColdGas_elements',np.float32,11),
+##('ColdGasRings_elements',np.float32,[12,11]),        
+##('HotGas_elements',np.float32,11),
+#('ReheatedGas_elements',np.float32,11),
+##('ICM_elements',np.float32,11),
+##('EjectedMass_elements',np.float32,11)
 ])
 
 PropertiesToRead = {}
@@ -192,25 +194,25 @@ PropertiesToRead['rBandWeightAge'] = True
 #PropertiesToRead['sfh_ibin'] = True
 #PropertiesToRead['sfh_numbins'] = True
 
-PropertiesToRead['sfh_DiskMass'] = True
-PropertiesToRead['sfh_BulgeMass'] = True
-PropertiesToRead['sfh_DiskMassRings'] = True
-PropertiesToRead['sfh_BulgeMassRings'] = True
-PropertiesToRead['sfh_ICM'] = True
-PropertiesToRead['sfh_MetalsDiskMass'] = True
-PropertiesToRead['sfh_MetalsBulgeMass'] = True
-PropertiesToRead['sfh_MetalsICM'] = True
+#PropertiesToRead['sfh_DiskMass'] = True
+#PropertiesToRead['sfh_BulgeMass'] = True
+#PropertiesToRead['sfh_DiskMassRings'] = True
+#PropertiesToRead['sfh_BulgeMassRings'] = True
+#PropertiesToRead['sfh_ICM'] = True
+#PropertiesToRead['sfh_MetalsDiskMass'] = True
+#PropertiesToRead['sfh_MetalsBulgeMass'] = True
+#PropertiesToRead['sfh_MetalsICM'] = True
 
-PropertiesToRead['sfh_ElementsDiskMass'] = True
-PropertiesToRead['sfh_ElementsBulgeMass'] = True
+#PropertiesToRead['sfh_ElementsDiskMass'] = True
+#PropertiesToRead['sfh_ElementsBulgeMass'] = True
 
-PropertiesToRead['DiskMass_elements'] = True
-PropertiesToRead['BulgeMass_elements'] = True
-PropertiesToRead['DiskMassRings_elements'] = True
-PropertiesToRead['BulgeMassRings_elements'] = True
-PropertiesToRead['ColdGas_elements'] = True
-PropertiesToRead['ColdGasRings_elements'] = True
-PropertiesToRead['HotGas_elements'] = True
+#PropertiesToRead['DiskMass_elements'] = True
+#PropertiesToRead['BulgeMass_elements'] = True
+#PropertiesToRead['DiskMassRings_elements'] = True
+#PropertiesToRead['BulgeMassRings_elements'] = True
+#PropertiesToRead['ColdGas_elements'] = True
+#PropertiesToRead['ColdGasRings_elements'] = True
+#PropertiesToRead['HotGas_elements'] = True
 
 # <codecell>
 
