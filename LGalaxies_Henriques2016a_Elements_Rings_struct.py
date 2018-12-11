@@ -5,7 +5,6 @@
 
 import numpy as np
 
-
 LGalaxiesStruct = np.dtype([
 ('Type',np.int32,1),
 ('HaloIndex',np.int32,1),
@@ -171,8 +170,8 @@ PropertiesToRead['MetalsEjectedMass'] = True
 #PropertiesToRead['MetalsICM'] = True
 #PropertiesToRead['PrimordialAccretionRate'] = True
 #PropertiesToRead['CoolingRadius'] = True
-#PropertiesToRead['CoolingRate'] = True
-#PropertiesToRead['CoolingRate_beforeAGN'] = True
+PropertiesToRead['CoolingRate'] = True
+PropertiesToRead['CoolingRate_beforeAGN'] = True
 #PropertiesToRead['QuasarAccretionRate'] = True
 #PropertiesToRead['RadioAccretionRate'] = True
 PropertiesToRead['Sfr'] = True
@@ -197,8 +196,8 @@ PropertiesToRead['rBandWeightAge'] = True
 
 #PropertiesToRead['sfh_DiskMass'] = True
 #PropertiesToRead['sfh_BulgeMass'] = True
-#PropertiesToRead['sfh_DiskMassRings'] = True
-#PropertiesToRead['sfh_BulgeMassRings'] = True
+PropertiesToRead['sfh_DiskMassRings'] = True
+PropertiesToRead['sfh_BulgeMassRings'] = True
 #PropertiesToRead['sfh_ICM'] = True
 #PropertiesToRead['sfh_MetalsDiskMass'] = True
 #PropertiesToRead['sfh_MetalsBulgeMass'] = True

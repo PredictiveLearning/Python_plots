@@ -212,16 +212,17 @@ def milkyway_sfr_and_gas_profiles(ThisRedshiftList):
             pc84=np.zeros(RNUM,dtype=np.float32)             
             
             for kk in range(0,RNUM):
-                if(i_property==0): 
-                    if(kk==0):
-                        r_in=0.
-                    else:
-                        r_in=(RingRadius[kk-1]+RingRadius[kk])/2.
+                if(kk==0):
+                    r_in=0.
+                else:
+                    r_in=(RingRadius[kk-1]+RingRadius[kk])/2.
                         
-                    if(kk==RNUM-1):
-                        r_out=RingRadius[kk]+((RingRadius[kk]-RingRadius[kk-1])/2.)
-                    else:
-                        r_out=(RingRadius[kk]+RingRadius[kk+1])/2.
+                if(kk==RNUM-1):
+                    r_out=RingRadius[kk]+((RingRadius[kk]-RingRadius[kk-1])/2.)
+                else:
+                    r_out=(RingRadius[kk]+RingRadius[kk+1])/2.
+                        
+                if(i_property==0):            
                         
                     r_bulge=G0_MR['BulgeSize']*1000./Hubble_h #From Mpc/h to Kpc
                     if(opt_rings_in_bulges==1):
@@ -233,17 +234,16 @@ def milkyway_sfr_and_gas_profiles(ThisRedshiftList):
                     Mass=G0_MR['DiskMassRings'][:,kk]*1e10/Hubble_h
                     sel=(r_bulge>0.)
                     Mass[sel]+=BulgeMass_this_ring[sel]                    
-                    y_variable=Mass/(3.14*(r_out**2-r_in**2)*1e6)
-                      
+                                          
                 if(i_property==1):
-                    Mass=G0_MR['ColdGasRings'][:,kk]*1e10/Hubble_h*(1.-G0_MR['H2fractionRings'][:,kk])
-                    y_variable=Mass/(3.14*RingRadius[kk]*RingRadius[kk]*1e6)
+                    Mass=G0_MR['ColdGasRings'][:,kk]*1e10/Hubble_h*(1.-G0_MR['H2fractionRings'][:,kk])                   
                 if(i_property==2):
-                    Mass=G0_MR['ColdGasRings'][:,kk]*1e10/Hubble_h*G0_MR['H2fractionRings'][:,kk]
-                    y_variable=Mass/(3.14*RingRadius[kk]*RingRadius[kk]*1e6)
+                    Mass=G0_MR['ColdGasRings'][:,kk]*1e10/Hubble_h*G0_MR['H2fractionRings'][:,kk]                   
                 if(i_property==3):
                     Mass=G0_MR['ColdGasRings'][:,kk]*1e10/Hubble_h
-                    y_variable=Mass/(3.14*RingRadius[kk]*RingRadius[kk]*1e6)
+                    
+                    
+                y_variable=Mass/(3.14*(r_out**2-r_in**2)*1e6)    
                 sel=y_variable>0.               
                 if(len(y_variable[sel])>0.):
                     Sigma[kk]=np.median(y_variable[sel])
@@ -574,7 +574,7 @@ def gas_metallicity_gradients_mass_bins(ThisRedshiftList):
             for jj in range(0,RNUM):   
                
                 ColdGasRing=G0_MR['ColdGasRings'][:,jj]
-                if(opt_detailed_enrichment==1):                  
+                if(opt_individual_elements==1):                  
                     '''MetalsColdGasRing=(G0_MR['MetalsColdGasRings'][:,jj,0] +
                                        G0_MR['MetalsColdGasRings'][:,jj,1] +                                       
                                        G0_MR['MetalsColdGasRings'][:,jj,2])

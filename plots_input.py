@@ -4,11 +4,14 @@ import numpy as np
 # In[ ]:
 #RedshiftsToRead = [True,True, True,True,True,True,True, True, True, True,True, True]
 #RedshiftsToRead = [False, True, True,True,True,True,False,False,False,False,False,False]
-RedshiftsToRead = [True, True, False,True,True,True,False,False,False,False,False,False]
-#RedshiftsToRead = [False,True, False,False,False,False,False,False,False,False,False,False]
+#RedshiftsToRead = [True, True, True, True,True,True,True,True,True,True,False,False]
+RedshiftsToRead = [True, True, True, True,True,True,False,False,False,False,False,False]
+#RedshiftsToRead = [True, True, True,True,True, True, True, True,True,True,True,True,True,True,True,False,False]
+#RedshiftsToRead = [True,False, False,False,False,False,False,False,False,False,False,False]
 #RedshiftsToRead = [False,False,False,False,True,True,True,True,False,False,False,False]
 #RedshiftsToRead = [True,False,False,False,False,True, False,False,False, False,False, False]
 
+    
 CatalogType='snap'
 #CatalogType='tree'
 
@@ -22,10 +25,10 @@ WMAP7=0
 MR=1
 MRII=1
 opt_plot_MCMC_sample=0
-opt_detailed_enrichment=0
+opt_detailed_enrichment=1
 opt_individual_elements=0
-opt_rings=0
-opt_rings_in_bulges=0
+opt_rings=1
+opt_rings_in_bulges=1
 
 Datadir = '/net/bootes/export/data1/data/'
 MCMCdir = '/net/bootes/export/data1/Workspace/LGal_Development_Branch/MCMC/'
@@ -37,8 +40,8 @@ MCMCdir = '/net/bootes/export/data1/Workspace/LGal_Development_Branch/MCMC/'
 MCMCSampledir = '/net/bootes/export/data1/Workspace/cosma/final_'
 #MCMCSampledir = '/net/bootes/export/data1/Workspace/1/output/task0_'
 
-#DirName_MR = '/net/bootes/scratch-ssd/SAM/test0/MR/'
-#DirName_MRII = '/net/bootes/scratch-ssd/SAM/test0/MRII/'
+DirName_MR = '/net/bootes/scratch-ssd/SAM/test3/MR/'
+DirName_MRII = '/net/bootes/scratch-ssd/SAM/test3/MRII/'
 #DirName_MR = '/net/bootes/scratch-ssd/SAM/test95_sigma_pow/MR/'
 #DirName_MRII = '/net/bootes/scratch-ssd/SAM/test95_sigma_pow/MRII/'
 #DirName_MR = '/net/bootes/export/data1/SAM/test57/MR/'
@@ -51,22 +54,24 @@ MCMCSampledir = '/net/bootes/export/data1/Workspace/cosma/final_'
 #DirName_MRII = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/MRII/'
 #DirName_MR = '/net/bootes/scratch2/SAM/Henriques2015a/GalTree/MR/'
 #DirName_MRII = '/net/bootes/scratch2/SAM/Henriques2015a/GalTree/MRII/'
-DirName_MR = '/net/bootes/scratch2/SAM/Hen15_tests/MR/'
-DirName_MRII = '/net/bootes/scratch2/SAM/Hen15_tests/MRII/'
-#DirName_MR = '/net/bootes/scratch2/SAM/Hen15_tests/only_SN/MR/'
-#DirName_MRII = '/net/bootes/scratch2/SAM/Hen15_tests/only_SN/MRII/'
-#DirName_MR = '/net/bootes/export/data1/SAM/Hen15_tests/only_ejection/MR/'
-#DirName_MR = '/net/bootes/scratch2/SAM/Hen15_tests/only_AGN/MR/'
-#DirName_MRII = '/net/bootes/scratch2/SAM/Hen15_tests/only_AGN/MRII/'
-#DirName_MR = '/net/bootes/scratch2/SAM/Hen15_tests/no_feedback/MR/'
-#DirName_MRII = '/net/bootes/scratch2/SAM/Hen15_tests/no_feedback/MRII/'
 #DirName_MR = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/nmerge_10/MR/'
-#DirName_MR = '/net/bootes/scratch2/SAM/Hen15_tests/Guo_reinc/MR/'
-#DirName_MR = '/net/bootes/scratch2/SAM/Hen15_tests/ejection_cut_low_mass/MR/' 
-#DirName_MR = '/net/bootes/scratch2/SAM/Hen15_tests/ejection_cut_very_low_mass/MR/'
-#DirName_MR = '/net/bootes/scratch2/SAM/Hen15_tests/ejection_cut_high_mass/MR/' 
-#DirName_MR = '/net/bootes/scratch2/SAM/Hen15_tests/ejection_cut_very_high_mass/MR/' 
+
+#DirName_MR = '/net/bootes/scratch2/SAM/HWL18/MR/'
+#DirName_MRII = '/net/bootes/scratch2/SAM/HWL18/MRII/'
+#DirName_MR = '/net/bootes/scratch2/SAM/HWL18/only_SN/MR/'
+#DirName_MRII = '/net/bootes/scratch2/SAM/HWL18/only_SN/MRII/'
+#DirName_MR = '/net/bootes/scratch2/SAM/HWL18/only_AGN/MR/'
+#DirName_MRII = '/net/bootes/scratch2/SAM/HWL18/only_AGN/MRII/'
+#DirName_MR = '/net/bootes/scratch2/SAM/HWL18/no_feedback/MR/'
+#DirName_MRII = '/net/bootes/scratch2/SAM/HWL18/no_feedback/MRII/'
+
+#DirName_MR = '/net/bootes/scratch2/SAM/HWL18/ejection_cut_low_mass/MR/' 
+#DirName_MR = '/net/bootes/scratch2/SAM/HWL18/ejection_cut_very_low_mass/MR/'
+#DirName_MR = '/net/bootes/scratch2/SAM/HWL18/ejection_cut_high_mass/MR/' 
+#DirName_MR = '/net/bootes/scratch2/SAM/HWL18/ejection_cut_very_high_mass/MR/' 
   
+
+#DirName_MR = '/net/bootes/scratch2/SAM/Hen15_tests/Guo_reinc/MR/'
 #DirName_MR = '/net/bootes/scratch2/SAM/Hen15_tests/bh_in_instabilities/MR/'
 
 #DirName_MR = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/new_BH_growth/MR/'
@@ -195,8 +200,11 @@ if WMAP7:
 
 
 if PLANCK:      
+   
     FullRedshiftList=[0.00,0.11,0.40,1.04,2.07,3.11,3.95,5.03,5.92,6.97,8.22,8.93] 
     FullSnapshotList_MR=[58,54,47,38,30,25,22,19,17,15,13,12]
+    #FullRedshiftList=[0.00,0.11,0.26,0.40,0.51,0.57,0.71,0.86,1.04,2.07,3.11,3.95,5.03,5.92,6.97,8.22,8.93] 
+    #FullSnapshotList_MR=[58,54,50,47,45,44,42,40,38,30,25,22,19,17,15,13,12]
     #FullRedshiftList=[1.04,1.48,2.07] 
     #FullSnapshotList_MR=[38,34,30]
     #FullRedshiftList=[0.00,0.51,1.04,2.07,3.11,5.03] 

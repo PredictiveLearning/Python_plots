@@ -24,6 +24,7 @@ comdist
 plot_mass_function
 close_pool
 write_to_file
+Hubble_of_z
 """
     
     
@@ -243,6 +244,127 @@ def read_tree_new(filename):
     
     print ("File %s  nGals = %d" %(filename,this_nGals))           
     return (gals)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import gc
+import os
+import psutil
+def read_halo_tree(folder,FirstFile, LastFile, props_1,template_1, props_2,template_2):    
+      
+    proc = psutil.Process(os.getpid())
+    gc.collect()
+   
+    nHalos = 0       
+    
+    filter_list = []
+    filter_list_1 = []
+    for prop in props_1:
+        if props_1[prop]:
+            filter_list_1.append((prop,template_1[prop]))
+            filter_list.append((prop,template_1[prop]))
+    
+    filter_list_2 = []
+    for prop in props_2:
+        if props_2[prop]:
+            filter_list_2.append((prop,template_2[prop]))
+            filter_list.append((prop,template_2[prop]))
+            
+    filter_dtype = np.dtype(filter_list)  
+            
+    #SnapshotList=np.array([],dtype=np.int32)
+    
+    #read only headers to figure out total nHalos
+    print ("\n\nReading Headers\n")
+    for ifile in range(FirstFile, LastFile+1):       
+        filename = folder+'/'+'trees_063.'+"%d"%(ifile)               
+        f = open(filename,"rb")
+        
+        Ntrees = np.fromfile(f, np.int32, 1)[0]         
+        this_nHalos = np.fromfile(f, np.int32, 1)[0]       
+        TreeNHalos = np.fromfile(f, np.int32, Ntrees)    
+   
+        nHalos += this_nHalos 
+        f.close()
+     
+    print("TotNHalos= %d" % nHalos)
+    print ("\n")
+    
+    Halos = np.zeros(nHalos,dtype=filter_dtype)
+   
+    offset=0
+    for ifile in range(FirstFile,LastFile+1): 
+        
+        filename = folder+'/'+'trees_063.'+"%d"%(ifile)              
+        f_1 = open(filename,"rb")      
+        
+        filename = folder+'/'+'tree_dbids_063.'+"%d"%(ifile)              
+        f_2 = open(filename,"rb")       
+       
+        #read header
+        Ntrees = np.fromfile(f_1, np.int32, 1)[0]         
+        this_nHalos = np.fromfile(f_1, np.int32, 1)[0]       
+        TreeNHalos = np.fromfile(f_1, np.int32, Ntrees)             
+               
+        print ("File %d  nGals = %d" %(ifile,this_nHalos)) 
+        
+       
+            
+        #read galaxy catalogs
+        full_this_halos = np.zeros(this_nHalos,dtype=template_1) 
+        full_this_halos = np.fromfile(f_1,template_1,this_nHalos) # all properties  
+        
+        full_this_halos_dbids = np.zeros(this_nHalos,dtype=template_2) 
+        full_this_halos_dbids = np.fromfile(f_2,template_2,this_nHalos) # all properties  
+        
+        #select properties to keep
+        this_halos = np.zeros(this_nHalos,dtype=filter_dtype) # selected props
+        
+        for prop in template_1.names:
+            if props_1[prop]:
+                this_halos[prop] = np.copy(full_this_halos[prop])
+                
+        for prop in template_2.names:
+            if props_2[prop]:
+                this_halos[prop] = np.copy(full_this_halos_dbids[prop])
+        
+        #copy into merged structure for all files
+        Halos[offset:offset+this_nHalos] = np.copy(this_halos[:])    
+        offset+=this_nHalos
+        
+        #mem = proc.memory_info().rss/1.e9       
+        #print("Allocation 4: %0.2f" % mem)
+        
+        full_this_halos = None
+        this_halos = None     
+        gc.collect()  
+        
+        #mem = proc.memory_info().rss/1.e9       
+        #print("Allocation 5: %0.2f" % mem)
+        #os.system()'''
+            
+    #endfor
+   
+    return (Halos)
+
+
+
+
+
 
 def merge_tree_files(Gals_list, folder,FirstFile,LastFile, props,template):   
     nGals = 0    
@@ -784,6 +906,7 @@ def plot_mass_function(subplot, Mass_MR, Volume_MR, xlim, bin, MRII, Mass_MRII=0
     #join MR+MRII & plot     
     if(MRII==1):        
         cut_MR_MRII=10.1
+        #cut_MR_MRII=8.1
         (x_axis,y_axis)=plot_joint_MR_MRII(hist_MR, hist_MRII, cut_MR_MRII, Volume_MR, Volume_MRII, 
                                            bin, subplot, color=color,linewidth=2, linestyle=linestyle)
     else:
@@ -807,3 +930,26 @@ def close_pool(pool):
         raise
     finally:
         pool.join() 
+        
+def Vvir_to_Mvir(Vvir, redshift, Omega=0.3, OmegaLambda=0.7):
+    UnitLength_in_cm = 3.08568e+24
+    UnitVelocity_in_cm_per_s = 100000
+    UnitMass_in_g = 1.989e+43
+    UnitTime_in_s = UnitLength_in_cm / UnitVelocity_in_cm_per_s
+    GRAVITY = 6.672e-8 / ((UnitLength_in_cm)**3) * UnitMass_in_g * (UnitTime_in_s)**2
+    Hubble = Hubble_of_z(redshift, Omega, OmegaLambda)
+    
+    return Vvir**3/(10.*GRAVITY*Hubble)
+        
+def Hubble_of_z(redshift, Omega=0.3, OmegaLambda=0.7):    
+    HUBBLE = 3.2407789e-18
+    UnitLength_in_cm = 3.08568e+24
+    UnitVelocity_in_cm_per_s = 100000
+    UnitTime_in_s = UnitLength_in_cm / UnitVelocity_in_cm_per_s
+    
+    Hubble = HUBBLE * UnitTime_in_s  
+    
+    zplus1 = 1 + redshift
+
+    return Hubble * np.sqrt(Omega * zplus1 * zplus1 * zplus1 + (1 - Omega - OmegaLambda) * zplus1 * zplus1 + OmegaLambda)
+

@@ -42,9 +42,13 @@ LGalaxiesStruct = np.dtype([
 ('BulgeMass',np.float32,1),
 ('DiskMass',np.float32,1),
 ('HotGas',np.float32,1),
+#('ReheatedGas',np.float32,1),##
 ('EjectedMass',np.float32,1),
 ('BlackHoleMass',np.float32,1),
 ('ICM',np.float32,1),
+#('MassFromInSitu',np.float32,1),#
+#('MassFromMergers',np.float32,1),#
+#('MassFromBursts',np.float32,1),#
 ('MetalsColdGas',np.float32,1),
 ('MetalsStellarMass',np.float32,1),
 ('MetalsBulgeMass',np.float32,1),
@@ -64,6 +68,8 @@ LGalaxiesStruct = np.dtype([
 ('BulgeSize',np.float32,1),
 ('StellarDiskRadius',np.float32,1),
 ('GasDiskRadius',np.float32,1),
+#('StellarHalfMassRadius',np.float32,1), ##
+#('StellarHalfLigthRadius',np.float32,1), ##
 ('CosInclination',np.float32,1),
 ('DisruptOn',np.int32,1),
 ('MergeOn',np.int32,1),
@@ -114,7 +120,7 @@ PropertiesToRead['CentralMvir'] = True
 PropertiesToRead['DistanceToCentralGal'] = True
 PropertiesToRead['Pos'] = True
 PropertiesToRead['Vel'] = True
-#PropertiesToRead['Len'] = True
+PropertiesToRead['Len'] = True
 PropertiesToRead['Mvir'] = True
 PropertiesToRead['Rvir'] = True
 PropertiesToRead['Vvir'] = True
@@ -158,11 +164,11 @@ PropertiesToRead['StellarDiskRadius'] = True
 #PropertiesToRead['CosInclination'] = True
 #PropertiesToRead['DisruptOn'] = True
 #PropertiesToRead['MergeOn'] = True
-PropertiesToRead['MagDust'] = True
+#PropertiesToRead['MagDust'] = True
 #PropertiesToRead['Mag'] = True
 #PropertiesToRead['MagBulge'] = True
-PropertiesToRead['MassWeightAge'] = True
-PropertiesToRead['rBandWeightAge'] = True
+#PropertiesToRead['MassWeightAge'] = True
+#PropertiesToRead['rBandWeightAge'] = True
 #PropertiesToRead['sfh_ibin'] = True
 #PropertiesToRead['sfh_numbins'] = True
 #PropertiesToRead['sfh_DiskMass'] = True
