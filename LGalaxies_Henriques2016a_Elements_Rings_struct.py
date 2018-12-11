@@ -5,6 +5,7 @@
 
 import numpy as np
 
+
 LGalaxiesStruct = np.dtype([
 ('Type',np.int32,1),
 ('HaloIndex',np.int32,1),

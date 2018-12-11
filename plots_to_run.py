@@ -25,59 +25,24 @@ from importlib import reload
 
 
 
-#HWB17
-#plot_stellar_mass_function=0
-#plot_stellar_mass_function_z0_overplot=0
-#plot_stellar_mass_vs_halo_mass_fractional=0
-#plot_stellar_mass_function_feedback_overplot=0
-#plot_all_masses_vs_halo_mass_fractional_z0=0
-#plot_cooling_heating=0
-#plot_growth_channels=1
-#Tree
-#plot_all_masses_evo=0
-#plot_mass_fractions_evo_all_single_gal=0
-
-#HYJ18
-#plot_test_resolution=1
-#plot_stellar_mass_function=1
-#plot_redfraction_color_cut=1
-#plot_metals_vs_stellarmass=1
-#plot_morphology_vs_stellarmass=1
-#plot_HI_over_Lr_vs_HI_bins=1
-#plot_sizes_vs_stellarmass=1
-#plot_gasmetals_vs_stellarmass=1
-#plot_gasfractions_vs_stellarmass=1
-#plot_HI_MF=1
-#plot_BHBM=1
-#plot_SFRF=1
-#plot_SFRD=0
-#plot_main_sequence=1
-#plot_ssfr_hist=1
-#plot_milkyway_sfr_and_gas_profiles=1
-#plot_milkyway_gradients=1
-#plot_gas_metallicity_gradients_mass_bins=0
-#plot_MANGA_gradients_late_types=1
-#plot_CALIFA_gradients_morph_types=1
-#plot_CALIFA_gradients_mass_bins=1
-
-
 #PLOT OPTIONS
 plot_stellar_mass_vs_halo_mass_vandokkum=0
-plot_stellar_mass_vs_halo_mass_fractional=1
+plot_stellar_mass_vs_halo_mass_fractional=0
 plot_stellar_mass_vs_halo_mass_fractional_allz=0
 plot_all_masses_vs_halo_mass_fractional_allz=0
 plot_eject_hot_masses_vs_halo_mass_fractional_allz=0
-plot_all_masses_vs_halo_mass_fractional_z0=1
+plot_all_masses_vs_halo_mass_fractional_z0=0
 plot_stellar_mass_vs_halo_mass_fractional_models_overplot=0
 plot_cooling_radius=0
-plot_stellar_mass_function_z0_overplot=1
-plot_stellar_mass_function_feedback_overplot=1
+plot_stellar_mass_function_z0_overplot=0
+plot_stellar_mass_function_feedback_overplot=0
 plot_redfraction_color_cut_cuts=0
 plot_stellar_mass_function_allz_overplot=0
 plot_cumulative_ND=0
+plot_halo_mass_function=0
+plot_halo_mass_density_above_mass=0
 
-
-plot_stellar_mass_function=1
+plot_stellar_mass_function=0
 plot_redfraction_color_cut=0
 plot_redfraction_SFR_cut=0
 plot_wetzel_passive_fraction_vs_stellar_mass=0
@@ -137,7 +102,7 @@ plot_SFH=0
 plot_cooling_heating=1
 plot_BHBM_by_sfr=0
 plot_AGN_quenching=0
-plot_growth_channels=1
+plot_growth_channels=0
 plot_bluck_red_fractions=0
 plot_satellite_quench_times=0
 plot_sat_fraction=0
@@ -146,6 +111,7 @@ plot_HotGas_fraction=0
 plot_BHmass_in_radio=0
 plot_fabian_fb=0 
 plot_H2fraction_fits=0
+plot_surface_density_vs_stellar_mass=0
 
 #TESTS
 plot_test_resolution=0
@@ -159,12 +125,14 @@ plot_sfr_massive_galaxies=0
 plot_all_masses_evo=0
 plot_mass_fractions_evo_all_single_gal=0
 plot_mass_fractions_evo_all_multiple_gals=0
+plot_properties_evo=0
 plot_halo_growth=0
 plot_halo_growth_normalized=0
 plot_baryon_fraction=0
 plot_halo_growth_rate=0
 plot_accretion_history=0
 plot_cooling_heating_evo=0
+plot_cooling_heating_evo_halo_mass=0
 
 #Favignana
 #plot_stellar_mass_function=1
@@ -173,6 +141,45 @@ plot_cooling_heating_evo=0
 #plot_sizes_vs_stellarmass_allz=1
 #plot_redfraction_SFR_cut=1
 
+
+
+
+
+
+#HWB17
+#plot_stellar_mass_function=0
+#plot_stellar_mass_function_z0_overplot=0
+#plot_stellar_mass_vs_halo_mass_fractional=0
+#plot_stellar_mass_function_feedback_overplot=0
+#plot_all_masses_vs_halo_mass_fractional_z0=0
+#plot_cooling_heating=0
+#plot_growth_channels=1
+#Tree
+#plot_all_masses_evo=0
+#plot_mass_fractions_evo_all_single_gal=0
+
+#HYJ18
+#plot_test_resolution=1
+#plot_stellar_mass_function=1
+#plot_redfraction_color_cut=1
+#plot_metals_vs_stellarmass=1
+#plot_morphology_vs_stellarmass=1
+#plot_HI_over_Lr_vs_HI_bins=1
+#plot_sizes_vs_stellarmass=1
+#plot_gasmetals_vs_stellarmass=1
+#plot_gasfractions_vs_stellarmass=1
+#plot_HI_MF=1
+#plot_BHBM=1
+#plot_SFRF=1
+#plot_SFRD=0
+#plot_main_sequence=1
+#plot_ssfr_hist=1
+#plot_milkyway_sfr_and_gas_profiles=1
+#plot_milkyway_gradients=1
+#plot_gas_metallicity_gradients_mass_bins=0
+#plot_MANGA_gradients_late_types=1
+#plot_CALIFA_gradients_morph_types=1
+#plot_CALIFA_gradients_mass_bins=1
 
 
 #ANIMATIONS
@@ -233,6 +240,14 @@ def run_plots(plot_to_run):
         ThisRedshiftList=[0.0]        
         output = cooling_radius(ThisRedshiftList)        
                     
+    if plot_to_run == 'halo_mass_function':            
+        ThisRedshiftList=[0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0]                 
+        output = halo_mass_function(ThisRedshiftList)        
+          
+    if plot_to_run == 'halo_mass_density_above_mass':            
+        ThisRedshiftList=[7.0,6.0,5.0,4.0,3.0,2.0,1.0,0.86,0.71,0.57,0.51,0.4, 0.26, 0.1, 0.0]                 
+        output = halo_mass_density_above_mass(ThisRedshiftList)             
+                        
     if plot_to_run == 'stellar_mass_function':            
         ThisRedshiftList=[0.0,1.0,2.0,3.0]                 
         output = stellar_mass_function(ThisRedshiftList)
@@ -418,8 +433,12 @@ def run_plots(plot_to_run):
            
     
     if plot_to_run == 'H2fraction_fits': 
-        output = H2fraction_fits()           
-                 
+        output = H2fraction_fits()  
+        
+    if plot_to_run == 'surface_density_vs_stellar_mass': 
+        ThisRedshiftList=[0.0, 1.0, 2.0]
+        output = surface_density_vs_stellar_mass(ThisRedshiftList)  
+          
     #PLOTS FOR H2_AND_RINGS
     if plot_to_run == 'gasfractions_vs_stellarmass':       
         ThisRedshiftList=[0.0]        
