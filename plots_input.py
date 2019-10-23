@@ -3,17 +3,24 @@ import numpy as np
 
 # In[ ]:
 #RedshiftsToRead = [True,True, True,True,True,True,True, True, True, True,True, True]
+
 #RedshiftsToRead = [False, True, True,True,True,True,False,False,False,False,False,False]
 #RedshiftsToRead = [True, True, True, True,True,True,True,True,True,True,False,False]
-RedshiftsToRead = [True, True, True, True,True,True,False,False,False,False,False,False]
-#RedshiftsToRead = [True, True, True,True,True, True, True, True,True,True,True,True,True,True,True,False,False]
+#RedshiftsToRead = [True, True, True, True,True,True,False,False,False,False,False,False]
+#RedshiftsToRead = [True, True, False,False,False,False,False,False,False,False,False,False]
+#RedshiftsToRead = [True,False, False,False,False,False, False,False,False,False,False,False,False,False,False,False,False]
+#RedshiftsToRead = [True, False, True,True,True, True, False,False,False,False,False,False,False,False,False,False,False]
+
+RedshiftsToRead = [True, True, False,False,False, False, False,False,False,False,False,False,False,False,False,False,False]
+#RedshiftsToRead = [False, True, False,False,False, False, False,False,False,False,False,False,False,False,False,False,False]
+#RedshiftsToRead = [True, True, True,True,True, True, True, True,True,True,True,True,True,True,True,True,True]
 #RedshiftsToRead = [True,False, False,False,False,False,False,False,False,False,False,False]
 #RedshiftsToRead = [False,False,False,False,True,True,True,True,False,False,False,False]
 #RedshiftsToRead = [True,False,False,False,False,True, False,False,False, False,False, False]
 
     
-CatalogType='snap'
-#CatalogType='tree'
+#CatalogType='snap'
+CatalogType='tree'
 
 #COSMOLOGIES & DARK MATTER SIMS
 PLANCK=1
@@ -26,22 +33,24 @@ MR=1
 MRII=1
 opt_plot_MCMC_sample=0
 opt_detailed_enrichment=1
-opt_individual_elements=0
+opt_individual_elements=1
 opt_rings=1
 opt_rings_in_bulges=1
 
-Datadir = '/net/bootes/export/data1/data/'
-MCMCdir = '/net/bootes/export/data1/Workspace/LGal_Development_Branch/MCMC/'
-#MCMCSampledir = '/net/bootes//export/data1/Workspace/LGal_Development_Branch/output/bestfit/final_'
-#MCMCSampledir = '/net/bootes//export/data1/Workspace/LGal_Development_Branch/output/task0_'
-#MCMCSampledir = '/net/bootes//export/data1/Workspace/LGal_Development_Branch/output/bestfit/task0_'
-#MCMCSampledir = '/net/bootes//export/data1/Workspace/1/output/bestfit/final_'
-#MCMCSampledir = '/net/bootes//export/data1/Workspace/cosma/task0_'
-MCMCSampledir = '/net/bootes/export/data1/Workspace/cosma/final_'
-#MCMCSampledir = '/net/bootes/export/data1/Workspace/1/output/task0_'
+Datadir = '/scratch-ssd/data/'
+MCMCdir = '/scratch-ssd/Workspace/LGal_Development_Branch/MCMC/'
+MCMCSampledir = '/net/senna/scratch-ssd/Workspace/GitHub_Development_Branch/output/bestfit/final_'
+#MCMCSampledir = '/net/senna/scratch-ssd/Workspace/GitHub_Development_Branch/output/task0_'
 
-DirName_MR = '/net/bootes/scratch-ssd/SAM/test2/MR/'
-DirName_MRII = '/net/bootes/scratch-ssd/SAM/test2/MRII/'
+#DirName_MRII ='/scratch-ssd/SAM/test_tree_0/MRII/'
+#DirName_MR = '/scratch3/SAM/Henriques2019/Snaps/MR/'
+#DirName_MRII = '/scratch3/SAM/Henriques2019/Snaps/MRII/'
+
+DirName_MR = '/scratch3/SAM/Henriques2019/GalTree/MR/'
+DirName_MRII = '/scratch3/SAM/Henriques2019/GalTree/MRII/'
+
+#DirName_MR = '/scratch-ssd/SAM/test2/MR/'
+#DirName_MRII = '/scratch-ssd/SAM/test2/MRII/'
 #DirName_MR = '/net/bootes/scratch-ssd/SAM/test95_sigma_pow/MR/'
 #DirName_MRII = '/net/bootes/scratch-ssd/SAM/test95_sigma_pow/MRII/'
 #DirName_MR = '/net/bootes/export/data1/SAM/test57/MR/'
@@ -50,14 +59,14 @@ DirName_MRII = '/net/bootes/scratch-ssd/SAM/test2/MRII/'
 #DirName_MRII = '/data/astrodata/Bruno/SAM/test57/MRII/'
              
 #DirName_MR = '/net/bootes/scratch-ssd/SAM/test0/MR/'
-#DirName_MR = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/MR/'
-#DirName_MRII = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/MRII/'
+#DirName_MR = '/scratch2/SAM/Henriques2015a/snaps/MR/'
+#DirName_MRII = '/scratch2/SAM/Henriques2015a/snaps/MRII/'
 #DirName_MR = '/net/bootes/scratch2/SAM/Henriques2015a/GalTree/MR/'
 #DirName_MRII = '/net/bootes/scratch2/SAM/Henriques2015a/GalTree/MRII/'
 #DirName_MR = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/nmerge_10/MR/'
 
-#DirName_MR = '/net/bootes/scratch2/SAM/HWL18/MR/'
-#DirName_MRII = '/net/bootes/scratch2/SAM/HWL18/MRII/'
+#DirName_MR = '/scratch2/SAM/HWL18/MR/'
+#DirName_MRII = '/scratch2/SAM/HWL18/MRII/'
 #DirName_MR = '/net/bootes/scratch2/SAM/HWL18/only_SN/MR/'
 #DirName_MRII = '/net/bootes/scratch2/SAM/HWL18/only_SN/MRII/'
 #DirName_MR = '/net/bootes/scratch2/SAM/HWL18/only_AGN/MR/'
@@ -80,15 +89,20 @@ DirName_MRII = '/net/bootes/scratch-ssd/SAM/test2/MRII/'
 #DirName_MR = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/MR/'
 #DirName_MRII = '/net/bootes/scratch2/SAM/Henriques2015a/snaps/MRII/'
 
-#DirName_MR = '/net/bootes/export/data1/Workspace/LGal_Development_Branch/output/'
-#DirName_MR = '/net/bootes/scratch2/SAM/Henriques2015a/GalTree/MR/'
-#DirName_MR = '/Users/BrunoHenriques/Desktop/Work/SAM/Henriques2015a/GalTree/MR/'
 
+#FOR THE MAC
+#Datadir = '/Users/BrunoHenriques/Desktop/Work/data/' 
+#MCMCdir = '/Users/BrunoHenriques/Desktop/OneDrive/Workspace/GitHub_Development_Branch/MCMC/' 
+#MCMCSampledir = '/Users/BrunoHenriques/Desktop/OneDrive/Workspace/GitHub_Development_Branch/output/final_' 
+#DirName_MR = '/Users/BrunoHenriques/Desktop/OneDrive/Workspace/GitHub_Development_Branch/output/' 
 
+write_to_file=0
+file_to_write = '/Henriques2020/'
+#file_to_write = '/Henriques2014a/Henriques2014a_'
 prefix_this_model='This Work'
 file_this_model='ThisWork'
 
-do_previous_model1=1
+do_previous_model1=0
 file_previous_model1=Datadir+'Guo2013a_m05'
 prefix_previous_model1='Guo2013a'
 linestyle_previous_model1=':'
@@ -104,12 +118,13 @@ prefix_previous_model2='Henriques2015'
 linestyle_previous_model2='--'
     
 #HENRIQUES15
-slope_color_cut=[0.075,0.275, 0.3, 0.32,0.38,0.38,0.38,0.38]
+#slope_color_cut=[0.075,0.275, 0.3, 0.32,0.38,0.38,0.38,0.38]
 offset_color_cut=[1.85,1.213, 1.18,0.99,0.79,0.79,0.79,0.79]     
  
-#HENRIQUES17
-#slope_color_cut=[0.05,0.275, 0.3, 0.32,0.38,  0.38,0.38,0.38]
-#offset_color_cut=[1.85,1.213, 1.18,0.99,0.79,  0.79,0.79,0.79]
+#HENRIQUES19
+slope_color_cut=[0.075,0.69,0.59,0.59,0.59,0.59,0.59,0.59]
+offset_color_cut=[1.85,0.88,0.88,0.88,0.88,0.88,0.88,0.88]  
+
 
 #NO AGN
 #slope_color_cut=[0.075, 0.5, 0.48, 0.38, 0.18];
@@ -132,14 +147,18 @@ obs_slope_color_cut=[1.9,0.88,0.88,0.88,0.88]
 
 one_one_size_small=[5,4]
 one_two_size_small=[7,4]
+one_two_size_large=[10,4]
 one_three_size_large=[10,4]
 one_four_size_large=[12,4]
 one_five_size_large=[14,4]
 
 two_one_size_small=[5,6]
 two_two_size_small=[7,6]
-two_four_size_large=[11,6]
+
 two_two_size_large=[7,6]
+two_three_size_large=[9,6]
+two_four_size_large=[11,6]
+
 
 three_one_size_small=[5,8]
 three_two_size_small=[7,8]
@@ -148,7 +167,7 @@ three_two_size_small=[7,8]
 RNUM=12
 #in units of kpc
 RingRadius=np.array([0.029, 0.059, 0.12, 0.24, 0.47, 0.94, 1.9, 3.8, 7.5, 15., 30., 60.])
-
+#RingRadius=np.array([0.02, 0.05, 0.12, 0.28, 0.64, 1.48, 3.4, 7.83, 18.01, 41.43])
 #RingRadius=np.array([0.00030, 0.00090, 0.0027, 0.0081, 0.024, 0.073, 0.22, 0.66, 1.97, 5.91, 17.72, 53.14])
 #RingRadius=np.array([0.0025, 0.0063, 0.016, 0.039, 0.098, 0.24, 0.61, 1.53, 3.82, 9.54, 23.84, 59.61])
 #RingRadius=np.array([0.020, 0.040, 0.080, 0.16, 0.32, 0.64, 1.28, 2.56, 5.12, 10.24, 20.48, 40.96])
@@ -236,4 +255,10 @@ Magneticum_Box4_color = '#0000FF'
 Magneticum_Box2_color = '#007F7F'
 LGalaxies_color =  '#FF00FF'
 EAGLE_color = '#00FFFF'
+
+
+#variables
+Msun = '$\mathrm{M_{\odot}}$'
+Lsun = '$\mathrm{L_{\odot}}$'
+
     

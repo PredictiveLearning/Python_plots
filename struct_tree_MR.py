@@ -29,7 +29,7 @@ for ii in LGalaxiesStruct.names:
 #PropertiesToRead['Descendant'] = True 
 #PropertiesToRead['FirstProgenitor'] = True
 #PropertiesToRead['NextProgenitor'] = True
-#PropertiesToRead['FirstHaloInFOFgroup'] = True
+PropertiesToRead['FirstHaloInFOFgroup'] = True
 #PropertiesToRead['NextHaloInFOFgroup'] = True
 PropertiesToRead['Len'] = True
 #PropertiesToRead['M_Mean200'] = True

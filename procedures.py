@@ -264,7 +264,7 @@ def read_tree_new(filename):
 import gc
 import os
 import psutil
-def read_halo_tree(folder,FirstFile, LastFile, props_1,template_1, props_2,template_2):    
+def read_halo_tree(folder,SIM_Prefix, SIM_LastSnap, FirstFile, LastFile, props_1,template_1, props_2,template_2):    
       
     proc = psutil.Process(os.getpid())
     gc.collect()
@@ -289,9 +289,9 @@ def read_halo_tree(folder,FirstFile, LastFile, props_1,template_1, props_2,templ
     #SnapshotList=np.array([],dtype=np.int32)
     
     #read only headers to figure out total nHalos
-    print ("\n\nReading Headers\n")
+    print ("\n\nReading Headers For Halo File\n")
     for ifile in range(FirstFile, LastFile+1):       
-        filename = folder+'/'+'trees_063.'+"%d"%(ifile)               
+        filename = folder+'/'+'trees_'+SIM_Prefix+SIM_LastSnap+'.'+"%d"%(ifile)               
         f = open(filename,"rb")
         
         Ntrees = np.fromfile(f, np.int32, 1)[0]         
@@ -305,14 +305,15 @@ def read_halo_tree(folder,FirstFile, LastFile, props_1,template_1, props_2,templ
     print ("\n")
     
     Halos = np.zeros(nHalos,dtype=filter_dtype)
+    Halos_dbids = np.zeros(nHalos,dtype=filter_dtype)
    
     offset=0
     for ifile in range(FirstFile,LastFile+1): 
         
-        filename = folder+'/'+'trees_063.'+"%d"%(ifile)              
+        filename = folder+'/'+'trees_'+SIM_Prefix+SIM_LastSnap+'.'+"%d"%(ifile)              
         f_1 = open(filename,"rb")      
         
-        filename = folder+'/'+'tree_dbids_063.'+"%d"%(ifile)              
+        filename = folder+'/'+'tree_'+SIM_Prefix+'dbids_'+SIM_LastSnap+'.'+"%d"%(ifile)              
         f_2 = open(filename,"rb")       
        
         #read header
@@ -320,10 +321,8 @@ def read_halo_tree(folder,FirstFile, LastFile, props_1,template_1, props_2,templ
         this_nHalos = np.fromfile(f_1, np.int32, 1)[0]       
         TreeNHalos = np.fromfile(f_1, np.int32, Ntrees)             
                
-        print ("File %d  nGals = %d" %(ifile,this_nHalos)) 
-        
-       
-            
+        print ("Reading File %d, nHalos = %d" %(ifile, this_nHalos)) 
+                    
         #read galaxy catalogs
         full_this_halos = np.zeros(this_nHalos,dtype=template_1) 
         full_this_halos = np.fromfile(f_1,template_1,this_nHalos) # all properties  
@@ -333,6 +332,7 @@ def read_halo_tree(folder,FirstFile, LastFile, props_1,template_1, props_2,templ
         
         #select properties to keep
         this_halos = np.zeros(this_nHalos,dtype=filter_dtype) # selected props
+        this_halos_dbids = np.zeros(this_nHalos,dtype=filter_dtype) # selected props
         
         for prop in template_1.names:
             if props_1[prop]:
@@ -340,10 +340,11 @@ def read_halo_tree(folder,FirstFile, LastFile, props_1,template_1, props_2,templ
                 
         for prop in template_2.names:
             if props_2[prop]:
-                this_halos[prop] = np.copy(full_this_halos_dbids[prop])
+                this_halos_dbids[prop] = np.copy(full_this_halos_dbids[prop])
         
         #copy into merged structure for all files
-        Halos[offset:offset+this_nHalos] = np.copy(this_halos[:])    
+        Halos[offset:offset+this_nHalos] = np.copy(this_halos[:])          
+        Halos_dbids[offset:offset+this_nHalos] = np.copy(this_halos_dbids[:])    
         offset+=this_nHalos
         
         #mem = proc.memory_info().rss/1.e9       
@@ -351,6 +352,8 @@ def read_halo_tree(folder,FirstFile, LastFile, props_1,template_1, props_2,templ
         
         full_this_halos = None
         this_halos = None     
+        full_this_halos_dbids = None
+        this_halos_dbids = None     
         gc.collect()  
         
         #mem = proc.memory_info().rss/1.e9       
@@ -359,7 +362,9 @@ def read_halo_tree(folder,FirstFile, LastFile, props_1,template_1, props_2,templ
             
     #endfor
    
-    return (Halos)
+
+    print('\nreading of halos done\n\n')
+    return (Halos, Halos_dbids)
 
 
 
@@ -513,7 +518,7 @@ def median_and_percentiles (bin, xmin, xmax, x_variable, y_variable):
         if(len(x_variable_sel) > 0):           
             median[ii]=np.median(y_variable_sel) 
             mean[ii]=np.mean(y_variable_sel) 
-            y_sorted = np.sort(y_variable_sel)
+            y_sorted = np.sort(y_variable_sel)           
             pc16[ii] = y_sorted[int(16*len(y_variable_sel)/100)]      
             pc84[ii] = y_sorted[int(84*len(y_variable_sel)/100)]            
             #rms[ii]=np.sqrt(np.mean((np.log10(y_variable_sel))**2))
@@ -652,13 +657,57 @@ def plot_label_three_models (subplot, xlim, ylim, position):
                 xlog=0, ylog=0, linestyle='-', linewidth=2)
                 
 #endf plot_label_three_models
+
+def plot_label_two_models (subplot, xlim, ylim, position):
+ 
+    if position=='top_left':
+        x1=0.15        
+        x21=0.04
+        x22=0.13
+        
+        previous_model1_y1=0.9
+        previous_model1_y2=0.92       
+        previous_model2_y1=0.83
+        previous_model2_y2=0.85        
+        this_model_y1=0.76
+        this_model_y2=0.78
+        
+    if position=='bottom_left':
+        x1=0.14        
+        x21=0.04
+        x22=0.12
+        
+        previous_model1_y1=0.2
+        previous_model1_y2=0.22       
+        previous_model2_y1=0.15
+        previous_model2_y2=0.18        
+        this_model_y1=0.05
+        this_model_y2=0.08
+        
+                    
+    plot_label (subplot, 'label', xlim, ylim, 
+                x_percentage=x1, y_percentage=previous_model2_y1, color='black', xlog=0, ylog=0, 
+                label=prefix_previous_model2, fontsize=15, fontweight='normal') 
+    plot_label (subplot, 'line', xlim, ylim,
+                x_percentage=x21, y_percentage=previous_model2_y2, color='red', x2_percentage=x22, 
+                xlog=0, ylog=0, linestyle=linestyle_previous_model2, linewidth=2)
+                    
+    plot_label (subplot, 'label', xlim, ylim, 
+                x_percentage=x1, y_percentage=this_model_y1, color='black', xlog=0, ylog=0, 
+                label=prefix_this_model, fontsize=15, fontweight='normal') 
+    plot_label (subplot, 'line', xlim, ylim,
+                x_percentage=x21, y_percentage=this_model_y2, color='red', x2_percentage=x22, 
+                xlog=0, ylog=0, linestyle='-', linewidth=2)
+                
+#endf plot_label_three_models
+            
             
                 
-def plot_label (subplot, label_type, xlim, ylim, x_percentage, y_percentage, color='white', 
+def plot_label (subplot, label_type, xlim, ylim, x_percentage, y_percentage, color='black', 
                 x2_percentage=0., xlog=0, ylog=0, label='', linestyle='-', linewidth=2, 
                 fontsize=16, fontweight='normal', sym='o', sym_size=5, err_size=0.1, 
                 rotation=0,backgroundcolor='none', alpha=1.,back_alpha=0.,mfc='black', 
-                facecolors='none', edgecolors='white'):    
+                facecolors='none', edgecolors='white', capsize=2):    
     
     if(mfc=='black'):
         mfc=color
@@ -683,6 +732,7 @@ def plot_label (subplot, label_type, xlim, ylim, x_percentage, y_percentage, col
             y_low=np.log10(ylim[0])
         y = 10**(y_low+(np.log10(ylim[1])-y_low)*y_percentage/10.)
         
+        
     if label_type=='label':                   
         t=subplot.text(x,y,label, fontsize=fontsize, fontweight=fontweight,rotation=rotation, 
                        color=color, backgroundcolor=backgroundcolor, alpha=alpha)
@@ -692,12 +742,12 @@ def plot_label (subplot, label_type, xlim, ylim, x_percentage, y_percentage, col
             subplot.plot([x,x2],[y,y],color=color,linestyle=linestyle, linewidth=linewidth, alpha=alpha)
                 
         else:
-            if label_type=='symbol':                  
+            if label_type=='symbol':               
                 if(err_size>0.):
                     subplot.errorbar(x,y, yerr=err_size, fmt=sym, markersize=sym_size, 
-                                     color=color, markeredgecolor=color,mfc=mfc)
+                                     color=color, markeredgecolor=color,mfc=mfc, alpha=alpha, capsize=capsize)
                 else:
-                    subplot.scatter(x,y, marker=sym, s=sym_size, facecolors=facecolors, edgecolors=edgecolors)
+                    subplot.scatter(x,y, marker=sym, s=sym_size, facecolors=facecolors, edgecolors=edgecolors, alpha=alpha)
                      
 #end plot_label
 
@@ -725,7 +775,7 @@ def plot_joint_MR_MRII(hist_MR, hist_MRII, cut_MR_MRII, Volume_MR, Volume_MRII,
         
     
 def mag_to_lum(mag):
-
+    #4.68: magnitude of the sun
     return 10.**(-0.4*(mag-4.68))
 
 #end 

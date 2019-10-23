@@ -1,0 +1,2 @@
+#LWP-Cookies-2.0
+Set-Cookie3: JSESSIONID=7349506C07B41B5D91BAA922C5CC3D98; path="/MyMillennium"; domain="gavo.mpa-garching.mpg.de"; path_spec; discard; HttpOnly=None; version=0

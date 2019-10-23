@@ -44,15 +44,20 @@ plot_halo_mass_density_above_mass=0
 
 plot_stellar_mass_function=0
 plot_redfraction_color_cut=0
+plot_redfraction_color_cut_cuts=0
 plot_redfraction_SFR_cut=0
 plot_wetzel_passive_fraction_vs_stellar_mass=0
 
 plot_metals_vs_stellarmass=0
 plot_morphology_vs_stellarmass=0
+plot_morphology_contour=0
+plot_morphology_SMF=0
+plot_morphology_hists=0
 plot_HI_over_Lr_vs_HI_bins=0
 plot_sizes_vs_stellarmass=0
 plot_sizes_vs_stellarmass_allz=0
 plot_gasmetals_vs_stellarmass=0
+plot_iron_clusters=0
 plot_gasfractions_vs_stellarmass=0
 plot_HI_MF=0
 
@@ -61,7 +66,7 @@ plot_BHMvir=0
 plot_SFRF=0
 plot_SFRD=0
 plot_main_sequence=0
-plot_SSFR_mass = 0
+plot_SSFR_mass=0
 plot_ssfr_hist=0
 
 plot_schmidt_kenn=0
@@ -84,14 +89,22 @@ plot_UVJ_grid=0
 plot_milkyway_sfr_and_gas_profiles=0
 plot_milkyway_gradients=0
 plot_gas_metallicity_gradients_mass_bins=0
-plot_MANGA_gradients_late_types=0
-plot_CALIFA_gradients_morph_types=0
-plot_CALIFA_gradients_mass_bins=0
-plot_stellar_metallicity_gradients_mass_bins=0
+plot_stellar_metallicity_gradients_1ass_bins=0
 plot_SFR_gradients=0
 
-plot_evo_milkyway_gas_profile=0
+plot_MANGA_gradients_late_types=0
+plot_CALIFA_gradients_mass_bins=0
+plot_MANGA_CALIFA_gradients=0
+plot_gas_gradients=0
+plot_gradients_insideout_quenching_combined=0
+plot_gradients_enci=0
+plot_gradients_ellison=0
+plot_gradients_insideout_quenching=0
+plot_gradients_insideout_quenching_SSFR=0
+plot_gradients_insideout_quenching_SFR=0
 
+
+plot_evo_milkyway_gas_profile=0
 plot_evo_milkyway_stellar_profiles=0
 plot_test_H2_prescriptions=0
 
@@ -99,7 +112,7 @@ plot_test_H2_prescriptions=0
 #MISC
 plot_SFH=0
 
-plot_cooling_heating=1
+plot_cooling_heating=0
 plot_BHBM_by_sfr=0
 plot_AGN_quenching=0
 plot_growth_channels=0
@@ -133,6 +146,8 @@ plot_halo_growth_rate=0
 plot_accretion_history=0
 plot_cooling_heating_evo=0
 plot_cooling_heating_evo_halo_mass=0
+plot_gradients_evo=0
+plot_BT_evo=0
 
 #Favignana
 #plot_stellar_mass_function=1
@@ -144,6 +159,44 @@ plot_cooling_heating_evo_halo_mass=0
 
 
 
+#HYF20
+plot_stellar_mass_function=1
+plot_redfraction_color_cut=0
+plot_ssfr_hist=0
+plot_main_sequence=0
+plot_SSFR_evo=0
+plot_SFRD=0
+
+plot_gasfractions_vs_stellarmass=0
+plot_gasfractions_Saintonge17=0
+plot_HI_MF=0
+plot_HI_over_Lr_vs_HI_bins=0
+plot_H2D=0
+
+
+plot_metals_vs_stellarmass=0
+#MR, z=0.1   DONE
+plot_gasmetals_vs_stellarmass=0
+plot_iron_clusters=0
+
+plot_sizes_vs_stellarmass_allz=0
+plot_morphology_vs_stellarmass=0
+plot_BHBM=0
+
+#MR, z=0.0
+plot_milkyway_sfr_and_gas_profiles=0
+#MR, z=0.0
+plot_all_gradients=0
+
+#MR, MRII, z=0.0
+plot_test_resolution=0
+
+#tree ON
+plot_gradients_mean_evo_combined=0
+plot_gradients_mean_evo=0  #use trees 0-9
+
+#single file
+plot_SFH_bins=0
 
 
 #HWB17
@@ -157,30 +210,6 @@ plot_cooling_heating_evo_halo_mass=0
 #Tree
 #plot_all_masses_evo=0
 #plot_mass_fractions_evo_all_single_gal=0
-
-#HYJ18
-#plot_test_resolution=1
-#plot_stellar_mass_function=1
-#plot_redfraction_color_cut=1
-#plot_metals_vs_stellarmass=1
-#plot_morphology_vs_stellarmass=1
-#plot_HI_over_Lr_vs_HI_bins=1
-#plot_sizes_vs_stellarmass=1
-#plot_gasmetals_vs_stellarmass=1
-#plot_gasfractions_vs_stellarmass=1
-#plot_HI_MF=1
-#plot_BHBM=1
-#plot_SFRF=1
-#plot_SFRD=0
-#plot_main_sequence=1
-#plot_ssfr_hist=1
-#plot_milkyway_sfr_and_gas_profiles=1
-#plot_milkyway_gradients=1
-#plot_gas_metallicity_gradients_mass_bins=0
-#plot_MANGA_gradients_late_types=1
-#plot_CALIFA_gradients_morph_types=1
-#plot_CALIFA_gradients_mass_bins=1
-
 
 #ANIMATIONS
 plot_anime_mass_gr=0
@@ -281,12 +310,16 @@ def run_plots(plot_to_run):
         output = wetzel_passive_fraction_vs_stellar_mass(ThisRedshiftList)
     
     if plot_to_run == 'metals_vs_stellarmass':    
-        ThisRedshiftList=[0.0,3.]
+        ThisRedshiftList=[0.1]
         output = metals_vs_stellarmass(ThisRedshiftList)
         
     if plot_to_run == 'gasmetals_vs_stellarmass':    
-        ThisRedshiftList=[0.1,2.]
+        ThisRedshiftList=[0.1]
         output = gasmetals_vs_stellarmass(ThisRedshiftList)    
+    
+    if plot_to_run == 'iron_clusters':    
+        ThisRedshiftList=[0.0]
+        output = iron_clusters(ThisRedshiftList)    
         
     if plot_to_run == 'effective_yield':    
         ThisRedshiftList=[0.1,2.]
@@ -331,6 +364,10 @@ def run_plots(plot_to_run):
     if plot_to_run == 'HI_MF':    
         ThisRedshiftList=[0.0]        
         output = HI_MF(ThisRedshiftList)
+        
+    if plot_to_run == 'H2D':    
+        ThisRedshiftList=[0.0,0.1,0.4,1.0,2.0,3.0,4.0, 5.0]        
+        output = H2D(ThisRedshiftList)
     
     if plot_to_run == 'coldgas_vs_stellarmass':    
         ThisRedshiftList=[0.0]        
@@ -347,7 +384,11 @@ def run_plots(plot_to_run):
     if plot_to_run == 'ur_vs_r':  
         ThisRedshiftList=[0.0]        
         output = ur_vs_r(ThisRedshiftList)
-        
+    
+    if plot_to_run == 'SSFR_evo':   
+        ThisRedshiftList=[0.0,1.0,2.0,3.0]        
+        output = SSFR_evo(ThisRedshiftList)
+    
     if plot_to_run == 'UVJ_colour':   
         ThisRedshiftList=[0.4,1.0,2.0,3.0]        
         output = UVJ_colour(ThisRedshiftList)
@@ -358,10 +399,22 @@ def run_plots(plot_to_run):
       
     if plot_to_run == 'morphology_vs_stellarmass':  
         ThisRedshiftList=[0.0]        
-        output = morphology_vs_stellarmass(ThisRedshiftList)       
+        output = morphology_vs_stellarmass(ThisRedshiftList)  
+        
+    if plot_to_run == 'morphology_contour':  
+        ThisRedshiftList=[0.0]        
+        output = morphology_contour(ThisRedshiftList) 
+        
+    if plot_to_run == 'morphology_SMF':  
+        ThisRedshiftList=[0.0]        
+        output = morphology_SMF(ThisRedshiftList) 
+        
+    if plot_to_run == 'morphology_hists':  
+        ThisRedshiftList=[0.0]        
+        output = morphology_hists(ThisRedshiftList)   
             
     if plot_to_run == 'sizes_vs_stellarmass':    
-        ThisRedshiftList=[0.0]        
+        ThisRedshiftList=[0.1]        
         output = sizes_vs_stellarmass(ThisRedshiftList)
         
     if plot_to_run == 'sizes_vs_stellarmass_allz':    
@@ -370,7 +423,7 @@ def run_plots(plot_to_run):
                  
     #ADDITIONAL PLOTS   
     if plot_to_run == 'ssfr_hist':   
-        ThisRedshiftList=[0.0]        
+        ThisRedshiftList=[0.1]        
         output = ssfr_hist(ThisRedshiftList)
         
     if plot_to_run == 'SFH':  
@@ -438,8 +491,16 @@ def run_plots(plot_to_run):
     if plot_to_run == 'surface_density_vs_stellar_mass': 
         ThisRedshiftList=[0.0, 1.0, 2.0]
         output = surface_density_vs_stellar_mass(ThisRedshiftList)  
-          
+                      
+    if plot_to_run == 'SFH_bins':        
+        output = SFH_bins()          
+                     
+            
     #PLOTS FOR H2_AND_RINGS
+    if plot_to_run == 'gasfractions_Saintonge17':       
+        ThisRedshiftList=[0.0]        
+        output = gasfractions_Saintonge17(ThisRedshiftList)
+
     if plot_to_run == 'gasfractions_vs_stellarmass':       
         ThisRedshiftList=[0.0]        
         output = gasfractions_vs_stellarmass(ThisRedshiftList)
@@ -475,6 +536,46 @@ def run_plots(plot_to_run):
     if plot_to_run == 'stellar_metallicity_gradients_mass_bins':      
         ThisRedshiftList=[0.0]
         output = stellar_metallicity_gradients_mass_bins(ThisRedshiftList)
+        
+    if plot_to_run == 'gradients_enci':      
+        ThisRedshiftList=[0.0]
+        output = gradients_enci(ThisRedshiftList)
+    
+    if plot_to_run == 'gradients_ellison':      
+        ThisRedshiftList=[0.0]
+        output = gradients_ellison(ThisRedshiftList)
+        
+    #if plot_to_run == 'gradients_mean_evo':      
+    #    ThisRedshiftList=[0.1, 0.4, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0]
+    #    output = gradients_mean_evo(ThisRedshiftList)
+    
+    if plot_to_run == 'gradients_insideout_quenching_combined':      
+        ThisRedshiftList=[0.0, 2.0]
+        output = gradients_insideout_quenching_combined(ThisRedshiftList)
+    
+    if plot_to_run == 'gradients_insideout_quenching_SSFR':      
+        ThisRedshiftList=[0.0, 2.0]
+        output = gradients_insideout_quenching_SSFR(ThisRedshiftList)
+        
+    if plot_to_run == 'gradients_insideout_quenching_SFR':      
+        ThisRedshiftList=[0.0, 2.0]
+        output = gradients_insideout_quenching_SFR(ThisRedshiftList)    
+    
+    if plot_to_run == 'gradients_insideout_quenching':      
+        ThisRedshiftList=[0.0, 2.0]
+        output = gradients_insideout_quenching(ThisRedshiftList)
+    
+    if plot_to_run == 'all_gradients':      
+        ThisRedshiftList=[0.0]
+        output = all_gradients(ThisRedshiftList)
+    
+    if plot_to_run == 'gas_gradients':      
+        ThisRedshiftList=[0.0]
+        output = gas_gradients(ThisRedshiftList)
+                        
+    if plot_to_run == 'MANGA_CALIFA_gradients':      
+        ThisRedshiftList=[0.0]
+        output = MANGA_CALIFA_gradients(ThisRedshiftList)        
             
     if plot_to_run == 'CALIFA_gradients_morph_types':      
         ThisRedshiftList=[0.0]
